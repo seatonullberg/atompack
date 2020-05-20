@@ -1,6 +1,6 @@
 from atompack.atom import Atom
-from atompack.internal import is_point_in_polyhedron
-from atompack.internal import search_for_atom
+from atompack.internal import is_point_in_polyhedron, search_for_atom, metric_tensor
+
 import numpy as np
 
 
@@ -34,3 +34,10 @@ def test_search_for_atom_unoccupied():
     position = np.array([0, 0, 0])
     res = search_for_atom(atoms, position, 1e-6)
     assert res is None
+
+
+def test_metric_tensor_cubic():
+    a, b, c = 2, 2, 2
+    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+    tensor = metric_tensor(a, b, c, alpha, beta, gamma)
+    assert np.allclose(tensor, np.array([[4, 0, 0], [0, 4, 0], [0, 0, 4]]))

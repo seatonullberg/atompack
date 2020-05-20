@@ -20,6 +20,12 @@ def is_point_in_polyhedron(point, poly):
     return True
 
 
+def metric_tensor(a, b, c, alpha, beta, gamma):
+    return np.array([[a * a, a * b * np.cos(gamma), a * c * np.cos(beta)],
+                     [a * b * np.cos(gamma), b * b, b * c * np.cos(alpha)],
+                     [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
+
+
 def _polyhedron_vertices(poly):
     return np.array([
         [0.0, 0.0, 0.0],  # origin
