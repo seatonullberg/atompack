@@ -8,7 +8,6 @@ from typing import List, Optional, Tuple
 class Crystal(AtomCollection):
     """A crystalline lattice."""
 
-    # TODO: Call _build to place atoms and set basis
     def __init__(self,
                  a: float = 0,
                  b: float = 0,
@@ -26,20 +25,8 @@ class Crystal(AtomCollection):
         self._orientation = orientation
         self._rotation = rotation
         self._size = size
-        # if unit_cell is None:
-        #     unit_cell = []
-        # self._unit_cell = unit_cell
-        # if orientation is None:
-        #     orientation = np.array([])
-        # self._orientation = orientation
-        # if rotation is None:
-        #     rotation = np.array([])
-        # self._rotation = rotation
-        # if size is None:
-        #     size = (0, 0, 0)
-        # self._size = size
-        self._build()
-        super().__init__()
+        atoms, basis = self._build()
+        super().__init__(atoms=atoms, basis=basis)
 
     @classmethod
     def triclinic(cls) -> 'Crystal':
@@ -69,47 +56,17 @@ class Crystal(AtomCollection):
     def cubic(cls) -> 'Crystal':
         pass
 
-    # def _build(self) -> None:
-    #     lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
-    #     if self._size is None:
-    #         self._size = (0, 0, 0)
-    #     oriented_vectors = np.zeros((3, 3))
-    #     if self._orientation is None:
-    #         oriented_vectors = lattice_vectors
-    #     else:
-    #         _, r = np.linalg.qr(self._orientation)
-    #         for i in range(3):
-    #             for j in range(3):
-    #                 r[i][j] *= np.linalg.norm(lattice_vectors[i])
-    #         oriented_vectors = r
-    #     oriented_size = (0, 0, 0)
-    #     for i in range(3):
-    #         oriented_size[i] = np.linalg.norm(oriented_vectors[i]) / np.ceil(np.linalg.norm(lattice_vectors[i]))
-    #         oriented_size[i] *= self._size[i]
-    #     atoms = []
-    #     for x_size in range(oriented_size[0]):
-    #         for y_size in range(oriented_size[1]):
-    #             for z_size in range(oriented_size[2]):
-    #                 offset = np.array([
-    #                     np.linalg.norm(oriented_vectors[0]) * x_size,
-    #                     np.linalg.norm(oriented_vectors[1]) * y_size,
-    #                     np.linalg.norm(oriented_vectors[2]) * z_size,
-    #                 ])
-    #                 for atom, relative_position in self._unit_cell:
-    #                     position = np.zeros((3,))
-    #                     for i in range(3):
-    #                         position[i] = (np.linalg.norm(oriented_vectors[i]) * relative_position[i]) + offset[i]
-    #                     if is_point_in_polyhedron(position, oriented_vectors):
-    #                         atom.position = position
-    #                         atoms.append(atom)
-    #     # TODO: apply rotation
-
     def _build(self) -> None:
+        # generate the basis set in its natural orientation from the metric tensor
         lattice_vectors = np.sqrt(
             metric_tensor(self._a, self._b, self._c, self._alpha, self._beta,
                           self._gamma))
+        
+        # process the size argument
         if self._size is None:
             self._size = (0, 0, 0)
+        
+        # use QR decomposition to find the appropriate basis if another orientation is provided
         oriented_vectors = np.zeros((3, 3))
         if self._orientation is None:
             oriented_vectors = lattice_vectors
@@ -119,12 +76,20 @@ class Crystal(AtomCollection):
                 for j in range(3):
                     r[i][j] *= np.linalg.norm(lattice_vectors[i])
             oriented_vectors = r
+
+        # generate a rotation matrix to align the natural basis with the new orientation
+        # https://stackoverflow.com/questions/50474886/finding-rotation-matrix-to-transform-one-3-vector-basis-to-another-in-3d
+        rotation_matrix = np.linalg.solve(lattice_vectors, oriented_vectors).T
+
+        # scale the basis such that it is (just) larger than necessary to accommodate the new orientation
         oriented_size = [0, 0, 0]
         for i in range(3):
             oriented_size[i] = np.linalg.norm(oriented_vectors[i]) / np.ceil(
                 np.linalg.norm(lattice_vectors[i]))
             oriented_size[i] *= self._size[i]
         oriented_size = [int(x) for x in oriented_size]
+        
+        # place the atoms
         atoms = []
         for x_size in range(oriented_size[0]):
             for y_size in range(oriented_size[1]):
@@ -134,14 +99,18 @@ class Crystal(AtomCollection):
                         np.linalg.norm(lattice_vectors[1]) * y_size,
                         np.linalg.norm(lattice_vectors[2]) * z_size,
                     ])
+
+                    # replicate the unit cell
                     for atom, relative_position in self._unit_cell:
                         position = np.zeros((3,))
                         for i in range(3):
                             position[i] = (np.linalg.norm(lattice_vectors[i]) *
                                            relative_position[i]) + offset[i]
-                        atom.position = position
-                        atoms.append(atom)
-        for a in atoms:
-            print(a.position)
+                        position = np.dot(rotation_matrix, position)
 
-        # TODO: rotate all atoms to given orientation
+                        # only add the atom to the collection if it falls within the oriented basis
+                        if is_point_in_polyhedron(position, oriented_vectors):
+                            atom.position = position
+                            atoms.append(atom)
+        # TODO: apply a rotation to the total collection
+        return atoms, oriented_vectors
