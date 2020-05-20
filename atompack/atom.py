@@ -7,12 +7,26 @@ from typing import List, Optional
 
 
 class Atom(object):
-    """A flexible data structure which represents an atom."""
+    """A flexible data structure which represents an atom.
+    
+    All kwargs are dynamically set as attributes.
+    This approach affords the end user flexibility to work with with many incompatible formats.
+    """
 
     def __init__(self, **kwargs) -> None:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+    def __repr__(self) -> str:
+        s = "atompack.atom.Atom: {"
+        for attr in dir(self):
+            if not attr.startswith("__"):
+                value = getattr(self, attr)
+                s += " {} = {},".format(attr, value)
+        return s + " }"
+
+    def __str__(self) -> str:
+        return self.__repr__()
 
 class AtomCollection(object):
     """A collection of `Atom`s."""
@@ -37,14 +51,14 @@ class AtomCollection(object):
     def insert(self, atom: Atom, tolerance: float) -> None:
         """Inserts an `Atom` into the collection if no other atoms exist within the radius of tolerance.
 
+        This method requires that all `Atom`s in the collection and the one being inserted have a `position` attribute which is a 3D vector indicating their positions in the collection.
+        This attribute is expected to be of type `numpy.ndarray`.
+
         Args:
             atom: The `Atom` to insert into the collection.
                 The `Atom` must have a `position` attribute which is a 3D vector indicating it's position in the collection.
                 This attribute is expected to be of type `numpy.ndarray`.
             tolerance: The radius of tolerance.
-
-        Returns:
-            None
 
         Raises:
             `PositionOccupiedError`: An `Atom` exists within the tolerance radius of the `Atom` being inserted.
@@ -73,9 +87,6 @@ class AtomCollection(object):
             position: The location of the `Atom` to remove.
             tolerance: The radius of tolerance.
 
-        Returns:
-            `Atom`
-
         Raises:
             `PositionUnoccupiedError`: No `Atom`s exist within the tolerance radius of the given position.
 
@@ -101,12 +112,12 @@ class AtomCollection(object):
     def select(self, position: np.ndarray, tolerance: float) -> int:
         """Returns the index of an `Atom` in the collection if one exists within the radius of tolerance around the given position.
         
+        This method requires that all `Atom`s in the collection have a `position` attribute which is a 3D vector indicating their positions in the collection.
+        This attribute is expected to be of type `numpy.ndarray`.
+
         Args:
             position: The location of the `Atom` to remove.
             tolerance: The radius of tolerance.
-
-        Returns:
-            int
 
         Raises:
             `PositionUnoccupiedError`: No `Atom`s exist within the tolerance radius of the given position.
