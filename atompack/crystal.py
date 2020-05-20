@@ -56,22 +56,23 @@ class Crystal(AtomCollection):
     def cubic(cls) -> 'Crystal':
         pass
 
+    # TODO: Fix the `rotation_matrix`.
     def _build(self) -> None:
         # generate the basis set in its natural orientation from the metric tensor
         lattice_vectors = np.sqrt(
             metric_tensor(self._a, self._b, self._c, self._alpha, self._beta,
                           self._gamma))
-        
+
         # process the size argument
         if self._size is None:
             self._size = (0, 0, 0)
-        
+
         # use QR decomposition to find the appropriate basis if another orientation is provided
         oriented_vectors = np.zeros((3, 3))
         if self._orientation is None:
             oriented_vectors = lattice_vectors
         else:
-            _, r = np.linalg.qr(self._orientation)
+            r = np.abs(np.linalg.qr(self._orientation, mode="r"))
             for i in range(3):
                 for j in range(3):
                     r[i][j] *= np.linalg.norm(lattice_vectors[i])
@@ -84,11 +85,14 @@ class Crystal(AtomCollection):
         # scale the basis such that it is (just) larger than necessary to accommodate the new orientation
         oriented_size = [0, 0, 0]
         for i in range(3):
-            oriented_size[i] = np.linalg.norm(oriented_vectors[i]) / np.ceil(
-                np.linalg.norm(lattice_vectors[i]))
-            oriented_size[i] *= self._size[i]
+            oriented_size[i] = np.ceil(
+                np.linalg.norm(oriented_vectors[i]) /
+                np.linalg.norm(lattice_vectors[i])) * self._size[i]
         oriented_size = [int(x) for x in oriented_size]
-        
+
+        # scale the oriented vectors by the size
+        oriented_vectors *= np.array(self._size)
+
         # place the atoms
         atoms = []
         for x_size in range(oriented_size[0]):
@@ -106,11 +110,15 @@ class Crystal(AtomCollection):
                         for i in range(3):
                             position[i] = (np.linalg.norm(lattice_vectors[i]) *
                                            relative_position[i]) + offset[i]
+                        print("position: {}".format(position))
                         position = np.dot(rotation_matrix, position)
+                        print("position rotated: {}\n".format(position))
 
                         # only add the atom to the collection if it falls within the oriented basis
                         if is_point_in_polyhedron(position, oriented_vectors):
                             atom.position = position
                             atoms.append(atom)
+
         # TODO: apply a rotation to the total collection
+
         return atoms, oriented_vectors

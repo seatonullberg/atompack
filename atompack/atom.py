@@ -28,6 +28,7 @@ class Atom(object):
     def __str__(self) -> str:
         return self.__repr__()
 
+
 class AtomCollection(object):
     """A collection of `Atom`s."""
 
