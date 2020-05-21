@@ -26,6 +26,16 @@ def metric_tensor(a, b, c, alpha, beta, gamma):
                      [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
 
 
+def rotation_matrix_from_vectors(a, b):
+    a /= np.linalg.norm(a)
+    b /= np.linalg.norm(b)
+    v = np.cross(a, b)
+    c = np.dot(a, b)
+    s = np.linalg.norm(v)
+    k = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+    return np.identity(3) + k + k.dot(k) * ((1 - c) / s**2)
+
+
 def _polyhedron_vertices(poly):
     return np.array([
         [0.0, 0.0, 0.0],  # origin

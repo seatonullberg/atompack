@@ -1,5 +1,6 @@
 from atompack.atom import Atom
 from atompack.internal import is_point_in_polyhedron, search_for_atom, metric_tensor
+from atompack.internal import rotation_matrix_from_vectors
 
 import numpy as np
 
@@ -41,3 +42,11 @@ def test_metric_tensor_cubic():
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
     tensor = metric_tensor(a, b, c, alpha, beta, gamma)
     assert np.allclose(tensor, np.array([[4, 0, 0], [0, 4, 0], [0, 0, 4]]))
+
+
+def test_rotation_matrix_from_vectors():
+    a = [2, 3, 2.5]
+    b = [-3, 1, -3.4]
+    r_mat = rotation_matrix_from_vectors(a, b)
+    rot_a = r_mat.dot(a)
+    assert np.allclose(rot_a / np.linalg.norm(rot_a), b / np.linalg.norm(b))
