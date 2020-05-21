@@ -9,6 +9,8 @@ clean:
 
 document:
 	@pdoc --html --force --output-dir $(ATOMPACK_DIR)/docs $(ATOMPACK_DIR)/atompack
+	@mv $(ATOMPACK_DIR)/docs/atompack/* $(ATOMPACK_DIR)/docs
+	@rm -rf $(ATOMPACK_DIR)/docs/atompack
 
 format:
 	@yapf --in-place --recursive --parallel --style="google" $(ATOMPACK_DIR)
