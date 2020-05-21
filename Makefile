@@ -7,6 +7,9 @@ clean:
 	@find . | grep -E "(.cache)" | xargs rm -rf
 	@find . | grep -E "(.mypy_cache)" | xargs rm -rf
 
+document:
+	@pdoc --html --force --output-dir $(ATOMPACK_DIR)/docs $(ATOMPACK_DIR)/atompack
+
 format:
 	@yapf --in-place --recursive --parallel --style="google" $(ATOMPACK_DIR)
 
