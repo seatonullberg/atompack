@@ -7,7 +7,7 @@ class BasePositionError(Exception):
 
 
 class PositionOccupiedError(BasePositionError):
-    """The error raised when a position in an `AtomCollection` is occupied."""
+    """The error raised when a position is occupied but should not be."""
 
     def __init__(self, position, tolerance):
         super().__init__(position, tolerance)
@@ -18,7 +18,7 @@ class PositionOccupiedError(BasePositionError):
 
 
 class PositionUnoccupiedError(BasePositionError):
-    """The error raised when a position in an `AtomCollection` is not occupied."""
+    """The error raised when a position is not occupied but should be."""
 
     def __init__(self, position, tolerance):
         super().__init__(position, tolerance)

@@ -14,6 +14,7 @@ class Atom(object):
     """
 
     def __init__(self, **kwargs) -> None:
+        """Initializes a new `Atom`."""
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -50,26 +51,26 @@ class AtomCollection(object):
         self.basis = basis
 
     def insert(self, atom: Atom, tolerance: float) -> None:
-        """Inserts an `Atom` into the collection if no other atoms exist within the radius of tolerance.
+        """Inserts an `Atom` into the collection if none exist within the radius of tolerance around the given position.
 
         This method requires that all `Atom`s in the collection and the one being inserted have a `position` attribute which is a 3D vector indicating their positions in the collection.
         This attribute is expected to be of type `numpy.ndarray`.
 
         Args:
             atom: The `Atom` to insert into the collection.
-                The `Atom` must have a `position` attribute which is a 3D vector indicating it's position in the collection.
-                This attribute is expected to be of type `numpy.ndarray`.
             tolerance: The radius of tolerance.
 
         Raises:
-            `PositionOccupiedError`: An `Atom` exists within the tolerance radius of the `Atom` being inserted.
+            `atompack.error.PositionOccupiedError`: An `Atom` exists within the tolerance radius of the one being inserted.
 
         Example:
             >>> import numpy as np
             >>> from atompack.atom import Atom, AtomCollection
+            >>>
             >>> collection = AtomCollection()
             >>> new_atom = Atom(position=np.array([1.0, 1.0, 1.0]))
             >>> collection.insert(new_atom, 1e-6)
+            >>>
             >>> assert len(collection) == 1
         """
         res = search_for_atom(self.atoms, atom.position, tolerance)
@@ -89,16 +90,17 @@ class AtomCollection(object):
             tolerance: The radius of tolerance.
 
         Raises:
-            `PositionUnoccupiedError`: No `Atom`s exist within the tolerance radius of the given position.
+            `atompack.error.PositionUnoccupiedError`: No `Atom`s exist within the tolerance radius of the given position.
 
         Example:
             >>> import numpy as np
             >>> from atompack.atom import Atom, AtomCollection
+            >>>
             >>> atoms = [Atom(symbol="H", position=np.array([0.0, 0.0, 0.0]))]
             >>> collection = AtomCollection(atoms=atoms)
-            >>> assert len(collection) == 1
             >>> position = np.array([0.0, 0.0, 0.0])
             >>> atom = collection.remove(position, 1e-6)
+            >>>
             >>> assert atom.symbol == "H"
             >>> assert len(collection) == 0
         """
@@ -121,15 +123,17 @@ class AtomCollection(object):
             tolerance: The radius of tolerance.
 
         Raises:
-            `PositionUnoccupiedError`: No `Atom`s exist within the tolerance radius of the given position.
+            `atompack.error.PositionUnoccupiedError`: No `Atom`s exist within the tolerance radius of the given position.
         
         Example:
             >>> import numpy as np
             >>> from atompack.atom import Atom, AtomCollection
+            >>>
             >>> atoms = [Atom(symbol="H", position=np.array([0.0, 0.0, 0.0]))]
             >>> collection = AtomCollection(atoms=atoms)
             >>> position = np.array([0.0, 0.0, 0.0])
             >>> index = collection.select(position, 1e-6)
+            >>>
             >>> assert collection.atoms[index].symbol == "H"
             >>> assert len(collection) == 1
         """

@@ -27,8 +27,8 @@ def metric_tensor(a, b, c, alpha, beta, gamma):
 
 
 def rotation_matrix_from_vectors(a, b):
-    a /= np.linalg.norm(a)
-    b /= np.linalg.norm(b)
+    a = a / np.linalg.norm(a)
+    b = b / np.linalg.norm(b)
     v = np.cross(a, b)
     c = np.dot(a, b)
     s = np.linalg.norm(v)

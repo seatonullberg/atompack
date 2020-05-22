@@ -8,7 +8,10 @@ clean:
 	@find . | grep -E "(.mypy_cache)" | xargs rm -rf
 
 document:
-	@pdoc --html --force --output-dir $(ATOMPACK_DIR)/docs $(ATOMPACK_DIR)/atompack
+	@pdoc --html --force\
+		--template-dir $(ATOMPACK_DIR)/docs\
+		--output-dir $(ATOMPACK_DIR)/docs\
+		$(ATOMPACK_DIR)/atompack
 	@mv $(ATOMPACK_DIR)/docs/atompack/* $(ATOMPACK_DIR)/docs
 	@rm -rf $(ATOMPACK_DIR)/docs/atompack
 
