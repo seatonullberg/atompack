@@ -1,7 +1,7 @@
+import numpy as np
+
 from atompack.atom import Atom
 from atompack.crystal import Crystal
-
-import numpy as np
 
 
 def test_crystal_cubic_100_unit_cell():

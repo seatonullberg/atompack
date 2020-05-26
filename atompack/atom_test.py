@@ -1,8 +1,8 @@
-from atompack.atom import Atom, AtomCollection
-from atompack.error import PositionOccupiedError, PositionUnoccupiedError
-
 import numpy as np
 import pytest
+
+from atompack.atom import Atom, AtomCollection
+from atompack.error import PositionOccupiedError, PositionUnoccupiedError
 
 
 def test_atom_collection_insert_occupied():

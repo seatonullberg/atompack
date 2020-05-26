@@ -1,9 +1,10 @@
+import copy
+from typing import List, Optional
+
+import numpy as np
+
 from atompack.error import PositionOccupiedError, PositionUnoccupiedError
 from atompack.internal import search_for_atom
-
-import copy
-import numpy as np
-from typing import List, Optional
 
 
 class Atom(object):

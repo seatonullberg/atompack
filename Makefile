@@ -16,6 +16,7 @@ document:
 	@rm -rf $(ATOMPACK_DIR)/docs/atompack
 
 format:
+	@isort $(ATOMPACK_DIR)/atompack/*.py
 	@yapf --in-place --recursive --parallel --style="google" $(ATOMPACK_DIR)
 
 lint:

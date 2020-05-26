@@ -1,11 +1,12 @@
-from atompack.atom import Atom, AtomCollection
-from atompack.internal import metric_tensor, is_point_in_polyhedron, rotation_matrix_from_vectors
-
-import numpy as np
 from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+
+from atompack.atom import Atom, AtomCollection
+from atompack.internal import (is_point_in_polyhedron, metric_tensor,
+                               rotation_matrix_from_vectors)
 
 
 class Crystal(AtomCollection):
@@ -92,7 +93,10 @@ class Crystal(AtomCollection):
             oriented_vectors = r
 
         # generate a rotation matrix to align the natural basis with the new orientation
-        rotation_matrices = [rotation_matrix_from_vectors(lattice_vectors[i], q[i]) for i in range(3)]
+        rotation_matrices = [
+            rotation_matrix_from_vectors(lattice_vectors[i], q[i])
+            for i in range(3)
+        ]
 
         # scale the basis such that it is (just) larger than necessary to accommodate the new orientation
         oriented_size = [1, 1, 1]
@@ -126,10 +130,16 @@ class Crystal(AtomCollection):
                             position[i] = (np.linalg.norm(lattice_vectors[i]) *
                                            relative_position[i]) + offset[i]
                         print("position: {}".format(position))
-                        ax.scatter(position[0], position[1], position[2], color="blue")
+                        ax.scatter(position[0],
+                                   position[1],
+                                   position[2],
+                                   color="blue")
                         for r_mat in rotation_matrices:
                             position = np.dot(r_mat, position)
-                        ax.scatter(position[0], position[1], position[2], color="red")
+                        ax.scatter(position[0],
+                                   position[1],
+                                   position[2],
+                                   color="red")
                         print("position rotated: {}\n".format(position))
 
                         # only add the atom to the collection if it falls within the oriented basis
