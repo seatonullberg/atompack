@@ -115,7 +115,7 @@ class Crystal(AtomCollection):
                         if res is not None:
                             continue
                         # ensure point is in the lattice
-                        if is_point_in_polyhedron(position, oriented_lattice_vectors):
+                        if is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
                             new_atom = copy.deepcopy(atom)
                             new_atom.position = reduced_position
                             atoms.append(new_atom)
