@@ -68,7 +68,7 @@ class Crystal(AtomCollection):
     def cubic(cls) -> 'Crystal':
         pass
 
-    # TODO: fix reduced_position for supercells
+    # TODO: implement behavior for rotation
     def _build(self) -> Tuple[List[Atom], np.ndarray]:
         # process attributes
         if self._unit_cell is None:
@@ -77,6 +77,8 @@ class Crystal(AtomCollection):
             self._orientation = np.identity(3)
         if self._rotation is None:
             self._rotation = np.identity(3)
+        else:
+            raise NotImplementedError()
         if self._size is None:
             self._size = np.array([1, 1, 1])
 
@@ -88,13 +90,11 @@ class Crystal(AtomCollection):
 
         # use QR decomposition to determine an orthogonal representation of the lattice vectors
         q, r = np.linalg.qr(oriented_lattice_vectors)
-        oriented_lattice_vectors = np.abs(r)
+        oriented_lattice_vectors = np.abs(r) * self._size
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
-        final_lattice_vectors = oriented_lattice_vectors * self._size
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)
-        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
 
         # place atoms on the oriented lattice vectors
         atoms = []
@@ -115,8 +115,8 @@ class Crystal(AtomCollection):
                         if res is not None:
                             continue
                         # ensure point is in the lattice
-                        if is_point_in_polyhedron(position, final_lattice_vectors):
+                        if is_point_in_polyhedron(position, oriented_lattice_vectors):
                             new_atom = copy.deepcopy(atom)
                             new_atom.position = reduced_position
                             atoms.append(new_atom)
-        return atoms, final_lattice_vectors
+        return atoms, oriented_lattice_vectors
