@@ -1,12 +1,10 @@
+import copy
 from typing import List, Optional, Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 
 from atompack.atom import Atom, AtomCollection
-from atompack.internal import (is_point_in_polyhedron, metric_tensor,
-                               rotation_matrix_from_vectors)
+from atompack.internal import (is_point_in_polyhedron, metric_tensor, rotation_matrix_from_vectors, search_for_atom)
 
 
 class Crystal(AtomCollection):
@@ -70,103 +68,55 @@ class Crystal(AtomCollection):
     def cubic(cls) -> 'Crystal':
         pass
 
-    # TODO: Fix the `rotation_matrix`.
-    def _build(self) -> None:
-        # generate the basis set in its natural orientation from the metric tensor
-        lattice_vectors = np.sqrt(
-            metric_tensor(self._a, self._b, self._c, self._alpha, self._beta,
-                          self._gamma))
-
-        # process the size argument
-        if self._size is None:
-            self._size = (1, 1, 1)
-
-        # use QR decomposition to find the appropriate basis if another orientation is provided
-        oriented_vectors = np.zeros((3, 3))
+    # TODO: fix reduced_position for supercells
+    def _build(self) -> Tuple[List[Atom], np.ndarray]:
+        # process attributes
+        if self._unit_cell is None:
+            self._unit_cell = [(Atom(), np.zeros((3,)))]
         if self._orientation is None:
-            oriented_vectors = lattice_vectors
-        else:
-            q, r = np.abs(np.linalg.qr(self._orientation))
-            for i in range(3):
-                for j in range(3):
-                    r[i][j] *= np.linalg.norm(lattice_vectors[i])
-            oriented_vectors = r
+            self._orientation = np.identity(3)
+        if self._rotation is None:
+            self._rotation = np.identity(3)
+        if self._size is None:
+            self._size = np.array([1, 1, 1])
 
-        # generate a rotation matrix to align the natural basis with the new orientation
-        rotation_matrices = [
-            rotation_matrix_from_vectors(lattice_vectors[i], q[i])
-            for i in range(3)
-        ]
+        # generate lattice vectors from metric tensor
+        lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
 
-        # scale the basis such that it is (just) larger than necessary to accommodate the new orientation
-        oriented_size = [1, 1, 1]
-        for i in range(3):
-            oriented_size[i] = np.ceil(
-                np.linalg.norm(oriented_vectors[i]) /
-                np.linalg.norm(lattice_vectors[i])) * self._size[i]
-        oriented_size = [int(x) for x in oriented_size]
+        # align lattice vectors with orientation
+        oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
-        # scale the oriented vectors by the size
-        oriented_vectors *= np.array(self._size)
+        # use QR decomposition to determine an orthogonal representation of the lattice vectors
+        q, r = np.linalg.qr(oriented_lattice_vectors)
+        oriented_lattice_vectors = np.abs(r)
+        oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
+        final_lattice_vectors = oriented_lattice_vectors * self._size
 
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
+        # determine the smallest required orthogonal cell
+        minimum_orthogonal_size = np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)
+        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
 
-        # place the atoms
+        # place atoms on the oriented lattice vectors
         atoms = []
-        for x_size in range(oriented_size[0]):
-            for y_size in range(oriented_size[1]):
-                for z_size in range(oriented_size[2]):
-                    offset = np.array([
-                        np.linalg.norm(lattice_vectors[0]) * x_size,
-                        np.linalg.norm(lattice_vectors[1]) * y_size,
-                        np.linalg.norm(lattice_vectors[2]) * z_size,
-                    ])
-
-                    # replicate the unit cell
+        for xsize in range(minimum_orthogonal_size[0]):
+            for ysize in range(minimum_orthogonal_size[1]):
+                for zsize in range(minimum_orthogonal_size[2]):
+                    offset = np.matmul(q, np.array([xsize, ysize, zsize]))
                     for atom, relative_position in self._unit_cell:
-                        position = np.zeros((3,))
+                        # assign cartesian position
+                        position = np.abs(np.matmul(q, relative_position) + offset)
+                        # reduce periodic images
+                        reduced_position = copy.deepcopy(position)
                         for i in range(3):
-                            position[i] = (np.linalg.norm(lattice_vectors[i]) *
-                                           relative_position[i]) + offset[i]
-                        print("position: {}".format(position))
-                        ax.scatter(position[0],
-                                   position[1],
-                                   position[2],
-                                   color="blue")
-                        for r_mat in rotation_matrices:
-                            position = np.dot(r_mat, position)
-                        ax.scatter(position[0],
-                                   position[1],
-                                   position[2],
-                                   color="red")
-                        print("position rotated: {}\n".format(position))
-
-                        # only add the atom to the collection if it falls within the oriented basis
-                        if is_point_in_polyhedron(position, oriented_vectors):
-                            atom.position = position
-                            atoms.append(atom)
-        plt.legend()
-        plt.show("debug.png")
-
-        # TODO: apply a rotation to the total collection
-
-        return atoms, oriented_vectors
-
-
-if __name__ == "__main__":
-    a, b, c = 1, 1, 1
-    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    unit_cell = [(Atom(symbol="Fe"), np.array([0, 0, 0])),
-                 (Atom(symbol="Fe"), np.array([0.5, 0.5, 0.5]))]
-    orientation = np.array([[-1, 1, 0], [0, 0, 1], [1, 1, 0]])
-    #orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    rotation = np.identity(3)
-    size = (1, 1, 1)
-    crystal = Crystal(a, b, c, alpha, beta, gamma, unit_cell, orientation,
-                      rotation, size)
-    assert np.allclose(
-        crystal.basis,
-        np.array([[np.sqrt(2), 0, 0], [0, np.sqrt(2), 0], [0, 0, 1]]))
-    assert len(crystal) == 4
-    assert 1 == 2
+                            diff = position[i] - oriented_lattice_magnitudes[i]
+                            if diff >= -1e-6:
+                                reduced_position[i] = diff
+                        res = search_for_atom(atoms, reduced_position, 1e-6)
+                        if res is not None:
+                            continue
+                        # ensure point is in the lattice
+                        if is_point_in_polyhedron(position, final_lattice_vectors):
+                            new_atom = copy.deepcopy(atom)
+                            new_atom.position = reduced_position
+                            atoms.append(new_atom)
+        return atoms, final_lattice_vectors

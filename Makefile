@@ -17,7 +17,7 @@ document:
 
 format:
 	@isort $(ATOMPACK_DIR)/atompack/*.py
-	@yapf --in-place --recursive --parallel --style="google" $(ATOMPACK_DIR)
+	@yapf -rip --style='{based_on_style: google, column_limit: 120}' $(ATOMPACK_DIR)
 
 lint:
 	@export MYPYPATH=$(MYPY_DIR);\

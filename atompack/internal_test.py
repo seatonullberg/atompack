@@ -1,8 +1,7 @@
 import numpy as np
 
 from atompack.atom import Atom
-from atompack.internal import (is_point_in_polyhedron, metric_tensor,
-                               rotation_matrix_from_vectors, search_for_atom)
+from atompack.internal import (is_point_in_polyhedron, metric_tensor, rotation_matrix_from_vectors, search_for_atom)
 
 
 def test_is_point_in_polyhedron_inside():

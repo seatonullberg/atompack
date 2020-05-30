@@ -34,9 +34,7 @@ class Atom(object):
 class AtomCollection(object):
     """A collection of `Atom`s."""
 
-    def __init__(self,
-                 atoms: Optional[List[Atom]] = None,
-                 basis: Optional[np.ndarray] = None) -> None:
+    def __init__(self, atoms: Optional[List[Atom]] = None, basis: Optional[np.ndarray] = None) -> None:
         """Initializes a new `AtomCollection`.
         
         Args:
@@ -54,9 +52,6 @@ class AtomCollection(object):
     def insert(self, atom: Atom, tolerance: float) -> None:
         """Inserts an `Atom` into the collection if none exist within the radius of tolerance around the given position.
 
-        This method requires that all `Atom`s in the collection and the one being inserted have a `position` attribute which is a 3D vector indicating their positions in the collection.
-        This attribute is expected to be of type `numpy.ndarray`.
-
         Args:
             atom: The `Atom` to insert into the collection.
             tolerance: The radius of tolerance.
@@ -73,6 +68,10 @@ class AtomCollection(object):
             >>> collection.insert(new_atom, 1e-6)
             >>>
             >>> assert len(collection) == 1
+        
+        Note:
+            This method requires that all `Atom`s in the collection and the one being inserted have a `position` attribute which is a 3D vector indicating their positions in the collection.
+            This attribute is expected to be of type `numpy.ndarray`.
         """
         res = search_for_atom(self.atoms, atom.position, tolerance)
         if res is None:
@@ -82,9 +81,6 @@ class AtomCollection(object):
 
     def remove(self, position: np.ndarray, tolerance: float) -> Atom:
         """Removes and returns an `Atom` from the collection if one exists within the radius of tolerance around the given position.
-        
-        This method requires that all `Atom`s in the collection have a `position` attribute which is a 3D vector indicating their positions in the collection.
-        This attribute is expected to be of type `numpy.ndarray`.
 
         Args:
             position: The location of the `Atom` to remove.
@@ -104,6 +100,10 @@ class AtomCollection(object):
             >>>
             >>> assert atom.symbol == "H"
             >>> assert len(collection) == 0
+
+        Note:
+            This method requires that all `Atom`s in the collection and the one being inserted have a `position` attribute which is a 3D vector indicating their positions in the collection.
+            This attribute is expected to be of type `numpy.ndarray`.
         """
         res = search_for_atom(self.atoms, position, tolerance)
         if res is None:
@@ -115,9 +115,6 @@ class AtomCollection(object):
 
     def select(self, position: np.ndarray, tolerance: float) -> int:
         """Returns the index of an `Atom` in the collection if one exists within the radius of tolerance around the given position.
-        
-        This method requires that all `Atom`s in the collection have a `position` attribute which is a 3D vector indicating their positions in the collection.
-        This attribute is expected to be of type `numpy.ndarray`.
 
         Args:
             position: The location of the `Atom` to remove.
@@ -137,6 +134,10 @@ class AtomCollection(object):
             >>>
             >>> assert collection.atoms[index].symbol == "H"
             >>> assert len(collection) == 1
+
+        Note:
+            This method requires that all `Atom`s in the collection and the one being inserted have a `position` attribute which is a 3D vector indicating their positions in the collection.
+            This attribute is expected to be of type `numpy.ndarray`.
         """
         res = search_for_atom(self.atoms, position, tolerance)
         if res is None:
