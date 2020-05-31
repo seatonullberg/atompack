@@ -12,7 +12,7 @@ from atompack.internal import (is_point_in_polyhedron, metric_tensor, search_for
 class Crystal(AtomCollection):
     """A crystalline lattice.
 
-    Parameters:
+    Args:
         a: The \\(a\\) distance lattice parameter.
         b: The \\(b\\) distance lattice parameter.
         c: The \\(c\\) distance lattice parameter.

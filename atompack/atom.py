@@ -32,7 +32,7 @@ class Atom(object):
 class AtomCollection(object):
     """A collection of `Atom`s.
     
-    Parameters:
+    Args:
         atoms: The `Atom`s to insert into the collection.
         basis: A 3x3 matrix defining the collection's coordinate system.
     """
