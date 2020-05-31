@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 
 from atompack.atom import Atom, AtomCollection
+from atompack.error import (InvalidMonoclinicError, InvalidOrthorhombicError, InvalidTriclinicError)
 from atompack.internal import (is_point_in_polyhedron, metric_tensor, rotation_matrix_from_vectors, search_for_atom)
 
 
@@ -41,16 +42,54 @@ class Crystal(AtomCollection):
         super().__init__(atoms=atoms, basis=basis)
 
     @classmethod
-    def triclinic(cls) -> 'Crystal':
-        pass
+    def triclinic(cls,
+                  a: float,
+                  b: float,
+                  c: float,
+                  alpha: float,
+                  beta: float,
+                  gamma: float,
+                  unit_cell: List[Tuple[Atom, np.ndarray]],
+                  orientation: Optional[np.ndarray] = None,
+                  rotation: Optional[np.ndarray] = None,
+                  size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
+        """Initializes a `Crystal` with triclinic constraints."""
+        if a == b or a == c or b == c:
+            raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+        if alpha == beta or alpha == gamma or beta == gamma:
+            raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def monoclinic(cls) -> 'Crystal':
-        pass
+    def monoclinic(cls,
+                   a: float,
+                   b: float,
+                   c: float,
+                   beta: float,
+                   unit_cell: List[Tuple[Atom, np.ndarray]],
+                   orientation: Optional[np.ndarray] = None,
+                   rotation: Optional[np.ndarray] = None,
+                   size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
+        """Initializes a `Crystal` with monoclinic constraints."""
+        alpha, gamma = np.pi / 2, np.pi / 2
+        if beta == np.pi / 2:
+            raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def orthorhombic(cls) -> 'Crystal':
-        pass
+    def orthorhombic(cls,
+                     a: float,
+                     b: float,
+                     c: float,
+                     unit_cell: List[Tuple[Atom, np.ndarray]],
+                     orientation: Optional[np.ndarray] = None,
+                     rotation: Optional[np.ndarray] = None,
+                     size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
+        """Initializes a `Crystal` with orthorhombic constraints."""
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        if a == b or a == c or b == c:
+            raise InvalidOrthorhombicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
     def tetragonal(cls) -> 'Crystal':

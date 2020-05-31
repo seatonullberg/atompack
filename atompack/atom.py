@@ -11,11 +11,9 @@ class Atom(object):
     """A flexible data structure which represents an atom.
     
     All kwargs are dynamically set as attributes.
-    This approach affords the end user flexibility to work with with many incompatible formats.
     """
 
     def __init__(self, **kwargs) -> None:
-        """Initializes a new `Atom`."""
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -32,15 +30,14 @@ class Atom(object):
 
 
 class AtomCollection(object):
-    """A collection of `Atom`s."""
+    """A collection of `Atom`s.
+    
+    Attributes:
+        atoms: The `Atom`s to insert into the collection.
+        basis: A 3x3 matrix defining the collection's coordinate system.
+    """
 
     def __init__(self, atoms: Optional[List[Atom]] = None, basis: Optional[np.ndarray] = None) -> None:
-        """Initializes a new `AtomCollection`.
-        
-        Args:
-            atoms: The `Atom`s to insert into the collection.
-            basis: A 3x3 matrix defining the collection's coordinate system. 
-        """
         self._iter_index = 0
         if atoms is None:
             atoms = []
