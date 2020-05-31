@@ -10,6 +10,12 @@ def search_for_atom(atoms, position, tolerance):
     return index
 
 
+def metric_tensor(a, b, c, alpha, beta, gamma):
+    return np.array([[a * a, a * b * np.cos(gamma), a * c * np.cos(beta)],
+                     [a * b * np.cos(gamma), b * b, b * c * np.cos(alpha)],
+                     [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
+
+
 def is_point_in_polyhedron(point, poly):
     for face, normal in zip(_polyhedron_faces(poly), _polyhedron_normals(poly)):
         p2f = face[0] - point
@@ -17,12 +23,6 @@ def is_point_in_polyhedron(point, poly):
         if d < -1e-6:
             return False
     return True
-
-
-def metric_tensor(a, b, c, alpha, beta, gamma):
-    return np.array([[a * a, a * b * np.cos(gamma), a * c * np.cos(beta)],
-                     [a * b * np.cos(gamma), b * b, b * c * np.cos(alpha)],
-                     [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
 
 
 def _polyhedron_vertices(poly):

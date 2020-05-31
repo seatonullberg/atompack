@@ -31,19 +31,25 @@ from typing import List, Optional, Tuple
 import numpy as np
 
 from atompack.atom import Atom, AtomCollection
-from atompack.internal import (is_point_in_polyhedron, metric_tensor, rotation_matrix_from_vectors, search_for_atom)
+from atompack.error import (InvalidHexagonalError, InvalidMonoclinicError, InvalidOrthorhombicError,
+                            InvalidRhombohedralError, InvalidTetragonalError, InvalidTriclinicError)
+from atompack.internal import (is_point_in_polyhedron, metric_tensor, search_for_atom)
 
 
 class Crystal(AtomCollection):
     &#34;&#34;&#34;A crystalline lattice.
-    
-    Args:
+
+    Parameters:
         a: The \\(a\\) distance lattice parameter.
         b: The \\(b\\) distance lattice parameter.
         c: The \\(c\\) distance lattice parameter.
         alpha: The \\(\\alpha\\) angle lattice parameter.
         beta: The \\(\\beta\\) angle lattice parameter.
         gamma: The \\(\\gamma\\) angle lattice parameter.
+        unit_cell: A template of atoms and their basis sites to be repeated during construction.
+        orientation: The orientation of the basis.
+        rotation: A rotation matrix which rotates the final structure.
+        size: The number of units to repeat in each spatial direction.
     &#34;&#34;&#34;
 
     def __init__(self,
@@ -57,7 +63,6 @@ class Crystal(AtomCollection):
                  orientation: Optional[np.ndarray] = None,
                  rotation: Optional[np.ndarray] = None,
                  size: Optional[Tuple[int, int, int]] = None) -&gt; None:
-        &#34;&#34;&#34;Initializes a new `Crystal`.&#34;&#34;&#34;
         self._a, self._b, self._c = a, b, c
         self._alpha, self._beta, self._gamma = alpha, beta, gamma
         self._unit_cell = unit_cell
@@ -68,34 +73,115 @@ class Crystal(AtomCollection):
         super().__init__(atoms=atoms, basis=basis)
 
     @classmethod
-    def triclinic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def triclinic(cls,
+                  a: float,
+                  b: float,
+                  c: float,
+                  alpha: float,
+                  beta: float,
+                  gamma: float,
+                  unit_cell: List[Tuple[Atom, np.ndarray]],
+                  orientation: Optional[np.ndarray] = None,
+                  rotation: Optional[np.ndarray] = None,
+                  size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with triclinic constraints.&#34;&#34;&#34;
+        if not (a != b != c):
+            raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+        if not (alpha != beta != gamma):
+            raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def monoclinic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def monoclinic(cls,
+                   a: float,
+                   b: float,
+                   c: float,
+                   beta: float,
+                   unit_cell: List[Tuple[Atom, np.ndarray]],
+                   orientation: Optional[np.ndarray] = None,
+                   rotation: Optional[np.ndarray] = None,
+                   size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with monoclinic constraints.&#34;&#34;&#34;
+        alpha, gamma = np.pi / 2, np.pi / 2
+        if not (a != b != c):
+            raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+        if beta == np.pi / 2:
+            raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def orthorhombic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def orthorhombic(cls,
+                     a: float,
+                     b: float,
+                     c: float,
+                     unit_cell: List[Tuple[Atom, np.ndarray]],
+                     orientation: Optional[np.ndarray] = None,
+                     rotation: Optional[np.ndarray] = None,
+                     size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with orthorhombic constraints.&#34;&#34;&#34;
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        if not (a != b != c):
+            raise InvalidOrthorhombicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def tetragonal(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def tetragonal(cls,
+                   a: float,
+                   c: float,
+                   unit_cell: List[Tuple[Atom, np.ndarray]],
+                   orientation: Optional[np.ndarray] = None,
+                   rotation: Optional[np.ndarray] = None,
+                   size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with tetragonal constraints.&#34;&#34;&#34;
+        b = a
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        if a == c:
+            raise InvalidTetragonalError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def rhombohedral(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def rhombohedral(cls,
+                     a: float,
+                     alpha: float,
+                     unit_cell: List[Tuple[Atom, np.ndarray]],
+                     orientation: Optional[np.ndarray] = None,
+                     rotation: Optional[np.ndarray] = None,
+                     size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with rhombohedral constraints.&#34;&#34;&#34;
+        b, c = a, a
+        beta, gamma = alpha, alpha
+        if alpha == np.pi / 2:
+            raise InvalidRhombohedralError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def hexagonal(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def hexagonal(cls,
+                  a: float,
+                  c: float,
+                  unit_cell: List[Tuple[Atom, np.ndarray]],
+                  orientation: Optional[np.ndarray] = None,
+                  rotation: Optional[np.ndarray] = None,
+                  size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with hexagonal constraints.&#34;&#34;&#34;
+        b = a
+        alpha, beta, gamma = np.pi / 2, 120 * np.pi / 180, np.pi / 2
+        if a == c:
+            raise InvalidHexagonalError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def cubic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def cubic(cls,
+              a: float,
+              unit_cell: List[Tuple[Atom, np.ndarray]],
+              orientation: Optional[np.ndarray] = None,
+              rotation: Optional[np.ndarray] = None,
+              size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with cubic constraints.&#34;&#34;&#34;
+        b, c = a, a
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
-    # TODO: fix reduced_position for supercells
+    # TODO: implement behavior for rotation
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # process attributes
         if self._unit_cell is None:
@@ -104,8 +190,10 @@ class Crystal(AtomCollection):
             self._orientation = np.identity(3)
         if self._rotation is None:
             self._rotation = np.identity(3)
+        else:
+            raise NotImplementedError()
         if self._size is None:
-            self._size = np.array([1, 1, 1])
+            self._size = (1, 1, 1)
 
         # generate lattice vectors from metric tensor
         lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
@@ -114,17 +202,16 @@ class Crystal(AtomCollection):
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
         # use QR decomposition to determine an orthogonal representation of the lattice vectors
-        q, r = np.linalg.qr(oriented_lattice_vectors)
-        oriented_lattice_vectors = np.abs(r)
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
+        q, _ = np.linalg.qr(oriented_lattice_vectors)
+        oriented_lattice_vectors = np.abs(r) * np.array(self._size)
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
-        final_lattice_vectors = oriented_lattice_vectors * self._size
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)
-        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
 
         # place atoms on the oriented lattice vectors
-        atoms = []
+        atoms: List[Atom] = []
         for xsize in range(minimum_orthogonal_size[0]):
             for ysize in range(minimum_orthogonal_size[1]):
                 for zsize in range(minimum_orthogonal_size[2]):
@@ -142,11 +229,42 @@ class Crystal(AtomCollection):
                         if res is not None:
                             continue
                         # ensure point is in the lattice
-                        if is_point_in_polyhedron(position, final_lattice_vectors):
+                        if is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
                             new_atom = copy.deepcopy(atom)
                             new_atom.position = reduced_position
                             atoms.append(new_atom)
-        return atoms, final_lattice_vectors</code></pre>
+        return atoms, oriented_lattice_vectors
+
+
+def base_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a base centered unit cell.&#34;&#34;&#34;
+    return [
+        (atoms[0], np.array([0.0, 0.0, 0.0])),
+        (atoms[1], np.array([0.5, 0.5, 0.0])),
+    ]
+
+
+def body_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a body centered unit cell.&#34;&#34;&#34;
+    return [
+        (atoms[0], np.array([0.0, 0.0, 0.0])),
+        (atoms[1], np.array([0.5, 0.5, 0.5])),
+    ]
+
+
+def face_centered_unit_cell(atoms: Tuple[Atom, Atom, Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a face centered unit cell.&#34;&#34;&#34;
+    return [
+        (atoms[0], np.array([0.0, 0.0, 0.0])),
+        (atoms[1], np.array([0.0, 0.5, 0.5])),
+        (atoms[2], np.array([0.5, 0.0, 0.5])),
+        (atoms[3], np.array([0.5, 0.5, 0.0])),
+    ]
+
+
+def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a primitive unit cell.&#34;&#34;&#34;
+    return [(atom, np.array([0.0, 0.0, 0.0]))]</code></pre>
 </details>
 </section>
 <section>
@@ -154,6 +272,76 @@ class Crystal(AtomCollection):
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="atompack.crystal.base_centered_unit_cell"><code class="name flex">
+<span>def <span class="ident">base_centered_unit_cell</span></span>(<span>atoms: Tuple[atompack.atom.Atom, atompack.atom.Atom]) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a base centered unit cell.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def base_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a base centered unit cell.&#34;&#34;&#34;
+    return [
+        (atoms[0], np.array([0.0, 0.0, 0.0])),
+        (atoms[1], np.array([0.5, 0.5, 0.0])),
+    ]</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.body_centered_unit_cell"><code class="name flex">
+<span>def <span class="ident">body_centered_unit_cell</span></span>(<span>atoms: Tuple[atompack.atom.Atom, atompack.atom.Atom]) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a body centered unit cell.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a body centered unit cell.&#34;&#34;&#34;
+    return [
+        (atoms[0], np.array([0.0, 0.0, 0.0])),
+        (atoms[1], np.array([0.5, 0.5, 0.5])),
+    ]</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.face_centered_unit_cell"><code class="name flex">
+<span>def <span class="ident">face_centered_unit_cell</span></span>(<span>atoms: Tuple[atompack.atom.Atom, atompack.atom.Atom, atompack.atom.Atom, atompack.atom.Atom]) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a face centered unit cell.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def face_centered_unit_cell(atoms: Tuple[Atom, Atom, Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a face centered unit cell.&#34;&#34;&#34;
+    return [
+        (atoms[0], np.array([0.0, 0.0, 0.0])),
+        (atoms[1], np.array([0.0, 0.5, 0.5])),
+        (atoms[2], np.array([0.5, 0.0, 0.5])),
+        (atoms[3], np.array([0.5, 0.5, 0.0])),
+    ]</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.primitive_unit_cell"><code class="name flex">
+<span>def <span class="ident">primitive_unit_cell</span></span>(<span>atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a primitive unit cell.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
+    &#34;&#34;&#34;Returns a primitive unit cell.&#34;&#34;&#34;
+    return [(atom, np.array([0.0, 0.0, 0.0]))]</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -164,36 +352,35 @@ class Crystal(AtomCollection):
 </code></dt>
 <dd>
 <div class="desc"><p>A crystalline lattice.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>a</code></strong></dt>
-<dd>The <span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span> distance lattice parameter.</dd>
-<dt><strong><code>b</code></strong></dt>
-<dd>The <span><span class="MathJax_Preview">b</span><script type="math/tex">b</script></span> distance lattice parameter.</dd>
-<dt><strong><code>c</code></strong></dt>
-<dd>The <span><span class="MathJax_Preview">c</span><script type="math/tex">c</script></span> distance lattice parameter.</dd>
-<dt><strong><code>alpha</code></strong></dt>
-<dd>The <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span> angle lattice parameter.</dd>
-<dt><strong><code>beta</code></strong></dt>
-<dd>The <span><span class="MathJax_Preview">\beta</span><script type="math/tex">\beta</script></span> angle lattice parameter.</dd>
-<dt><strong><code>gamma</code></strong></dt>
-<dd>The <span><span class="MathJax_Preview">\gamma</span><script type="math/tex">\gamma</script></span> angle lattice parameter.</dd>
-</dl>
-<p>Initializes a new <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code>.</p></div>
+<h2 id="parameters">Parameters</h2>
+<p>a: The <span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span> distance lattice parameter.
+b: The <span><span class="MathJax_Preview">b</span><script type="math/tex">b</script></span> distance lattice parameter.
+c: The <span><span class="MathJax_Preview">c</span><script type="math/tex">c</script></span> distance lattice parameter.
+alpha: The <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span> angle lattice parameter.
+beta: The <span><span class="MathJax_Preview">\beta</span><script type="math/tex">\beta</script></span> angle lattice parameter.
+gamma: The <span><span class="MathJax_Preview">\gamma</span><script type="math/tex">\gamma</script></span> angle lattice parameter.
+unit_cell: A template of atoms and their basis sites to be repeated during construction.
+orientation: The orientation of the basis.
+rotation: A rotation matrix which rotates the final structure.
+size: The number of units to repeat in each spatial direction.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Crystal(AtomCollection):
     &#34;&#34;&#34;A crystalline lattice.
-    
-    Args:
+
+    Parameters:
         a: The \\(a\\) distance lattice parameter.
         b: The \\(b\\) distance lattice parameter.
         c: The \\(c\\) distance lattice parameter.
         alpha: The \\(\\alpha\\) angle lattice parameter.
         beta: The \\(\\beta\\) angle lattice parameter.
         gamma: The \\(\\gamma\\) angle lattice parameter.
+        unit_cell: A template of atoms and their basis sites to be repeated during construction.
+        orientation: The orientation of the basis.
+        rotation: A rotation matrix which rotates the final structure.
+        size: The number of units to repeat in each spatial direction.
     &#34;&#34;&#34;
 
     def __init__(self,
@@ -207,7 +394,6 @@ class Crystal(AtomCollection):
                  orientation: Optional[np.ndarray] = None,
                  rotation: Optional[np.ndarray] = None,
                  size: Optional[Tuple[int, int, int]] = None) -&gt; None:
-        &#34;&#34;&#34;Initializes a new `Crystal`.&#34;&#34;&#34;
         self._a, self._b, self._c = a, b, c
         self._alpha, self._beta, self._gamma = alpha, beta, gamma
         self._unit_cell = unit_cell
@@ -218,34 +404,115 @@ class Crystal(AtomCollection):
         super().__init__(atoms=atoms, basis=basis)
 
     @classmethod
-    def triclinic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def triclinic(cls,
+                  a: float,
+                  b: float,
+                  c: float,
+                  alpha: float,
+                  beta: float,
+                  gamma: float,
+                  unit_cell: List[Tuple[Atom, np.ndarray]],
+                  orientation: Optional[np.ndarray] = None,
+                  rotation: Optional[np.ndarray] = None,
+                  size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with triclinic constraints.&#34;&#34;&#34;
+        if not (a != b != c):
+            raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+        if not (alpha != beta != gamma):
+            raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def monoclinic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def monoclinic(cls,
+                   a: float,
+                   b: float,
+                   c: float,
+                   beta: float,
+                   unit_cell: List[Tuple[Atom, np.ndarray]],
+                   orientation: Optional[np.ndarray] = None,
+                   rotation: Optional[np.ndarray] = None,
+                   size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with monoclinic constraints.&#34;&#34;&#34;
+        alpha, gamma = np.pi / 2, np.pi / 2
+        if not (a != b != c):
+            raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+        if beta == np.pi / 2:
+            raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def orthorhombic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def orthorhombic(cls,
+                     a: float,
+                     b: float,
+                     c: float,
+                     unit_cell: List[Tuple[Atom, np.ndarray]],
+                     orientation: Optional[np.ndarray] = None,
+                     rotation: Optional[np.ndarray] = None,
+                     size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with orthorhombic constraints.&#34;&#34;&#34;
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        if not (a != b != c):
+            raise InvalidOrthorhombicError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def tetragonal(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def tetragonal(cls,
+                   a: float,
+                   c: float,
+                   unit_cell: List[Tuple[Atom, np.ndarray]],
+                   orientation: Optional[np.ndarray] = None,
+                   rotation: Optional[np.ndarray] = None,
+                   size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with tetragonal constraints.&#34;&#34;&#34;
+        b = a
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        if a == c:
+            raise InvalidTetragonalError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def rhombohedral(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def rhombohedral(cls,
+                     a: float,
+                     alpha: float,
+                     unit_cell: List[Tuple[Atom, np.ndarray]],
+                     orientation: Optional[np.ndarray] = None,
+                     rotation: Optional[np.ndarray] = None,
+                     size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with rhombohedral constraints.&#34;&#34;&#34;
+        b, c = a, a
+        beta, gamma = alpha, alpha
+        if alpha == np.pi / 2:
+            raise InvalidRhombohedralError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def hexagonal(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def hexagonal(cls,
+                  a: float,
+                  c: float,
+                  unit_cell: List[Tuple[Atom, np.ndarray]],
+                  orientation: Optional[np.ndarray] = None,
+                  rotation: Optional[np.ndarray] = None,
+                  size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with hexagonal constraints.&#34;&#34;&#34;
+        b = a
+        alpha, beta, gamma = np.pi / 2, 120 * np.pi / 180, np.pi / 2
+        if a == c:
+            raise InvalidHexagonalError(a, b, c, alpha, beta, gamma)
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
     @classmethod
-    def cubic(cls) -&gt; &#39;Crystal&#39;:
-        pass
+    def cubic(cls,
+              a: float,
+              unit_cell: List[Tuple[Atom, np.ndarray]],
+              orientation: Optional[np.ndarray] = None,
+              rotation: Optional[np.ndarray] = None,
+              size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+        &#34;&#34;&#34;Initializes a `Crystal` with cubic constraints.&#34;&#34;&#34;
+        b, c = a, a
+        alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+        return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
-    # TODO: fix reduced_position for supercells
+    # TODO: implement behavior for rotation
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # process attributes
         if self._unit_cell is None:
@@ -254,8 +521,10 @@ class Crystal(AtomCollection):
             self._orientation = np.identity(3)
         if self._rotation is None:
             self._rotation = np.identity(3)
+        else:
+            raise NotImplementedError()
         if self._size is None:
-            self._size = np.array([1, 1, 1])
+            self._size = (1, 1, 1)
 
         # generate lattice vectors from metric tensor
         lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
@@ -264,17 +533,16 @@ class Crystal(AtomCollection):
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
         # use QR decomposition to determine an orthogonal representation of the lattice vectors
-        q, r = np.linalg.qr(oriented_lattice_vectors)
-        oriented_lattice_vectors = np.abs(r)
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
+        q, _ = np.linalg.qr(oriented_lattice_vectors)
+        oriented_lattice_vectors = np.abs(r) * np.array(self._size)
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
-        final_lattice_vectors = oriented_lattice_vectors * self._size
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)
-        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
 
         # place atoms on the oriented lattice vectors
-        atoms = []
+        atoms: List[Atom] = []
         for xsize in range(minimum_orthogonal_size[0]):
             for ysize in range(minimum_orthogonal_size[1]):
                 for zsize in range(minimum_orthogonal_size[2]):
@@ -292,11 +560,11 @@ class Crystal(AtomCollection):
                         if res is not None:
                             continue
                         # ensure point is in the lattice
-                        if is_point_in_polyhedron(position, final_lattice_vectors):
+                        if is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
                             new_atom = copy.deepcopy(atom)
                             new_atom.position = reduced_position
                             atoms.append(new_atom)
-        return atoms, final_lattice_vectors</code></pre>
+        return atoms, oriented_lattice_vectors</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -305,101 +573,182 @@ class Crystal(AtomCollection):
 <h3>Static methods</h3>
 <dl>
 <dt id="atompack.crystal.Crystal.cubic"><code class="name flex">
-<span>def <span class="ident">cubic</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">cubic</span></span>(<span>a: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with cubic constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def cubic(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def cubic(cls,
+          a: float,
+          unit_cell: List[Tuple[Atom, np.ndarray]],
+          orientation: Optional[np.ndarray] = None,
+          rotation: Optional[np.ndarray] = None,
+          size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with cubic constraints.&#34;&#34;&#34;
+    b, c = a, a
+    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.Crystal.hexagonal"><code class="name flex">
-<span>def <span class="ident">hexagonal</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">hexagonal</span></span>(<span>a: float, c: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with hexagonal constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def hexagonal(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def hexagonal(cls,
+              a: float,
+              c: float,
+              unit_cell: List[Tuple[Atom, np.ndarray]],
+              orientation: Optional[np.ndarray] = None,
+              rotation: Optional[np.ndarray] = None,
+              size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with hexagonal constraints.&#34;&#34;&#34;
+    b = a
+    alpha, beta, gamma = np.pi / 2, 120 * np.pi / 180, np.pi / 2
+    if a == c:
+        raise InvalidHexagonalError(a, b, c, alpha, beta, gamma)
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.Crystal.monoclinic"><code class="name flex">
-<span>def <span class="ident">monoclinic</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">monoclinic</span></span>(<span>a: float, b: float, c: float, beta: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with monoclinic constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def monoclinic(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def monoclinic(cls,
+               a: float,
+               b: float,
+               c: float,
+               beta: float,
+               unit_cell: List[Tuple[Atom, np.ndarray]],
+               orientation: Optional[np.ndarray] = None,
+               rotation: Optional[np.ndarray] = None,
+               size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with monoclinic constraints.&#34;&#34;&#34;
+    alpha, gamma = np.pi / 2, np.pi / 2
+    if not (a != b != c):
+        raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+    if beta == np.pi / 2:
+        raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.Crystal.orthorhombic"><code class="name flex">
-<span>def <span class="ident">orthorhombic</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">orthorhombic</span></span>(<span>a: float, b: float, c: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with orthorhombic constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def orthorhombic(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def orthorhombic(cls,
+                 a: float,
+                 b: float,
+                 c: float,
+                 unit_cell: List[Tuple[Atom, np.ndarray]],
+                 orientation: Optional[np.ndarray] = None,
+                 rotation: Optional[np.ndarray] = None,
+                 size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with orthorhombic constraints.&#34;&#34;&#34;
+    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+    if not (a != b != c):
+        raise InvalidOrthorhombicError(a, b, c, alpha, beta, gamma)
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.Crystal.rhombohedral"><code class="name flex">
-<span>def <span class="ident">rhombohedral</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">rhombohedral</span></span>(<span>a: float, alpha: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with rhombohedral constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def rhombohedral(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def rhombohedral(cls,
+                 a: float,
+                 alpha: float,
+                 unit_cell: List[Tuple[Atom, np.ndarray]],
+                 orientation: Optional[np.ndarray] = None,
+                 rotation: Optional[np.ndarray] = None,
+                 size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with rhombohedral constraints.&#34;&#34;&#34;
+    b, c = a, a
+    beta, gamma = alpha, alpha
+    if alpha == np.pi / 2:
+        raise InvalidRhombohedralError(a, b, c, alpha, beta, gamma)
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.Crystal.tetragonal"><code class="name flex">
-<span>def <span class="ident">tetragonal</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">tetragonal</span></span>(<span>a: float, c: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with tetragonal constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def tetragonal(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def tetragonal(cls,
+               a: float,
+               c: float,
+               unit_cell: List[Tuple[Atom, np.ndarray]],
+               orientation: Optional[np.ndarray] = None,
+               rotation: Optional[np.ndarray] = None,
+               size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with tetragonal constraints.&#34;&#34;&#34;
+    b = a
+    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
+    if a == c:
+        raise InvalidTetragonalError(a, b, c, alpha, beta, gamma)
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.Crystal.triclinic"><code class="name flex">
-<span>def <span class="ident">triclinic</span></span>(<span>) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<span>def <span class="ident">triclinic</span></span>(<span>a: float, b: float, c: float, alpha: float, beta: float, gamma: float, unit_cell: List[Tuple[atompack.atom.Atom, numpy.ndarray]], orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, size: Union[Tuple[int, int, int], NoneType] = None) -> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initializes a <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> with triclinic constraints.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def triclinic(cls) -&gt; &#39;Crystal&#39;:
-    pass</code></pre>
+def triclinic(cls,
+              a: float,
+              b: float,
+              c: float,
+              alpha: float,
+              beta: float,
+              gamma: float,
+              unit_cell: List[Tuple[Atom, np.ndarray]],
+              orientation: Optional[np.ndarray] = None,
+              rotation: Optional[np.ndarray] = None,
+              size: Optional[Tuple[int, int, int]] = None) -&gt; &#39;Crystal&#39;:
+    &#34;&#34;&#34;Initializes a `Crystal` with triclinic constraints.&#34;&#34;&#34;
+    if not (a != b != c):
+        raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+    if not (alpha != beta != gamma):
+        raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
+    return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)</code></pre>
 </details>
 </dd>
 </dl>
@@ -426,6 +775,14 @@ def triclinic(cls) -&gt; &#39;Crystal&#39;:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="atompack" href="index.html">atompack</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="atompack.crystal.base_centered_unit_cell" href="#atompack.crystal.base_centered_unit_cell">base_centered_unit_cell</a></code></li>
+<li><code><a title="atompack.crystal.body_centered_unit_cell" href="#atompack.crystal.body_centered_unit_cell">body_centered_unit_cell</a></code></li>
+<li><code><a title="atompack.crystal.face_centered_unit_cell" href="#atompack.crystal.face_centered_unit_cell">face_centered_unit_cell</a></code></li>
+<li><code><a title="atompack.crystal.primitive_unit_cell" href="#atompack.crystal.primitive_unit_cell">primitive_unit_cell</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

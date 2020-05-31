@@ -38,11 +38,9 @@ class Atom(object):
     &#34;&#34;&#34;A flexible data structure which represents an atom.
     
     All kwargs are dynamically set as attributes.
-    This approach affords the end user flexibility to work with with many incompatible formats.
     &#34;&#34;&#34;
 
     def __init__(self, **kwargs) -&gt; None:
-        &#34;&#34;&#34;Initializes a new `Atom`.&#34;&#34;&#34;
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -59,15 +57,14 @@ class Atom(object):
 
 
 class AtomCollection(object):
-    &#34;&#34;&#34;A collection of `Atom`s.&#34;&#34;&#34;
+    &#34;&#34;&#34;A collection of `Atom`s.
+    
+    Parameters:
+        atoms: The `Atom`s to insert into the collection.
+        basis: A 3x3 matrix defining the collection&#39;s coordinate system.
+    &#34;&#34;&#34;
 
     def __init__(self, atoms: Optional[List[Atom]] = None, basis: Optional[np.ndarray] = None) -&gt; None:
-        &#34;&#34;&#34;Initializes a new `AtomCollection`.
-        
-        Args:
-            atoms: The `Atom`s to insert into the collection.
-            basis: A 3x3 matrix defining the collection&#39;s coordinate system. 
-        &#34;&#34;&#34;
         self._iter_index = 0
         if atoms is None:
             atoms = []
@@ -200,9 +197,7 @@ class AtomCollection(object):
 </code></dt>
 <dd>
 <div class="desc"><p>A flexible data structure which represents an atom.</p>
-<p>All kwargs are dynamically set as attributes.
-This approach affords the end user flexibility to work with with many incompatible formats.</p>
-<p>Initializes a new <code><a title="atompack.atom.Atom" href="#atompack.atom.Atom">Atom</a></code>.</p></div>
+<p>All kwargs are dynamically set as attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -211,11 +206,9 @@ This approach affords the end user flexibility to work with with many incompatib
     &#34;&#34;&#34;A flexible data structure which represents an atom.
     
     All kwargs are dynamically set as attributes.
-    This approach affords the end user flexibility to work with with many incompatible formats.
     &#34;&#34;&#34;
 
     def __init__(self, **kwargs) -&gt; None:
-        &#34;&#34;&#34;Initializes a new `Atom`.&#34;&#34;&#34;
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -237,28 +230,22 @@ This approach affords the end user flexibility to work with with many incompatib
 </code></dt>
 <dd>
 <div class="desc"><p>A collection of <code><a title="atompack.atom.Atom" href="#atompack.atom.Atom">Atom</a></code>s.</p>
-<p>Initializes a new <code><a title="atompack.atom.AtomCollection" href="#atompack.atom.AtomCollection">AtomCollection</a></code>.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>atoms</code></strong></dt>
-<dd>The <code><a title="atompack.atom.Atom" href="#atompack.atom.Atom">Atom</a></code>s to insert into the collection.</dd>
-<dt><strong><code>basis</code></strong></dt>
-<dd>A 3x3 matrix defining the collection's coordinate system.</dd>
-</dl></div>
+<h2 id="parameters">Parameters</h2>
+<p>atoms: The <code><a title="atompack.atom.Atom" href="#atompack.atom.Atom">Atom</a></code>s to insert into the collection.
+basis: A 3x3 matrix defining the collection's coordinate system.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AtomCollection(object):
-    &#34;&#34;&#34;A collection of `Atom`s.&#34;&#34;&#34;
+    &#34;&#34;&#34;A collection of `Atom`s.
+    
+    Parameters:
+        atoms: The `Atom`s to insert into the collection.
+        basis: A 3x3 matrix defining the collection&#39;s coordinate system.
+    &#34;&#34;&#34;
 
     def __init__(self, atoms: Optional[List[Atom]] = None, basis: Optional[np.ndarray] = None) -&gt; None:
-        &#34;&#34;&#34;Initializes a new `AtomCollection`.
-        
-        Args:
-            atoms: The `Atom`s to insert into the collection.
-            basis: A 3x3 matrix defining the collection&#39;s coordinate system. 
-        &#34;&#34;&#34;
         self._iter_index = 0
         if atoms is None:
             atoms = []

@@ -12,13 +12,17 @@ from atompack.internal import (is_point_in_polyhedron, metric_tensor, search_for
 class Crystal(AtomCollection):
     """A crystalline lattice.
 
-    Args:
+    Parameters:
         a: The \\(a\\) distance lattice parameter.
         b: The \\(b\\) distance lattice parameter.
         c: The \\(c\\) distance lattice parameter.
         alpha: The \\(\\alpha\\) angle lattice parameter.
         beta: The \\(\\beta\\) angle lattice parameter.
         gamma: The \\(\\gamma\\) angle lattice parameter.
+        unit_cell: A template of atoms and their basis sites to be repeated during construction.
+        orientation: The orientation of the basis.
+        rotation: A rotation matrix which rotates the final structure.
+        size: The number of units to repeat in each spatial direction.
     """
 
     def __init__(self,
@@ -32,7 +36,6 @@ class Crystal(AtomCollection):
                  orientation: Optional[np.ndarray] = None,
                  rotation: Optional[np.ndarray] = None,
                  size: Optional[Tuple[int, int, int]] = None) -> None:
-        """Initializes a new `Crystal`."""
         self._a, self._b, self._c = a, b, c
         self._alpha, self._beta, self._gamma = alpha, beta, gamma
         self._unit_cell = unit_cell
@@ -234,4 +237,4 @@ def face_centered_unit_cell(atoms: Tuple[Atom, Atom, Atom, Atom]) -> List[Tuple[
 
 def primitive_unit_cell(atom: Atom) -> List[Tuple[Atom, np.ndarray]]:
     """Returns a primitive unit cell."""
-    return [atom, np.array([0.0, 0.0, 0.0])]
+    return [(atom, np.array([0.0, 0.0, 0.0]))]

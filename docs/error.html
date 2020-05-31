@@ -26,7 +26,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BasePositionError(Exception):
-    &#34;&#34;&#34;The base class for errors which deal with positions.&#34;&#34;&#34;
+    &#34;&#34;&#34;The base class for errors which handle positions.&#34;&#34;&#34;
 
     def __init__(self, position, tolerance):
         self.position = position
@@ -52,7 +52,79 @@ class PositionUnoccupiedError(BasePositionError):
 
     def __str__(self):
         return &#34;There are no `Atom`s within the tolerance radius &#39;{}&#39; of position &#39;{}&#39;.&#34;.format(
-            self.tolerance, self.position)</code></pre>
+            self.tolerance, self.position)
+
+
+class BaseCrystallographyError(Exception):
+    &#34;&#34;&#34;The base class for errors which handle crystallography.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        self.a, self.b, self.c = a, b, c
+        self.alpha, self.beta, self.gamma = alpha, beta, gamma
+        self._str = &#34;Lattice parameters: a = {}, b = {}, c = {}, alpha = {}, beta = {}, gamma = {}&#34;.format(
+            a, b, c, alpha, beta, gamma)
+
+
+class InvalidTriclinicError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the triclinic constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Triclinic constraint: a != b != c and alpha != beta != gamma\n{}&#34;.format(self._str)
+
+
+class InvalidMonoclinicError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the monoclinic constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Monoclinic constraint: a != b != c and alpha == gamma == PI / 2 and beta != PI / 2\n{}&#34;.format(
+            self._str)
+
+
+class InvalidOrthorhombicError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the orthorhombic constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Orthorhomboc constraint: a != b != c and alpha == beta == gamma == PI / 2\n{}&#34;.format(self._str)
+
+
+class InvalidTetragonalError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the tetragonal constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Tetragonal constraint: a == b != c and alpha == beta == gamma == PI / 2\n{}&#34;.format(self._str)
+
+
+class InvalidRhombohedralError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the rhombohedral constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Rhombohedral constraint: a == b == c and alpha == beta == gamma != PI / 2\n{}&#34;.format(self._str)
+
+
+class InvalidHexagonalError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the hexagonal constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Rhombohedral constraint: a == b != c and alpha == gamma == PI / 2, and beta == 120 * PI / 180\n{}&#34;.format(
+            self._str)</code></pre>
 </details>
 </section>
 <section>
@@ -64,18 +136,52 @@ class PositionUnoccupiedError(BasePositionError):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="atompack.error.BaseCrystallographyError"><code class="flex name class">
+<span>class <span class="ident">BaseCrystallographyError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class for errors which handle crystallography.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseCrystallographyError(Exception):
+    &#34;&#34;&#34;The base class for errors which handle crystallography.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        self.a, self.b, self.c = a, b, c
+        self.alpha, self.beta, self.gamma = alpha, beta, gamma
+        self._str = &#34;Lattice parameters: a = {}, b = {}, c = {}, alpha = {}, beta = {}, gamma = {}&#34;.format(
+            a, b, c, alpha, beta, gamma)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="atompack.error.InvalidHexagonalError" href="#atompack.error.InvalidHexagonalError">InvalidHexagonalError</a></li>
+<li><a title="atompack.error.InvalidMonoclinicError" href="#atompack.error.InvalidMonoclinicError">InvalidMonoclinicError</a></li>
+<li><a title="atompack.error.InvalidOrthorhombicError" href="#atompack.error.InvalidOrthorhombicError">InvalidOrthorhombicError</a></li>
+<li><a title="atompack.error.InvalidRhombohedralError" href="#atompack.error.InvalidRhombohedralError">InvalidRhombohedralError</a></li>
+<li><a title="atompack.error.InvalidTetragonalError" href="#atompack.error.InvalidTetragonalError">InvalidTetragonalError</a></li>
+<li><a title="atompack.error.InvalidTriclinicError" href="#atompack.error.InvalidTriclinicError">InvalidTriclinicError</a></li>
+</ul>
+</dd>
 <dt id="atompack.error.BasePositionError"><code class="flex name class">
 <span>class <span class="ident">BasePositionError</span></span>
 <span>(</span><span>position, tolerance)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>The base class for errors which deal with positions.</p></div>
+<div class="desc"><p>The base class for errors which handle positions.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BasePositionError(Exception):
-    &#34;&#34;&#34;The base class for errors which deal with positions.&#34;&#34;&#34;
+    &#34;&#34;&#34;The base class for errors which handle positions.&#34;&#34;&#34;
 
     def __init__(self, position, tolerance):
         self.position = position
@@ -90,6 +196,164 @@ class PositionUnoccupiedError(BasePositionError):
 <ul class="hlist">
 <li><a title="atompack.error.PositionOccupiedError" href="#atompack.error.PositionOccupiedError">PositionOccupiedError</a></li>
 <li><a title="atompack.error.PositionUnoccupiedError" href="#atompack.error.PositionUnoccupiedError">PositionUnoccupiedError</a></li>
+</ul>
+</dd>
+<dt id="atompack.error.InvalidHexagonalError"><code class="flex name class">
+<span>class <span class="ident">InvalidHexagonalError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The error raised when a set of lattice parameters do not satisfy the hexagonal constraint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidHexagonalError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the hexagonal constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Rhombohedral constraint: a == b != c and alpha == gamma == PI / 2, and beta == 120 * PI / 180\n{}&#34;.format(
+            self._str)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="atompack.error.InvalidMonoclinicError"><code class="flex name class">
+<span>class <span class="ident">InvalidMonoclinicError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The error raised when a set of lattice parameters do not satisfy the monoclinic constraint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidMonoclinicError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the monoclinic constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Monoclinic constraint: a != b != c and alpha == gamma == PI / 2 and beta != PI / 2\n{}&#34;.format(
+            self._str)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="atompack.error.InvalidOrthorhombicError"><code class="flex name class">
+<span>class <span class="ident">InvalidOrthorhombicError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The error raised when a set of lattice parameters do not satisfy the orthorhombic constraint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidOrthorhombicError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the orthorhombic constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Orthorhomboc constraint: a != b != c and alpha == beta == gamma == PI / 2\n{}&#34;.format(self._str)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="atompack.error.InvalidRhombohedralError"><code class="flex name class">
+<span>class <span class="ident">InvalidRhombohedralError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The error raised when a set of lattice parameters do not satisfy the rhombohedral constraint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidRhombohedralError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the rhombohedral constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Rhombohedral constraint: a == b == c and alpha == beta == gamma != PI / 2\n{}&#34;.format(self._str)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="atompack.error.InvalidTetragonalError"><code class="flex name class">
+<span>class <span class="ident">InvalidTetragonalError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The error raised when a set of lattice parameters do not satisfy the tetragonal constraint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidTetragonalError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the tetragonal constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Tetragonal constraint: a == b != c and alpha == beta == gamma == PI / 2\n{}&#34;.format(self._str)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="atompack.error.InvalidTriclinicError"><code class="flex name class">
+<span>class <span class="ident">InvalidTriclinicError</span></span>
+<span>(</span><span>a, b, c, alpha, beta, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The error raised when a set of lattice parameters do not satisfy the triclinic constraint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidTriclinicError(BaseCrystallographyError):
+    &#34;&#34;&#34;The error raised when a set of lattice parameters do not satisfy the triclinic constraint.&#34;&#34;&#34;
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return &#34;Triclinic constraint: a != b != c and alpha != beta != gamma\n{}&#34;.format(self._str)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
 </ul>
 </dd>
 <dt id="atompack.error.PositionOccupiedError"><code class="flex name class">
@@ -163,7 +427,28 @@ class PositionUnoccupiedError(BasePositionError):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="atompack.error.BaseCrystallographyError" href="#atompack.error.BaseCrystallographyError">BaseCrystallographyError</a></code></h4>
+</li>
+<li>
 <h4><code><a title="atompack.error.BasePositionError" href="#atompack.error.BasePositionError">BasePositionError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.error.InvalidHexagonalError" href="#atompack.error.InvalidHexagonalError">InvalidHexagonalError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.error.InvalidMonoclinicError" href="#atompack.error.InvalidMonoclinicError">InvalidMonoclinicError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.error.InvalidOrthorhombicError" href="#atompack.error.InvalidOrthorhombicError">InvalidOrthorhombicError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.error.InvalidRhombohedralError" href="#atompack.error.InvalidRhombohedralError">InvalidRhombohedralError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.error.InvalidTetragonalError" href="#atompack.error.InvalidTetragonalError">InvalidTetragonalError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.error.InvalidTriclinicError" href="#atompack.error.InvalidTriclinicError">InvalidTriclinicError</a></code></h4>
 </li>
 <li>
 <h4><code><a title="atompack.error.PositionOccupiedError" href="#atompack.error.PositionOccupiedError">PositionOccupiedError</a></code></h4>
