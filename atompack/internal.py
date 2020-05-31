@@ -10,7 +10,6 @@ def search_for_atom(atoms, position, tolerance):
     return index
 
 
-# TODO: Determine optimal cutoff
 def is_point_in_polyhedron(point, poly):
     for face, normal in zip(_polyhedron_faces(poly), _polyhedron_normals(poly)):
         p2f = face[0] - point
@@ -24,16 +23,6 @@ def metric_tensor(a, b, c, alpha, beta, gamma):
     return np.array([[a * a, a * b * np.cos(gamma), a * c * np.cos(beta)],
                      [a * b * np.cos(gamma), b * b, b * c * np.cos(alpha)],
                      [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
-
-
-def rotation_matrix_from_vectors(a, b):
-    a = a / np.linalg.norm(a)
-    b = b / np.linalg.norm(b)
-    v = np.cross(a, b)
-    c = np.dot(a, b)
-    s = np.linalg.norm(v)
-    k = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
-    return np.identity(3) + k + k.dot(k) * ((1 - c) / s**2)
 
 
 def _polyhedron_vertices(poly):

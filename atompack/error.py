@@ -39,7 +39,7 @@ class BaseCrystallographyError(Exception):
 
 
 class InvalidTriclinicError(BaseCrystallographyError):
-    """The error raised when a set of lattice parameters do not match the triclinic constraint."""
+    """The error raised when a set of lattice parameters do not satisfy the triclinic constraint."""
 
     def __init__(self, a, b, c, alpha, beta, gamma):
         super().__init__(a, b, c, alpha, beta, gamma)
@@ -49,7 +49,7 @@ class InvalidTriclinicError(BaseCrystallographyError):
 
 
 class InvalidMonoclinicError(BaseCrystallographyError):
-    """The error raised when a set of lattice parameters do not match the monoclinic constraint."""
+    """The error raised when a set of lattice parameters do not satisfy the monoclinic constraint."""
 
     def __init__(self, a, b, c, alpha, beta, gamma):
         super().__init__(a, b, c, alpha, beta, gamma)
@@ -60,10 +60,41 @@ class InvalidMonoclinicError(BaseCrystallographyError):
 
 
 class InvalidOrthorhombicError(BaseCrystallographyError):
-    """The error raised when a set of lattice parameters do not match the orthorhombic constraint."""
+    """The error raised when a set of lattice parameters do not satisfy the orthorhombic constraint."""
 
     def __init__(self, a, b, c, alpha, beta, gamma):
         super().__init__(a, b, c, alpha, beta, gamma)
 
     def __str__(self):
         return "Orthorhomboc constraint: a != b != c and alpha == beta == gamma == PI / 2\n{}".format(self._str)
+
+
+class InvalidTetragonalError(BaseCrystallographyError):
+    """The error raised when a set of lattice parameters do not satisfy the tetragonal constraint."""
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return "Tetragonal constraint: a == b != c and alpha == beta == gamma == PI / 2\n{}".format(self._str)
+
+
+class InvalidRhombohedralError(BaseCrystallographyError):
+    """The error raised when a set of lattice parameters do not satisfy the rhombohedral constraint."""
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return "Rhombohedral constraint: a == b == c and alpha == beta == gamma != PI / 2\n{}".format(self._str)
+
+
+class InvalidHexagonalError(BaseCrystallographyError):
+    """The error raised when a set of lattice parameters do not satisfy the hexagonal constraint."""
+
+    def __init__(self, a, b, c, alpha, beta, gamma):
+        super().__init__(a, b, c, alpha, beta, gamma)
+
+    def __str__(self):
+        return "Rhombohedral constraint: a == b != c and alpha == gamma == PI / 2, and beta == 120 * PI / 180\n{}".format(
+            self._str)
