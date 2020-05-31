@@ -89,12 +89,13 @@ class Crystal(AtomCollection):
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
         # use QR decomposition to determine an orthogonal representation of the lattice vectors
-        q, r = np.linalg.qr(oriented_lattice_vectors)
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
+        q, _ = np.linalg.qr(oriented_lattice_vectors)
         oriented_lattice_vectors = np.abs(r) * self._size
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * self._size).astype(int)
 
         # place atoms on the oriented lattice vectors
         atoms = []
