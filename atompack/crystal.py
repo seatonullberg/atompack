@@ -154,7 +154,6 @@ class Crystal(AtomCollection):
         alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
         return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
-    # TODO: implement behavior for rotation
     def _build(self) -> Tuple[List[Atom], np.ndarray]:
         # process attributes
         if self._unit_cell is None:
@@ -175,37 +174,55 @@ class Crystal(AtomCollection):
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
         # use QR decomposition to determine an orthogonal representation of the lattice vectors
-        _, r = np.linalg.qr(oriented_lattice_vectors.T)
-        q, _ = np.linalg.qr(oriented_lattice_vectors)
+        q, r = np.linalg.qr(oriented_lattice_vectors.T)
+        #q, _r = np.linalg.qr(oriented_lattice_vectors)
+
         oriented_lattice_vectors = np.abs(r) * np.array(self._size)
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
+        # TODO: determine optimal scaling factor
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int) * 2
 
         # place atoms on the oriented lattice vectors
         atoms: List[Atom] = []
         for xsize in range(minimum_orthogonal_size[0]):
             for ysize in range(minimum_orthogonal_size[1]):
                 for zsize in range(minimum_orthogonal_size[2]):
-                    offset = np.matmul(q, np.array([xsize, ysize, zsize]))
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), q)
                     for atom, relative_position in self._unit_cell:
-                        # assign cartesian position
-                        position = np.abs(np.matmul(q, relative_position) + offset)
-                        # reduce periodic images
+
+                        # assign the cartesian position
+                        position = np.abs(np.matmul(relative_position, q) + offset)
+
+                        # ensure that periodically equivalent atoms are excluded
+                        # TODO: improve reduction procedure
                         reduced_position = copy.deepcopy(position)
                         for i in range(3):
-                            diff = position[i] - oriented_lattice_magnitudes[i]
-                            if diff >= -1e-6:
-                                reduced_position[i] = diff
+                            diff = oriented_lattice_magnitudes[i] - position[i]
+                            if diff < 1e-6:
+                                reduced_position[i] = 0.0
+
+                        # ensure the position is not already occupied
                         res = search_for_atom(atoms, reduced_position, 1e-6)
                         if res is not None:
                             continue
-                        # ensure point is in the lattice
-                        if is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
-                            new_atom = copy.deepcopy(atom)
-                            new_atom.position = reduced_position
-                            atoms.append(new_atom)
+
+                        print(position, reduced_position)
+
+                        # ensure the position is within the bounding box
+                        if not is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
+                            continue
+
+                        # add the new atom to the list of existing atoms
+                        new_atom = copy.deepcopy(atom)
+                        new_atom.position = reduced_position
+                        atoms.append(new_atom)
+        print()
+        for atom in atoms:
+            print(atom.position)
+        exit()
+        # TODO: implement rotation
         return atoms, oriented_lattice_vectors
 
 

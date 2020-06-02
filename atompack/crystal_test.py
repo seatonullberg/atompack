@@ -54,8 +54,12 @@ def test_crystal_cubic_110_unit_cell():
     target_basis = np.array([[np.sqrt(2), 0, 0], [0, 1, 0], [0, 0, np.sqrt(2)]])
     assert np.allclose(crystal.basis, target_basis, atol=1e-6)
     positions = np.array([atom.position for atom in crystal.atoms])
-    target_positions = np.array([[0.0, 0.0, 0.0], [0.70710678, 0.5, 0.0], [0.70710678, 0.0, 0.70710678],
-                                 [0.0, 0.5, 0.70710678]])
+    target_positions = np.array([
+        [0.0, 0.0, 0.0],
+        [0.0, 0.5, 0.70710678],
+        [0.70710678, 0.0, 0.70710678],
+        [0.70710678, 0.5, 0.0],
+    ])
     assert np.allclose(positions, target_positions, atol=1e-6)
 
 
@@ -68,4 +72,5 @@ def test_crystal_cubic_111_unit_cell():
     crystal = Crystal(a, b, c, alpha, beta, gamma, unit_cell, orientation=orientation)
     target_basis = np.array([[np.sqrt(2), 0, 0], [0, np.sqrt(6), 0], [0, 0, np.sqrt(3)]])
     assert np.allclose(crystal.basis, target_basis, atol=1e-6)
-    assert len(crystal) == 24
+    positions = np.array([atom.position for atom in crystal.atoms])
+    assert len(crystal) == 12
