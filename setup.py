@@ -11,7 +11,7 @@ setuptools.setup(
     description="A flexible Python library for atomic structure generation",
     long_description=long_description,
     long_description_content="text/markdown",
-    url="https://github.com/seatonullberg/atompack-py",
+    url="https://github.com/seatonullberg/atompack",
     packages=setuptools.find_packages(),
     license="MIT",
     install_requires=["numpy", "scipy"],
