@@ -34,7 +34,7 @@ from scipy.spatial.transform import Rotation
 from atompack.atom import Atom, AtomCollection
 from atompack.error import (InvalidHexagonalError, InvalidMonoclinicError, InvalidOrthorhombicError,
                             InvalidRhombohedralError, InvalidTetragonalError, InvalidTriclinicError)
-from atompack.internal import (is_point_in_polyhedron, metric_tensor, search_for_atom)
+from atompack.internal import metric_tensor, search_for_atom
 
 
 class Crystal(AtomCollection):
@@ -198,8 +198,8 @@ class Crystal(AtomCollection):
         if self._size is None:
             self._size = (1, 1, 1)
 
-        # generate the rotation matrix between the lattice vectors and new orientation
-        rotation_matrix = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
+        # generate the rotation between the lattice vectors and new orientation
+        rotation = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
 
         # align lattice vectors with orientation
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
@@ -225,7 +225,7 @@ class Crystal(AtomCollection):
 
                         # assign the cartesian position
                         position = np.matmul(relative_position, lattice_vectors) + offset
-                        position = rotation_matrix.apply(position)
+                        position = rotation.apply(position)
 
                         # transform the position back into the bounding box
                         for i in range(3):
@@ -248,38 +248,7 @@ class Crystal(AtomCollection):
                             atoms.append(new_atom)
 
         # TODO: implement rotation
-        return atoms, oriented_lattice_vectors
-
-
-def base_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a base centered unit cell.&#34;&#34;&#34;
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.5, 0.5, 0.0])),
-    ]
-
-
-def body_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a body centered unit cell.&#34;&#34;&#34;
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.5, 0.5, 0.5])),
-    ]
-
-
-def face_centered_unit_cell(atoms: Tuple[Atom, Atom, Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a face centered unit cell.&#34;&#34;&#34;
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.0, 0.5, 0.5])),
-        (atoms[2], np.array([0.5, 0.0, 0.5])),
-        (atoms[3], np.array([0.5, 0.5, 0.0])),
-    ]
-
-
-def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a primitive unit cell.&#34;&#34;&#34;
-    return [(atom, np.array([0.0, 0.0, 0.0]))]</code></pre>
+        return atoms, oriented_lattice_vectors</code></pre>
 </details>
 </section>
 <section>
@@ -287,76 +256,6 @@ def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="atompack.crystal.base_centered_unit_cell"><code class="name flex">
-<span>def <span class="ident">base_centered_unit_cell</span></span>(<span>atoms: Tuple[atompack.atom.Atom, atompack.atom.Atom]) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a base centered unit cell.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def base_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a base centered unit cell.&#34;&#34;&#34;
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.5, 0.5, 0.0])),
-    ]</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.body_centered_unit_cell"><code class="name flex">
-<span>def <span class="ident">body_centered_unit_cell</span></span>(<span>atoms: Tuple[atompack.atom.Atom, atompack.atom.Atom]) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a body centered unit cell.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def body_centered_unit_cell(atoms: Tuple[Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a body centered unit cell.&#34;&#34;&#34;
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.5, 0.5, 0.5])),
-    ]</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.face_centered_unit_cell"><code class="name flex">
-<span>def <span class="ident">face_centered_unit_cell</span></span>(<span>atoms: Tuple[atompack.atom.Atom, atompack.atom.Atom, atompack.atom.Atom, atompack.atom.Atom]) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a face centered unit cell.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def face_centered_unit_cell(atoms: Tuple[Atom, Atom, Atom, Atom]) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a face centered unit cell.&#34;&#34;&#34;
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.0, 0.5, 0.5])),
-        (atoms[2], np.array([0.5, 0.0, 0.5])),
-        (atoms[3], np.array([0.5, 0.5, 0.0])),
-    ]</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.primitive_unit_cell"><code class="name flex">
-<span>def <span class="ident">primitive_unit_cell</span></span>(<span>atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>) -> List[Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, numpy.ndarray]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a primitive unit cell.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
-    &#34;&#34;&#34;Returns a primitive unit cell.&#34;&#34;&#34;
-    return [(atom, np.array([0.0, 0.0, 0.0]))]</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -555,8 +454,8 @@ def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
         if self._size is None:
             self._size = (1, 1, 1)
 
-        # generate the rotation matrix between the lattice vectors and new orientation
-        rotation_matrix = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
+        # generate the rotation between the lattice vectors and new orientation
+        rotation = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
 
         # align lattice vectors with orientation
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
@@ -582,7 +481,7 @@ def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
 
                         # assign the cartesian position
                         position = np.matmul(relative_position, lattice_vectors) + offset
-                        position = rotation_matrix.apply(position)
+                        position = rotation.apply(position)
 
                         # transform the position back into the bounding box
                         for i in range(3):
@@ -816,14 +715,6 @@ def triclinic(cls,
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="atompack" href="index.html">atompack</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="atompack.crystal.base_centered_unit_cell" href="#atompack.crystal.base_centered_unit_cell">base_centered_unit_cell</a></code></li>
-<li><code><a title="atompack.crystal.body_centered_unit_cell" href="#atompack.crystal.body_centered_unit_cell">body_centered_unit_cell</a></code></li>
-<li><code><a title="atompack.crystal.face_centered_unit_cell" href="#atompack.crystal.face_centered_unit_cell">face_centered_unit_cell</a></code></li>
-<li><code><a title="atompack.crystal.primitive_unit_cell" href="#atompack.crystal.primitive_unit_cell">primitive_unit_cell</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

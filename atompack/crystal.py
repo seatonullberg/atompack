@@ -7,7 +7,7 @@ from scipy.spatial.transform import Rotation
 from atompack.atom import Atom, AtomCollection
 from atompack.error import (InvalidHexagonalError, InvalidMonoclinicError, InvalidOrthorhombicError,
                             InvalidRhombohedralError, InvalidTetragonalError, InvalidTriclinicError)
-from atompack.internal import (is_point_in_polyhedron, metric_tensor, search_for_atom)
+from atompack.internal import metric_tensor, search_for_atom
 
 
 class Crystal(AtomCollection):
@@ -171,8 +171,8 @@ class Crystal(AtomCollection):
         if self._size is None:
             self._size = (1, 1, 1)
 
-        # generate the rotation matrix between the lattice vectors and new orientation
-        rotation_matrix = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
+        # generate the rotation between the lattice vectors and new orientation
+        rotation = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
 
         # align lattice vectors with orientation
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
@@ -198,7 +198,7 @@ class Crystal(AtomCollection):
 
                         # assign the cartesian position
                         position = np.matmul(relative_position, lattice_vectors) + offset
-                        position = rotation_matrix.apply(position)
+                        position = rotation.apply(position)
 
                         # transform the position back into the bounding box
                         for i in range(3):
@@ -222,34 +222,3 @@ class Crystal(AtomCollection):
 
         # TODO: implement rotation
         return atoms, oriented_lattice_vectors
-
-
-def base_centered_unit_cell(atoms: Tuple[Atom, Atom]) -> List[Tuple[Atom, np.ndarray]]:
-    """Returns a base centered unit cell."""
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.5, 0.5, 0.0])),
-    ]
-
-
-def body_centered_unit_cell(atoms: Tuple[Atom, Atom]) -> List[Tuple[Atom, np.ndarray]]:
-    """Returns a body centered unit cell."""
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.5, 0.5, 0.5])),
-    ]
-
-
-def face_centered_unit_cell(atoms: Tuple[Atom, Atom, Atom, Atom]) -> List[Tuple[Atom, np.ndarray]]:
-    """Returns a face centered unit cell."""
-    return [
-        (atoms[0], np.array([0.0, 0.0, 0.0])),
-        (atoms[1], np.array([0.0, 0.5, 0.5])),
-        (atoms[2], np.array([0.5, 0.0, 0.5])),
-        (atoms[3], np.array([0.5, 0.5, 0.0])),
-    ]
-
-
-def primitive_unit_cell(atom: Atom) -> List[Tuple[Atom, np.ndarray]]:
-    """Returns a primitive unit cell."""
-    return [(atom, np.array([0.0, 0.0, 0.0]))]

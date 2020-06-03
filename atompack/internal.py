@@ -16,6 +16,7 @@ def metric_tensor(a, b, c, alpha, beta, gamma):
                      [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
 
 
+# This function is not used but I spent so long figuring out how to do it that I refuse to delete it.
 def is_point_in_polyhedron(point, poly):
     for face, normal in zip(_polyhedron_faces(poly), _polyhedron_normals(poly)):
         p2f = face[0] - point
