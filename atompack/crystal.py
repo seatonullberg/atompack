@@ -172,16 +172,14 @@ class Crystal(AtomCollection):
             self._size = (1, 1, 1)
 
         # generate the rotation matrix between the lattice vectors and new orientation
-        rotmat, _ = Rotation.align_vectors(lattice_vectors, self._orientation)
-        invrotmat = rotmat.inv()
+        rotation_matrix = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
 
         # align lattice vectors with orientation
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
         # use QR decomposition to determine an orthogonal representation of the oriented lattice vectors
-        q, r = np.linalg.qr(oriented_lattice_vectors.T)
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
         oriented_lattice_vectors = np.abs(r) * np.array(self._size)
-        rotated_oriented_lattice_vectors = rotmat.apply(oriented_lattice_vectors)
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
         # determine the smallest required orthogonal cell
@@ -200,40 +198,30 @@ class Crystal(AtomCollection):
 
                         # assign the cartesian position
                         position = np.matmul(relative_position, lattice_vectors) + offset
-                        position = rotmat.apply(position)
+                        position = rotation_matrix.apply(position)
 
-                        # add the new atom to the list of existing atoms
-                        new_atom = copy.deepcopy(atom)
-                        new_atom.position = position
-                        atoms.append(new_atom)
+                        # transform the position back into the bounding box
+                        for i in range(3):
+                            if position[i] < -1e-6:
+                                new_position = position[i]
+                                while new_position < -1e-6:
+                                    new_position += oriented_lattice_magnitudes[i]
+                                position[i] = new_position
+                            elif position[i] >= oriented_lattice_magnitudes[i] - 1e-6:
+                                new_position = position[i]
+                                while new_position >= oriented_lattice_magnitudes[i] - 1e-6:
+                                    new_position -= oriented_lattice_magnitudes[i]
+                                position[i] = new_position
 
-        new_atoms: List[Atom] = []
-        for atom in atoms:
-            new_atom = copy.deepcopy(atom)
-            position = copy.deepcopy(atom.position)
-            for i in range(3):
-                if position[i] < -1e-6:
-                    new_position = position[i]
-                    while new_position < -1e-6:
-                        new_position += oriented_lattice_magnitudes[i]
-                    position[i] = new_position
-                elif position[i] >= oriented_lattice_magnitudes[i] - 1e-6:
-                    new_position = position[i]
-                    while new_position >= oriented_lattice_magnitudes[i] - 1e-6:
-                        new_position -= oriented_lattice_magnitudes[i]
-                    position[i] = new_position
-
-            exists = False
-            for newpos in [atom.position for atom in new_atoms]:
-                if np.linalg.norm(position - newpos) < 1e-6:
-                    exists = True
-                    break
-            if not exists:
-                atom.position = position
-                new_atoms.append(atom)
+                        # accept the atom if the position is not occupied
+                        res = search_for_atom(atoms, position, 1e-6)
+                        if res is None:
+                            new_atom = copy.deepcopy(atom)
+                            new_atom.position = position
+                            atoms.append(new_atom)
 
         # TODO: implement rotation
-        return new_atoms, oriented_lattice_vectors
+        return atoms, oriented_lattice_vectors
 
 
 def base_centered_unit_cell(atoms: Tuple[Atom, Atom]) -> List[Tuple[Atom, np.ndarray]]:

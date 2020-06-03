@@ -29,6 +29,7 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
+from scipy.spatial.transform import Rotation
 
 from atompack.atom import Atom, AtomCollection
 from atompack.error import (InvalidHexagonalError, InvalidMonoclinicError, InvalidOrthorhombicError,
@@ -39,7 +40,7 @@ from atompack.internal import (is_point_in_polyhedron, metric_tensor, search_for
 class Crystal(AtomCollection):
     &#34;&#34;&#34;A crystalline lattice.
 
-    Parameters:
+    Args:
         a: The \\(a\\) distance lattice parameter.
         b: The \\(b\\) distance lattice parameter.
         c: The \\(c\\) distance lattice parameter.
@@ -181,13 +182,15 @@ class Crystal(AtomCollection):
         alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
         return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
-    # TODO: implement behavior for rotation
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
+        # generate lattice vectors from metric tensor
+        lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
+
         # process attributes
         if self._unit_cell is None:
             self._unit_cell = [(Atom(), np.zeros((3,)))]
         if self._orientation is None:
-            self._orientation = np.identity(3)
+            self._orientation = lattice_vectors
         if self._rotation is None:
             self._rotation = np.identity(3)
         else:
@@ -195,44 +198,56 @@ class Crystal(AtomCollection):
         if self._size is None:
             self._size = (1, 1, 1)
 
-        # generate lattice vectors from metric tensor
-        lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
+        # generate the rotation matrix between the lattice vectors and new orientation
+        rotation_matrix = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
 
         # align lattice vectors with orientation
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
-        # use QR decomposition to determine an orthogonal representation of the lattice vectors
+        # use QR decomposition to determine an orthogonal representation of the oriented lattice vectors
         _, r = np.linalg.qr(oriented_lattice_vectors.T)
-        q, _ = np.linalg.qr(oriented_lattice_vectors)
         oriented_lattice_vectors = np.abs(r) * np.array(self._size)
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
+        # TODO: determine optimal scaling factor
+        scaling_factor = 2
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) *
+                                   np.array(self._size)).astype(int) * scaling_factor
 
         # place atoms on the oriented lattice vectors
         atoms: List[Atom] = []
         for xsize in range(minimum_orthogonal_size[0]):
             for ysize in range(minimum_orthogonal_size[1]):
                 for zsize in range(minimum_orthogonal_size[2]):
-                    offset = np.matmul(q, np.array([xsize, ysize, zsize]))
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), lattice_vectors)
                     for atom, relative_position in self._unit_cell:
-                        # assign cartesian position
-                        position = np.abs(np.matmul(q, relative_position) + offset)
-                        # reduce periodic images
-                        reduced_position = copy.deepcopy(position)
+
+                        # assign the cartesian position
+                        position = np.matmul(relative_position, lattice_vectors) + offset
+                        position = rotation_matrix.apply(position)
+
+                        # transform the position back into the bounding box
                         for i in range(3):
-                            diff = position[i] - oriented_lattice_magnitudes[i]
-                            if diff &gt;= -1e-6:
-                                reduced_position[i] = diff
-                        res = search_for_atom(atoms, reduced_position, 1e-6)
-                        if res is not None:
-                            continue
-                        # ensure point is in the lattice
-                        if is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
+                            if position[i] &lt; -1e-6:
+                                new_position = position[i]
+                                while new_position &lt; -1e-6:
+                                    new_position += oriented_lattice_magnitudes[i]
+                                position[i] = new_position
+                            elif position[i] &gt;= oriented_lattice_magnitudes[i] - 1e-6:
+                                new_position = position[i]
+                                while new_position &gt;= oriented_lattice_magnitudes[i] - 1e-6:
+                                    new_position -= oriented_lattice_magnitudes[i]
+                                position[i] = new_position
+
+                        # accept the atom if the position is not occupied
+                        res = search_for_atom(atoms, position, 1e-6)
+                        if res is None:
                             new_atom = copy.deepcopy(atom)
-                            new_atom.position = reduced_position
+                            new_atom.position = position
                             atoms.append(new_atom)
+
+        # TODO: implement rotation
         return atoms, oriented_lattice_vectors
 
 
@@ -352,17 +367,29 @@ def primitive_unit_cell(atom: Atom) -&gt; List[Tuple[Atom, np.ndarray]]:
 </code></dt>
 <dd>
 <div class="desc"><p>A crystalline lattice.</p>
-<h2 id="parameters">Parameters</h2>
-<p>a: The <span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span> distance lattice parameter.
-b: The <span><span class="MathJax_Preview">b</span><script type="math/tex">b</script></span> distance lattice parameter.
-c: The <span><span class="MathJax_Preview">c</span><script type="math/tex">c</script></span> distance lattice parameter.
-alpha: The <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span> angle lattice parameter.
-beta: The <span><span class="MathJax_Preview">\beta</span><script type="math/tex">\beta</script></span> angle lattice parameter.
-gamma: The <span><span class="MathJax_Preview">\gamma</span><script type="math/tex">\gamma</script></span> angle lattice parameter.
-unit_cell: A template of atoms and their basis sites to be repeated during construction.
-orientation: The orientation of the basis.
-rotation: A rotation matrix which rotates the final structure.
-size: The number of units to repeat in each spatial direction.</p></div>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>a</code></strong></dt>
+<dd>The <span><span class="MathJax_Preview">a</span><script type="math/tex">a</script></span> distance lattice parameter.</dd>
+<dt><strong><code>b</code></strong></dt>
+<dd>The <span><span class="MathJax_Preview">b</span><script type="math/tex">b</script></span> distance lattice parameter.</dd>
+<dt><strong><code>c</code></strong></dt>
+<dd>The <span><span class="MathJax_Preview">c</span><script type="math/tex">c</script></span> distance lattice parameter.</dd>
+<dt><strong><code>alpha</code></strong></dt>
+<dd>The <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span> angle lattice parameter.</dd>
+<dt><strong><code>beta</code></strong></dt>
+<dd>The <span><span class="MathJax_Preview">\beta</span><script type="math/tex">\beta</script></span> angle lattice parameter.</dd>
+<dt><strong><code>gamma</code></strong></dt>
+<dd>The <span><span class="MathJax_Preview">\gamma</span><script type="math/tex">\gamma</script></span> angle lattice parameter.</dd>
+<dt><strong><code>unit_cell</code></strong></dt>
+<dd>A template of atoms and their basis sites to be repeated during construction.</dd>
+<dt><strong><code>orientation</code></strong></dt>
+<dd>The orientation of the basis.</dd>
+<dt><strong><code>rotation</code></strong></dt>
+<dd>A rotation matrix which rotates the final structure.</dd>
+<dt><strong><code>size</code></strong></dt>
+<dd>The number of units to repeat in each spatial direction.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -370,7 +397,7 @@ size: The number of units to repeat in each spatial direction.</p></div>
 <pre><code class="python">class Crystal(AtomCollection):
     &#34;&#34;&#34;A crystalline lattice.
 
-    Parameters:
+    Args:
         a: The \\(a\\) distance lattice parameter.
         b: The \\(b\\) distance lattice parameter.
         c: The \\(c\\) distance lattice parameter.
@@ -512,13 +539,15 @@ size: The number of units to repeat in each spatial direction.</p></div>
         alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
         return cls(a, b, c, alpha, beta, gamma, unit_cell, orientation, rotation, size)
 
-    # TODO: implement behavior for rotation
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
+        # generate lattice vectors from metric tensor
+        lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
+
         # process attributes
         if self._unit_cell is None:
             self._unit_cell = [(Atom(), np.zeros((3,)))]
         if self._orientation is None:
-            self._orientation = np.identity(3)
+            self._orientation = lattice_vectors
         if self._rotation is None:
             self._rotation = np.identity(3)
         else:
@@ -526,44 +555,56 @@ size: The number of units to repeat in each spatial direction.</p></div>
         if self._size is None:
             self._size = (1, 1, 1)
 
-        # generate lattice vectors from metric tensor
-        lattice_vectors = np.sqrt(metric_tensor(self._a, self._b, self._c, self._alpha, self._beta, self._gamma))
+        # generate the rotation matrix between the lattice vectors and new orientation
+        rotation_matrix = Rotation.align_vectors(lattice_vectors, self._orientation)[0]
 
         # align lattice vectors with orientation
         oriented_lattice_vectors = np.matmul(self._orientation, lattice_vectors)
 
-        # use QR decomposition to determine an orthogonal representation of the lattice vectors
+        # use QR decomposition to determine an orthogonal representation of the oriented lattice vectors
         _, r = np.linalg.qr(oriented_lattice_vectors.T)
-        q, _ = np.linalg.qr(oriented_lattice_vectors)
         oriented_lattice_vectors = np.abs(r) * np.array(self._size)
         oriented_lattice_magnitudes = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
         # determine the smallest required orthogonal cell
-        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) * np.array(self._size)).astype(int)
+        # TODO: determine optimal scaling factor
+        scaling_factor = 2
+        minimum_orthogonal_size = (np.ceil(np.linalg.norm(r, axis=0)) *
+                                   np.array(self._size)).astype(int) * scaling_factor
 
         # place atoms on the oriented lattice vectors
         atoms: List[Atom] = []
         for xsize in range(minimum_orthogonal_size[0]):
             for ysize in range(minimum_orthogonal_size[1]):
                 for zsize in range(minimum_orthogonal_size[2]):
-                    offset = np.matmul(q, np.array([xsize, ysize, zsize]))
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), lattice_vectors)
                     for atom, relative_position in self._unit_cell:
-                        # assign cartesian position
-                        position = np.abs(np.matmul(q, relative_position) + offset)
-                        # reduce periodic images
-                        reduced_position = copy.deepcopy(position)
+
+                        # assign the cartesian position
+                        position = np.matmul(relative_position, lattice_vectors) + offset
+                        position = rotation_matrix.apply(position)
+
+                        # transform the position back into the bounding box
                         for i in range(3):
-                            diff = position[i] - oriented_lattice_magnitudes[i]
-                            if diff &gt;= -1e-6:
-                                reduced_position[i] = diff
-                        res = search_for_atom(atoms, reduced_position, 1e-6)
-                        if res is not None:
-                            continue
-                        # ensure point is in the lattice
-                        if is_point_in_polyhedron(reduced_position, oriented_lattice_vectors):
+                            if position[i] &lt; -1e-6:
+                                new_position = position[i]
+                                while new_position &lt; -1e-6:
+                                    new_position += oriented_lattice_magnitudes[i]
+                                position[i] = new_position
+                            elif position[i] &gt;= oriented_lattice_magnitudes[i] - 1e-6:
+                                new_position = position[i]
+                                while new_position &gt;= oriented_lattice_magnitudes[i] - 1e-6:
+                                    new_position -= oriented_lattice_magnitudes[i]
+                                position[i] = new_position
+
+                        # accept the atom if the position is not occupied
+                        res = search_for_atom(atoms, position, 1e-6)
+                        if res is None:
                             new_atom = copy.deepcopy(atom)
-                            new_atom.position = reduced_position
+                            new_atom.position = position
                             atoms.append(new_atom)
+
+        # TODO: implement rotation
         return atoms, oriented_lattice_vectors</code></pre>
 </details>
 <h3>Ancestors</h3>

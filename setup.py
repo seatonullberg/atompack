@@ -14,5 +14,5 @@ setuptools.setup(
     url="https://github.com/seatonullberg/atompack-py",
     packages=setuptools.find_packages(),
     license="MIT",
-    install_requires=["numpy"],
+    install_requires=["numpy", "scipy"],
 )

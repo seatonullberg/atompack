@@ -63,7 +63,6 @@ def test_crystal_cubic_110_unit_cell():
     assert np.allclose(positions, target_positions, atol=1e-6)
 
 
-# TODO: verify all positions
 def test_crystal_cubic_111_unit_cell():
     a, b, c = 1, 1, 1
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
