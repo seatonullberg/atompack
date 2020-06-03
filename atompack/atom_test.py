@@ -5,6 +5,13 @@ from atompack.atom import Atom, AtomCollection
 from atompack.error import PositionOccupiedError, PositionUnoccupiedError
 
 
+def test_atom_collection_is_iterable():
+    atoms = [Atom(position=np.array([0, 0, 0]))]
+    collection = AtomCollection(atoms=atoms)
+    lst = [atom for atom in collection]
+    assert len(lst) == 1
+
+
 def test_atom_collection_insert_occupied():
     atoms = [Atom(position=np.array([0, 0, 0]))]
     collection = AtomCollection(atoms=atoms)

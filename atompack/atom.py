@@ -143,13 +143,7 @@ class AtomCollection(object):
             return res
 
     def __iter__(self) -> 'AtomCollection':
-        self._iter_index = 0
-        return self
-
-    def __next__(self) -> Atom:
-        res = self.atoms[self._iter_index]
-        self._iter_index += 1
-        return res
+        return self.atoms.__iter__()
 
     def __len__(self) -> int:
         return len(self.atoms)

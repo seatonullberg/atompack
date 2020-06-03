@@ -58,7 +58,11 @@ class Crystal(AtomCollection):
                   orientation: Optional[np.ndarray] = None,
                   rotation: Optional[np.ndarray] = None,
                   size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
-        """Initializes a `Crystal` with triclinic constraints."""
+        """Initializes a `Crystal` with triclinic constraints.
+        
+        Raises:
+            `atompack.error.InvalidTriclinicError`: Triclinic constraints are not satisfied.
+        """
         if not (a != b != c):
             raise InvalidTriclinicError(a, b, c, alpha, beta, gamma)
         if not (alpha != beta != gamma):
@@ -75,7 +79,11 @@ class Crystal(AtomCollection):
                    orientation: Optional[np.ndarray] = None,
                    rotation: Optional[np.ndarray] = None,
                    size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
-        """Initializes a `Crystal` with monoclinic constraints."""
+        """Initializes a `Crystal` with monoclinic constraints.
+        
+        Raises:
+            `atompack.error.InvalidMonoclinicError`: Monoclinic constraints are not satisfied.
+        """
         alpha, gamma = np.pi / 2, np.pi / 2
         if not (a != b != c):
             raise InvalidMonoclinicError(a, b, c, alpha, beta, gamma)
@@ -92,7 +100,11 @@ class Crystal(AtomCollection):
                      orientation: Optional[np.ndarray] = None,
                      rotation: Optional[np.ndarray] = None,
                      size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
-        """Initializes a `Crystal` with orthorhombic constraints."""
+        """Initializes a `Crystal` with orthorhombic constraints.
+        
+        Raises:
+            `atompack.error.InvalidOrthorhombicError`: Orthorhombic constraints are not satisfied.
+        """
         alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
         if not (a != b != c):
             raise InvalidOrthorhombicError(a, b, c, alpha, beta, gamma)
@@ -106,7 +118,11 @@ class Crystal(AtomCollection):
                    orientation: Optional[np.ndarray] = None,
                    rotation: Optional[np.ndarray] = None,
                    size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
-        """Initializes a `Crystal` with tetragonal constraints."""
+        """Initializes a `Crystal` with tetragonal constraints.
+        
+        Raises:
+            `atompack.error.InvalidTetragonalError`: Tetragonal constraints are not satisfied.
+        """
         b = a
         alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
         if a == c:
@@ -121,7 +137,11 @@ class Crystal(AtomCollection):
                      orientation: Optional[np.ndarray] = None,
                      rotation: Optional[np.ndarray] = None,
                      size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
-        """Initializes a `Crystal` with rhombohedral constraints."""
+        """Initializes a `Crystal` with rhombohedral constraints.
+        
+        Raises:
+            `atompack.error.InvalidRhombohedralError`: Rhombohedral constraints are not satisfied.
+        """
         b, c = a, a
         beta, gamma = alpha, alpha
         if alpha == np.pi / 2:
@@ -136,7 +156,11 @@ class Crystal(AtomCollection):
                   orientation: Optional[np.ndarray] = None,
                   rotation: Optional[np.ndarray] = None,
                   size: Optional[Tuple[int, int, int]] = None) -> 'Crystal':
-        """Initializes a `Crystal` with hexagonal constraints."""
+        """Initializes a `Crystal` with hexagonal constraints.
+        
+        Raises:
+            `atompack.error.InvalidHexagonalError`: Hexagonal constraints are not satisfied.
+        """
         b = a
         alpha, beta, gamma = np.pi / 2, 120 * np.pi / 180, np.pi / 2
         if a == c:
