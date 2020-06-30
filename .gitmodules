@@ -1,0 +1,3 @@
+[submodule "deps/libatompack"]
+	path = deps/libatompack
+	url = https://github.com/seatonullberg/libatompack.git
