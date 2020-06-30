@@ -54,5 +54,6 @@ def test_nearest_neighbor():
     cell = np.identity(3)
     periodicity = np.array([1, 1, 1])
     tolerance = 1.0e-6
-    res = nearest_neighbor(lib, position, positions, cell, periodicity, tolerance)
-    assert res == 2
+    index, distance = nearest_neighbor(lib, position, positions, cell, periodicity, tolerance)
+    assert index == 2
+    assert distance - 0.173205081 < tolerance

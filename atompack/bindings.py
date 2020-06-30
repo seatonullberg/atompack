@@ -1,4 +1,5 @@
-from ctypes import POINTER, c_double, c_int, c_size_t, cdll
+from ctypes import POINTER, byref, c_double, c_int, c_size_t, cdll
+from typing import Tuple
 
 import numpy as np
 
@@ -32,11 +33,10 @@ def load_libatompack():
     lib.nearest_neighbor.restype = c_size_t
     lib.nearest_neighbor.argtypes = [
         POINTER(c_double),
+        POINTER(POINTER(c_double)), c_size_t,
         POINTER(POINTER(c_double)),
-        c_size_t,
-        POINTER(POINTER(c_double)),
-        POINTER(c_int),
-        c_double,
+        POINTER(c_int), c_double,
+        POINTER(c_double)
     ]
     return lib
 
@@ -68,7 +68,7 @@ def metric_tensor(lib, a: float, b: float, c: float, alpha: float, beta: float, 
 
 
 def nearest_neighbor(lib, position: np.ndarray, positions: np.ndarray, cell: np.ndarray, periodicity: np.ndarray,
-                     tolerance: float) -> int:
+                     tolerance: float) -> Tuple[int, float]:
     # process position
     c_position = position.astype(np.float64)
     c_position = c_position.ctypes.data_as(POINTER(c_double))
@@ -85,5 +85,8 @@ def nearest_neighbor(lib, position: np.ndarray, positions: np.ndarray, cell: np.
     c_periodicity = c_periodicity.ctypes.data_as(POINTER(c_int))
     # process tolerance
     c_tolerance = c_double(tolerance)
-    res = lib.nearest_neighbor(c_position, c_positions, c_length, c_cell, c_periodicity, c_tolerance)
-    return int(res)
+    # process out
+    out = c_double(0.0)
+    c_out = byref(out)
+    res = lib.nearest_neighbor(c_position, c_positions, c_length, c_cell, c_periodicity, c_tolerance, c_out)
+    return int(res), float(out.value)

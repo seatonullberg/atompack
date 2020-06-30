@@ -1,9 +1,11 @@
+import copy
 from typing import List, Optional
 
 import numpy as np
 
 from atompack import Atom
 from atompack.bindings import cell_contains, load_libatompack, nearest_neighbor
+from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 
 
 class Structure(object):
@@ -40,13 +42,29 @@ class Structure(object):
         return len(self.atoms)
 
     def insert(self, atom: Atom) -> None:
-        pass
+        if not cell_contains(self._lib, self.basis, atom["position"], self.tolerance):
+            raise PositionOutsideError(atom["position"])
+        _, distance = nearest_neighbor(self._lib, atom["position"], self._positions(), self.basis, self.periodicity,
+                                       self.tolerance)
+        if distance < self.tolerance:
+            raise PositionOccupiedError(atom["position"])
+        self.atoms.append(atom)
 
     def remove(self, position: np.ndarray) -> Atom:
-        pass
+        index, distance = nearest_neighbor(self._lib, position, self._positions(), self.basis, self.periodicity,
+                                           self.tolerance)
+        if distance > self.tolerance:
+            raise PositionUnoccupiedError(position)
+        res = copy.deepcopy(self.atoms[index])
+        del self.atoms[index]
+        return res
 
     def select(self, position: np.ndarray) -> int:
-        pass
+        index, distance = nearest_neighbor(self._lib, position, self._positions(), self.basis, self.periodicity,
+                                           self.tolerance)
+        if distance > self.tolerance:
+            raise PositionUnoccupiedError(position)
+        return index
 
     def _positions(self):
         return np.array([atom["position"] for atom in self.atoms])
