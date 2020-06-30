@@ -1,14 +1,15 @@
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 import numpy as np
 
+from atompack import Atom
 from atompack.bindings import cell_contains, load_libatompack, nearest_neighbor
 
 
 class Structure(object):
 
     def __init__(self,
-                 atoms: Optional[List[Dict[str, Any]]] = None,
+                 atoms: Optional[List[Atom]] = None,
                  basis: Optional[np.ndarray] = None,
                  periodicity: Optional[np.ndarray] = None,
                  tolerance: float = 1.0e-6) -> None:
@@ -28,7 +29,7 @@ class Structure(object):
         self._iter = 0
         return self
 
-    def __next__(self) -> Dict[str, Any]:
+    def __next__(self) -> Atom:
         if self._iter == len(self):
             raise StopIteration
         res = self.atoms[self._iter]
@@ -38,10 +39,10 @@ class Structure(object):
     def __len__(self) -> int:
         return len(self.atoms)
 
-    def insert(self, atom: Dict[str, Any], position: np.ndarray) -> None:
+    def insert(self, atom: Atom) -> None:
         pass
 
-    def remove(self, position: np.ndarray) -> Dict[str, Any]:
+    def remove(self, position: np.ndarray) -> Atom:
         pass
 
     def select(self, position: np.ndarray) -> int:

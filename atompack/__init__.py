@@ -1,3 +1,7 @@
+from typing import Any, Dict
+
+Atom = Dict[str, Any]
+
 __pdoc__ = {
     # exclude the internal module
     "internal": False,
