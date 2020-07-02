@@ -15,4 +15,5 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     license="MIT",
     install_requires=["numpy", "scipy"],
+    python_requires=">=3.6",
 )

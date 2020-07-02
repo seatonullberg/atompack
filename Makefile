@@ -1,6 +1,5 @@
-MYPY_DIR=./mypy
+MYPYPATH=./mypy
 
-# TODO: build libatompack.so here
 build:
 	@python3 setup.py sdist bdist_wheel
 
@@ -24,8 +23,8 @@ format:
 	@yapf -rip --style='{based_on_style: google, column_limit: 120}' ./atompack
 
 lint:
-	@export MYPYPATH=$(MYPY_DIR);\
-		mypy --config-file=$(MYPY_DIR)/mypy.ini ./atompack
+	@export MYPYPATH=$(MYPYPATH);\
+		mypy --config-file=$(MYPYPATH)/mypy.ini ./atompack
 	@pyflakes ./atompack
 
 publish:
