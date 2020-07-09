@@ -1,31 +1,36 @@
-import copy
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 
-from atompack import Atom
-from atompack.bindings import cell_contains, load_libatompack, nearest_neighbor
-from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
+from atompack.atom import Atom
 
 
 class Structure(object):
+    """Representation of an atomic structure with boundaries which may be periodic.
+    
+    Args:
+        atoms: List of atoms in the structure.
+            Mutating `atoms` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+        basis: 3x3 matrix defining the boundaries of the structure.
+            Mutating `basis` is a logical error if the change forces atoms out of bounds.
+        pbc: Boolean array that indicates which boundaries are considered periodic.
+        tolerance: Radius of tolerance for operations on the structure.
+            Mutating `tolerance` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+    """
 
     def __init__(self,
-                 atoms: Optional[List[Atom]] = None,
-                 basis: Optional[np.ndarray] = None,
-                 periodicity: Optional[np.ndarray] = None,
-                 tolerance: float = 1.0e-6) -> None:
-        if atoms is None:
-            atoms = []
+                 atoms: List[Atom],
+                 basis: np.ndarray,
+                 pbc: Optional[Tuple[bool, bool, bool]] = None,
+                 tolerance: Optional[float] = None) -> None:
         self.atoms = atoms
-        if basis is None:
-            basis = np.identity(3)
         self.basis = basis
-        if periodicity is None:
-            periodicity = np.array([0, 0, 0])
-        self.periodicity = periodicity
+        if pbc is None:
+            pbc = (False, False, False)
+        self.pbc = pbc
+        if tolerance is None:
+            tolerance = 1.0e-6
         self.tolerance = tolerance
-        self._lib = load_libatompack()
 
     def __iter__(self) -> 'Structure':
         self._iter = 0
@@ -42,29 +47,35 @@ class Structure(object):
         return len(self.atoms)
 
     def insert(self, atom: Atom) -> None:
-        if not cell_contains(self._lib, self.basis, atom["position"], self.tolerance):
-            raise PositionOutsideError(atom["position"])
-        _, distance = nearest_neighbor(self._lib, atom["position"], self._positions(), self.basis, self.periodicity,
-                                       self.tolerance)
-        if distance < self.tolerance:
-            raise PositionOccupiedError(atom["position"])
-        self.atoms.append(atom)
+        """Inserts an atom into the structure safely with bounds checking.
+        
+        Args:
+            atom: Atom inserted into the structure.
+
+        Raises:
+            `atompack.errors.PositionOccupiedError`: If the position is already occupied.
+            `atompack.errors.PositionOutsideError`: If the position is out of bounds.
+        """
+        raise NotImplementedError
 
     def remove(self, position: np.ndarray) -> Atom:
-        index, distance = nearest_neighbor(self._lib, position, self._positions(), self.basis, self.periodicity,
-                                           self.tolerance)
-        if distance > self.tolerance:
-            raise PositionUnoccupiedError(position)
-        res = copy.deepcopy(self.atoms[index])
-        del self.atoms[index]
-        return res
+        """Removes and returns an atom from the structure.
+        
+        Args:
+            position: Position to remove the atom from.
+
+        Raises:
+            `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+        """
+        raise NotImplementedError
 
     def select(self, position: np.ndarray) -> int:
-        index, distance = nearest_neighbor(self._lib, position, self._positions(), self.basis, self.periodicity,
-                                           self.tolerance)
-        if distance > self.tolerance:
-            raise PositionUnoccupiedError(position)
-        return index
+        """Returns the index of an atom.
+        
+        Args:
+            position: Position to select the atom from.
 
-    def _positions(self):
-        return np.array([atom["position"] for atom in self.atoms])
+        Raises:
+            `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+        """
+        raise NotImplementedError

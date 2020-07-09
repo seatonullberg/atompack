@@ -1,19 +1,28 @@
-import setuptools
+from distutils.core import setup, Extension
 
-with open("README.md", "r") as f:
-    long_description = f.read()
+import numpy as np
 
-setuptools.setup(
+include_dirs = [
+    "./extensions",
+    np.get_include(),
+]
+
+extensions = [
+    Extension(
+        "_cell",
+        sources=["./extensions/_cell.c"],
+        include_dirs=include_dirs,
+    ),
+]
+
+setup(
     name="atompack",
     version="0.1.0",
+    description="A flexible Python library for atomic structure generation.",
     author="Seaton Ullberg",
     author_email="seatonullberg@gmail.com",
-    description="A flexible Python library for atomic structure generation",
-    long_description=long_description,
-    long_description_content="text/markdown",
     url="https://github.com/seatonullberg/atompack",
-    packages=setuptools.find_packages(),
-    license="MIT",
-    install_requires=["numpy", "scipy"],
-    python_requires=">=3.6",
+    license="MIT License",
+    ext_modules=extensions,
+    packages=["atompack"],
 )
