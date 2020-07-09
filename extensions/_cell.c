@@ -1,4 +1,5 @@
 #define PY_SSIZE_T_CLEAN
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 #include <Python.h>
 #include <numpy/arrayobject.h>
@@ -14,7 +15,7 @@ static PyMethodDef method_def[] = {
 static struct PyModuleDef module_def = {
     PyModuleDef_HEAD_INIT,
     "_cell",
-    "Module `cell_ext` provides optimized C functions which operate on a 3x3 matrix representation of a prallelepiped cell.",
+    "Module `_cell` provides optimized C functions which operate on a 3x3 matrix representation of a prallelepiped cell.",
     -1,
     method_def,
 };
@@ -163,8 +164,5 @@ static PyObject *py_cell_contains(PyObject *self, PyObject *args)
     {
         Py_RETURN_TRUE;
     }
-    else
-    {
-        Py_RETURN_FALSE;
-    }
+    Py_RETURN_FALSE;
 }

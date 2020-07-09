@@ -11,7 +11,7 @@ void add(double a[3], double b[3], double out[3])
 }
 
 // Populates an array with the cross product of two arrays.
-double cross(double a[3], double b[3], double out[3])
+void cross(double a[3], double b[3], double out[3])
 {
     out[0] = a[1] * b[2] - a[2] * b[1];
     out[1] = a[2] * b[0] - a[0] * b[2];
@@ -53,7 +53,7 @@ double euclidean(double a[3], double b[3])
 void matmul(double a[][3], double b[][3], size_t length, double out[][3])
 {
     float t;
-    for (int i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
     {
         for (int j = 0; j < 3; j++)
         {
@@ -90,7 +90,7 @@ void sub(double a[3], double b[3], double out[3])
 // Populates an array with the transpose of an array.
 void transpose(double a[][3], size_t length, double out[][3])
 {
-    for (int i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
     {
         for (int j = 0; j < 3; j++)
         {

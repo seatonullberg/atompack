@@ -13,6 +13,11 @@ extensions = [
         sources=["./extensions/_cell.c"],
         include_dirs=include_dirs,
     ),
+    Extension(
+        "_pbc",
+        sources=["./extensions/_pbc.c"],
+        include_dirs=include_dirs,
+    ),
 ]
 
 setup(
