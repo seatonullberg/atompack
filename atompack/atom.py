@@ -1,3 +1,4 @@
+from typing import Optional
 import numpy as np
 
 
@@ -13,7 +14,9 @@ class Atom(object):
             Mutating `position` is a logical error if the change results in atoms overlapping or a translation out of bounds.
     """
 
-    def __init__(self, position: np.ndarray, **kwargs) -> None:
+    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -> None:
         for k, v in kwargs.items():
             setattr(self, k, v)
+        if position is None:
+            position = np.zeros(3)
         self.position = position

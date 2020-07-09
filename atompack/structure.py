@@ -2,7 +2,10 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
+from _cell import cell_contains
+from _pbc import pbc_nearest_neighbor
 from atompack.atom import Atom
+from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 
 
 class Structure(object):
@@ -19,11 +22,15 @@ class Structure(object):
     """
 
     def __init__(self,
-                 atoms: List[Atom],
-                 basis: np.ndarray,
+                 atoms: Optional[List[Atom]] = None,
+                 basis: Optional[np.ndarray] = None,
                  pbc: Optional[Tuple[bool, bool, bool]] = None,
                  tolerance: Optional[float] = None) -> None:
+        if atoms is None:
+            atoms = []
         self.atoms = atoms
+        if basis is None:
+            basis = np.identity(3)
         self.basis = basis
         if pbc is None:
             pbc = (False, False, False)
@@ -56,7 +63,15 @@ class Structure(object):
             `atompack.errors.PositionOccupiedError`: If the position is already occupied.
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
         """
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            self.atoms.append(atom)
+            return
+        if not cell_contains(self.basis, atom.position, self.tolerance):
+            raise PositionOutsideError(atom.position)
+        distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
+        if distance < self.tolerance:
+            raise PositionOccupiedError(atom.position)
+        self.atoms.append(atom)
 
     def remove(self, position: np.ndarray) -> Atom:
         """Removes and returns an atom from the structure.
@@ -67,7 +82,14 @@ class Structure(object):
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
         """
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            raise PositionUnoccupiedError(position)
+        distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+        if distance > self.tolerance:
+            raise PositionUnoccupiedError(position)
+        atom = self.atoms[index]
+        del self.atoms[index]
+        return atom
 
     def select(self, position: np.ndarray) -> int:
         """Returns the index of an atom.
@@ -78,4 +100,12 @@ class Structure(object):
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
         """
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            raise PositionUnoccupiedError(position)
+        distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+        if distance > self.tolerance:
+            raise PositionUnoccupiedError(position)
+        return index
+
+    def _positions(self):
+        return np.array([atom.position for atom in self.atoms])
