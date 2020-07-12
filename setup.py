@@ -25,7 +25,7 @@ extensions = [
 
 setup(
     name="atompack",
-    version="0.1.0",
+    version="0.2.0",
     description="A flexible Python library for atomic structure generation.",
     long_description=long_description,
     long_description_content="text/markdown",
