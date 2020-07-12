@@ -5,6 +5,7 @@ from atompack.atom import Atom
 from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 from atompack.structure import Structure
 
+
 def test_structure_iter():
     atoms = [
         Atom(symbol="Fe"),

@@ -1,5 +1,12 @@
 MYPYPATH=./mypy
 
+bench:
+	@make build
+	@python3 -m pytest -v ./atompack ./benches 
+
+build:
+	@python3 setup.py build_ext --inplace
+
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf
 	@find . | grep -E "(.cache)" | xargs rm -rf
@@ -19,14 +26,14 @@ document:
 	@rm -rf ./docs/atompack
 
 format:
-	@isort -rc ./atompack
-	@yapf -rip --style='{based_on_style: google, column_limit: 120}' ./atompack
+	@python3 -m isort -rc ./atompack
+	@python3 -m yapf -rip --style='{based_on_style: google, column_limit: 120}' ./
 
 lint:
 	@export MYPYPATH=$(MYPYPATH);\
-		mypy --config-file=$(MYPYPATH)/mypy.ini ./atompack
-	@pyflakes ./atompack
+		python3 -m mypy --config-file=$(MYPYPATH)/mypy.ini ./atompack
+	@python3 -m pyflakes ./atompack
 
 test:
-	@python3 setup.py build_ext --inplace
-	@pytest --doctest-modules -v ./atompack ./tests
+	@make build
+	@python3 -m pytest --doctest-modules -v ./atompack ./tests
