@@ -58,6 +58,167 @@ class Crystal(Structure):
                                    pbc, tolerance)
         super().__init__(atoms, basis, pbc, tolerance)
 
+    @classmethod
+    def triclinic(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            b: float,
+            c: float,
+            alpha: float,
+            beta: float,
+            gamma: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with triclinic constraints.
+        
+        a != b != c
+
+        alpha != beta != gamma
+        """
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
+    @classmethod
+    def monoclinic(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            b: float,
+            c: float,
+            beta: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with monoclinic constraints.
+        
+        a != b != c
+        
+        alpha == gamma == pi/2
+        
+        beta != pi / 2
+        """
+        alpha = gamma = np.pi / 2
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
+    @classmethod
+    def orthorhombic(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            b: float,
+            c: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with orthorhombic constraints.
+        
+        a != b != c
+        
+        alpha == beta == gamma == pi / 2
+        """
+        alpha = beta = gamma = np.pi / 2
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
+    @classmethod
+    def tetragonal(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            c: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with tetragonal constraints.
+        
+        a == b != c
+        
+        alpha == beta == gamma == pi / 2
+        """
+        b = a
+        alpha = beta = gamma = np.pi / 2
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
+    @classmethod
+    def rhombohedral(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            alpha: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with rhombohedral constraints.
+        
+        a == b == c
+        
+        alpha == beta == gamma != pi / 2
+        """
+        b = c = a
+        beta = gamma = alpha
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
+    @classmethod
+    def hexagonal(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            c: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with hexagonal constraints.
+        
+        a == b != c
+        
+        alpha == beta == pi / 2
+        
+        gamma == 2 * pi / 3
+        """
+        b = a
+        alpha = beta = np.pi / 2
+        gamma = 2 * np.pi / 3
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
+    @classmethod
+    def cubic(
+            cls,
+            lattice_data: List[Dict[str, Any]],
+            lattice_sites: np.ndarray,
+            a: float,
+            duplicates: Optional[Tuple[int, int, int]] = None,
+            orientation: Optional[np.ndarray] = None,
+            pbc: Optional[Tuple[bool, bool, bool]] = None,
+            tolerance: float = 1.0e-6,
+    ) -> 'Crystal':
+        """Initializes a crystal with cubic constraints.
+        
+        a == b == c
+        
+        alpha == beta == gamma == pi / 2
+        """
+        b = c = a
+        alpha = beta = gamma = np.pi / 2
+        return cls(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+
     # TODO: Make a C extension to do this.
     @staticmethod
     def _build(

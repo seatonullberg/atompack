@@ -29,7 +29,10 @@
 
 import numpy as np
 
+from _cell import cell_contains
+from _pbc import pbc_nearest_neighbor
 from atompack.atom import Atom
+from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 
 
 class Structure(object):
@@ -46,11 +49,15 @@ class Structure(object):
     &#34;&#34;&#34;
 
     def __init__(self,
-                 atoms: List[Atom],
-                 basis: np.ndarray,
+                 atoms: Optional[List[Atom]] = None,
+                 basis: Optional[np.ndarray] = None,
                  pbc: Optional[Tuple[bool, bool, bool]] = None,
                  tolerance: Optional[float] = None) -&gt; None:
+        if atoms is None:
+            atoms = []
         self.atoms = atoms
+        if basis is None:
+            basis = np.identity(3)
         self.basis = basis
         if pbc is None:
             pbc = (False, False, False)
@@ -83,7 +90,15 @@ class Structure(object):
             `atompack.errors.PositionOccupiedError`: If the position is already occupied.
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
         &#34;&#34;&#34;
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            self.atoms.append(atom)
+            return
+        if not cell_contains(self.basis, atom.position, self.tolerance):
+            raise PositionOutsideError(atom.position)
+        distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
+        if distance &lt; self.tolerance:
+            raise PositionOccupiedError(atom.position)
+        self.atoms.append(atom)
 
     def remove(self, position: np.ndarray) -&gt; Atom:
         &#34;&#34;&#34;Removes and returns an atom from the structure.
@@ -94,7 +109,14 @@ class Structure(object):
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
         &#34;&#34;&#34;
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            raise PositionUnoccupiedError(position)
+        distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+        if distance &gt; self.tolerance:
+            raise PositionUnoccupiedError(position)
+        atom = self.atoms[index]
+        del self.atoms[index]
+        return atom
 
     def select(self, position: np.ndarray) -&gt; int:
         &#34;&#34;&#34;Returns the index of an atom.
@@ -105,7 +127,15 @@ class Structure(object):
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
         &#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
+        if len(self.atoms) == 0:
+            raise PositionUnoccupiedError(position)
+        distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+        if distance &gt; self.tolerance:
+            raise PositionUnoccupiedError(position)
+        return index
+
+    def _positions(self):
+        return np.array([atom.position for atom in self.atoms])</code></pre>
 </details>
 </section>
 <section>
@@ -119,7 +149,7 @@ class Structure(object):
 <dl>
 <dt id="atompack.structure.Structure"><code class="flex name class">
 <span>class <span class="ident">Structure</span></span>
-<span>(</span><span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], basis: numpy.ndarray, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: Union[float, NoneType] = None)</span>
+<span>(</span><span>atoms: Union[List[atompack.atom.Atom], NoneType] = None, basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: Union[float, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Representation of an atomic structure with boundaries which may be periodic.</p>
@@ -155,11 +185,15 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
     &#34;&#34;&#34;
 
     def __init__(self,
-                 atoms: List[Atom],
-                 basis: np.ndarray,
+                 atoms: Optional[List[Atom]] = None,
+                 basis: Optional[np.ndarray] = None,
                  pbc: Optional[Tuple[bool, bool, bool]] = None,
                  tolerance: Optional[float] = None) -&gt; None:
+        if atoms is None:
+            atoms = []
         self.atoms = atoms
+        if basis is None:
+            basis = np.identity(3)
         self.basis = basis
         if pbc is None:
             pbc = (False, False, False)
@@ -192,7 +226,15 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
             `atompack.errors.PositionOccupiedError`: If the position is already occupied.
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
         &#34;&#34;&#34;
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            self.atoms.append(atom)
+            return
+        if not cell_contains(self.basis, atom.position, self.tolerance):
+            raise PositionOutsideError(atom.position)
+        distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
+        if distance &lt; self.tolerance:
+            raise PositionOccupiedError(atom.position)
+        self.atoms.append(atom)
 
     def remove(self, position: np.ndarray) -&gt; Atom:
         &#34;&#34;&#34;Removes and returns an atom from the structure.
@@ -203,7 +245,14 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
         &#34;&#34;&#34;
-        raise NotImplementedError
+        if len(self.atoms) == 0:
+            raise PositionUnoccupiedError(position)
+        distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+        if distance &gt; self.tolerance:
+            raise PositionUnoccupiedError(position)
+        atom = self.atoms[index]
+        del self.atoms[index]
+        return atom
 
     def select(self, position: np.ndarray) -&gt; int:
         &#34;&#34;&#34;Returns the index of an atom.
@@ -214,7 +263,15 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
         &#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
+        if len(self.atoms) == 0:
+            raise PositionUnoccupiedError(position)
+        distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+        if distance &gt; self.tolerance:
+            raise PositionUnoccupiedError(position)
+        return index
+
+    def _positions(self):
+        return np.array([atom.position for atom in self.atoms])</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -249,7 +306,15 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         `atompack.errors.PositionOccupiedError`: If the position is already occupied.
         `atompack.errors.PositionOutsideError`: If the position is out of bounds.
     &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    if len(self.atoms) == 0:
+        self.atoms.append(atom)
+        return
+    if not cell_contains(self.basis, atom.position, self.tolerance):
+        raise PositionOutsideError(atom.position)
+    distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
+    if distance &lt; self.tolerance:
+        raise PositionOccupiedError(atom.position)
+    self.atoms.append(atom)</code></pre>
 </details>
 </dd>
 <dt id="atompack.structure.Structure.remove"><code class="name flex">
@@ -277,7 +342,14 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
     Raises:
         `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
     &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    if len(self.atoms) == 0:
+        raise PositionUnoccupiedError(position)
+    distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+    if distance &gt; self.tolerance:
+        raise PositionUnoccupiedError(position)
+    atom = self.atoms[index]
+    del self.atoms[index]
+    return atom</code></pre>
 </details>
 </dd>
 <dt id="atompack.structure.Structure.select"><code class="name flex">
@@ -305,7 +377,12 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
     Raises:
         `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
     &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    if len(self.atoms) == 0:
+        raise PositionUnoccupiedError(position)
+    distance, index = pbc_nearest_neighbor(position, self._positions(), self.basis, self.pbc)
+    if distance &gt; self.tolerance:
+        raise PositionUnoccupiedError(position)
+    return index</code></pre>
 </details>
 </dd>
 </dl>

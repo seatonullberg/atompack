@@ -25,7 +25,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">from typing import Optional
+
+import numpy as np
 
 
 class Atom(object):
@@ -40,9 +42,11 @@ class Atom(object):
             Mutating `position` is a logical error if the change results in atoms overlapping or a translation out of bounds.
     &#34;&#34;&#34;
 
-    def __init__(self, position: np.ndarray, **kwargs) -&gt; None:
+    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
         for k, v in kwargs.items():
             setattr(self, k, v)
+        if position is None:
+            position = np.zeros(3)
         self.position = position</code></pre>
 </details>
 </section>
@@ -57,7 +61,7 @@ class Atom(object):
 <dl>
 <dt id="atompack.atom.Atom"><code class="flex name class">
 <span>class <span class="ident">Atom</span></span>
-<span>(</span><span>position: numpy.ndarray, **kwargs)</span>
+<span>(</span><span>position: Union[numpy.ndarray, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Representation of an atom with dynamic attributes.</p>
@@ -86,9 +90,11 @@ Mutating <code>position</code> is a logical error if the change results in atoms
             Mutating `position` is a logical error if the change results in atoms overlapping or a translation out of bounds.
     &#34;&#34;&#34;
 
-    def __init__(self, position: np.ndarray, **kwargs) -&gt; None:
+    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
         for k, v in kwargs.items():
             setattr(self, k, v)
+        if position is None:
+            position = np.zeros(3)
         self.position = position</code></pre>
 </details>
 </dd>
