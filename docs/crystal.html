@@ -58,6 +58,19 @@ class Crystal(Structure):
         gamma: Angle between x and y directions in radians.
         duplicates: Number of duplications to apply to the finished structure along each direction.
         orientation: 3x3 matrix indicating the alignment of the lattice vectors.
+
+    Example:
+        &gt;&gt;&gt; from atompack.crystal import Crystal
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; lattice_data = [{&#34;symbol&#34;: &#34;Cr&#34;, &#34;magmom&#34;: 1.0}, {&#34;symbol&#34;: &#34;Cr&#34;, &#34;magmom&#34;: -1.0}]
+        &gt;&gt;&gt; lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+        &gt;&gt;&gt; a = b = c = 2.85
+        &gt;&gt;&gt; alpha = beta = gamma = np.pi / 2
+        &gt;&gt;&gt; crystal = Crystal(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]))
+        &gt;&gt;&gt; assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
     &#34;&#34;&#34;
 
     def __init__(
@@ -379,7 +392,20 @@ class Crystal(Structure):
 <dd>Number of duplications to apply to the finished structure along each direction.</dd>
 <dt><strong><code>orientation</code></strong></dt>
 <dd>3x3 matrix indicating the alignment of the lattice vectors.</dd>
-</dl></div>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code class="python">&gt;&gt;&gt; from atompack.crystal import Crystal
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt;
+&gt;&gt;&gt; lattice_data = [{&quot;symbol&quot;: &quot;Cr&quot;, &quot;magmom&quot;: 1.0}, {&quot;symbol&quot;: &quot;Cr&quot;, &quot;magmom&quot;: -1.0}]
+&gt;&gt;&gt; lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+&gt;&gt;&gt; a = b = c = 2.85
+&gt;&gt;&gt; alpha = beta = gamma = np.pi / 2
+&gt;&gt;&gt; crystal = Crystal(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma)
+&gt;&gt;&gt;
+&gt;&gt;&gt; assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]))
+&gt;&gt;&gt; assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -401,6 +427,19 @@ class Crystal(Structure):
         gamma: Angle between x and y directions in radians.
         duplicates: Number of duplications to apply to the finished structure along each direction.
         orientation: 3x3 matrix indicating the alignment of the lattice vectors.
+
+    Example:
+        &gt;&gt;&gt; from atompack.crystal import Crystal
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; lattice_data = [{&#34;symbol&#34;: &#34;Cr&#34;, &#34;magmom&#34;: 1.0}, {&#34;symbol&#34;: &#34;Cr&#34;, &#34;magmom&#34;: -1.0}]
+        &gt;&gt;&gt; lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+        &gt;&gt;&gt; a = b = c = 2.85
+        &gt;&gt;&gt; alpha = beta = gamma = np.pi / 2
+        &gt;&gt;&gt; crystal = Crystal(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]))
+        &gt;&gt;&gt; assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
     &#34;&#34;&#34;
 
     def __init__(

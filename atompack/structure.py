@@ -39,9 +39,21 @@ class Structure(object):
             tolerance = 1.0e-6
         self.tolerance = tolerance
 
+    def __getitem__(self, key: int) -> Atom:
+        return self.atoms[key]
+
+    def __setitem__(self, key: int, value: Atom) -> None:
+        self.atoms[key] = value
+
+    def __delitem__(self, key: int) -> None:
+        del self.atoms[key]
+
     def __iter__(self) -> 'Structure':
         self._iter = 0
         return self
+
+    def __len__(self) -> int:
+        return len(self.atoms)
 
     def __next__(self) -> Atom:
         if self._iter == len(self):
@@ -49,9 +61,6 @@ class Structure(object):
         res = self.atoms[self._iter]
         self._iter += 1
         return res
-
-    def __len__(self) -> int:
-        return len(self.atoms)
 
     def insert(self, atom: Atom) -> None:
         """Inserts an atom into the structure safely with bounds checking.
@@ -62,6 +71,16 @@ class Structure(object):
         Raises:
             `atompack.errors.PositionOccupiedError`: If the position is already occupied.
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
+
+        Example:
+            >>> from atompack.atom import Atom
+            >>> from atompack.structure import Structure
+            >>> 
+            >>> structure = Structure()
+            >>> atom = Atom()
+            >>> structure.insert(atom)
+            >>>
+            >>> assert len(structure) == 1
         """
         if len(self.atoms) == 0:
             self.atoms.append(atom)
@@ -81,6 +100,19 @@ class Structure(object):
 
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+        Example:
+            >>> from atompack.atom import Atom
+            >>> from atompack.structure import Structure
+            >>> import numpy as np
+            >>>
+            >>> atoms = [Atom(symbol="Fe")]
+            >>> structure = Structure(atoms=atoms)
+            >>> removal_position = np.zeros(3)
+            >>> atom = structure.remove(removal_position)
+            >>>
+            >>> assert atom.symbol == "Fe"
+            >>> assert len(structure) == 0
         """
         if len(self.atoms) == 0:
             raise PositionUnoccupiedError(position)
@@ -99,6 +131,18 @@ class Structure(object):
 
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+        Example:
+            >>> from atompack.atom import Atom
+            >>> from atompack.structure import Structure
+            >>> import numpy as np
+            >>>
+            >>> atoms = [Atom(symbol="Fe")]
+            >>> structure = Structure(atoms=atoms)
+            >>> selection_position = np.zeros(3)
+            >>> index = structure.select(selection_position)
+            >>>
+            >>> assert structure[index].symbol == "Fe"
         """
         if len(self.atoms) == 0:
             raise PositionUnoccupiedError(position)

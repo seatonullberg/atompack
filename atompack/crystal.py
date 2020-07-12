@@ -31,6 +31,19 @@ class Crystal(Structure):
         gamma: Angle between x and y directions in radians.
         duplicates: Number of duplications to apply to the finished structure along each direction.
         orientation: 3x3 matrix indicating the alignment of the lattice vectors.
+
+    Example:
+        >>> from atompack.crystal import Crystal
+        >>> import numpy as np
+        >>>
+        >>> lattice_data = [{"symbol": "Cr", "magmom": 1.0}, {"symbol": "Cr", "magmom": -1.0}]
+        >>> lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
+        >>> a = b = c = 2.85
+        >>> alpha = beta = gamma = np.pi / 2
+        >>> crystal = Crystal(lattice_data, lattice_sites, a, b, c, alpha, beta, gamma)
+        >>>
+        >>> assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]))
+        >>> assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
     """
 
     def __init__(

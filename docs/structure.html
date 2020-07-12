@@ -66,9 +66,21 @@ class Structure(object):
             tolerance = 1.0e-6
         self.tolerance = tolerance
 
+    def __getitem__(self, key: int) -&gt; Atom:
+        return self.atoms[key]
+
+    def __setitem__(self, key: int, value: Atom) -&gt; None:
+        self.atoms[key] = value
+
+    def __delitem__(self, key: int) -&gt; None:
+        del self.atoms[key]
+
     def __iter__(self) -&gt; &#39;Structure&#39;:
         self._iter = 0
         return self
+
+    def __len__(self) -&gt; int:
+        return len(self.atoms)
 
     def __next__(self) -&gt; Atom:
         if self._iter == len(self):
@@ -76,9 +88,6 @@ class Structure(object):
         res = self.atoms[self._iter]
         self._iter += 1
         return res
-
-    def __len__(self) -&gt; int:
-        return len(self.atoms)
 
     def insert(self, atom: Atom) -&gt; None:
         &#34;&#34;&#34;Inserts an atom into the structure safely with bounds checking.
@@ -89,6 +98,16 @@ class Structure(object):
         Raises:
             `atompack.errors.PositionOccupiedError`: If the position is already occupied.
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
+
+        Example:
+            &gt;&gt;&gt; from atompack.atom import Atom
+            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; 
+            &gt;&gt;&gt; structure = Structure()
+            &gt;&gt;&gt; atom = Atom()
+            &gt;&gt;&gt; structure.insert(atom)
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; assert len(structure) == 1
         &#34;&#34;&#34;
         if len(self.atoms) == 0:
             self.atoms.append(atom)
@@ -108,6 +127,19 @@ class Structure(object):
 
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+        Example:
+            &gt;&gt;&gt; from atompack.atom import Atom
+            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; import numpy as np
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; structure = Structure(atoms=atoms)
+            &gt;&gt;&gt; removal_position = np.zeros(3)
+            &gt;&gt;&gt; atom = structure.remove(removal_position)
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; assert atom.symbol == &#34;Fe&#34;
+            &gt;&gt;&gt; assert len(structure) == 0
         &#34;&#34;&#34;
         if len(self.atoms) == 0:
             raise PositionUnoccupiedError(position)
@@ -126,6 +158,18 @@ class Structure(object):
 
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+        Example:
+            &gt;&gt;&gt; from atompack.atom import Atom
+            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; import numpy as np
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; structure = Structure(atoms=atoms)
+            &gt;&gt;&gt; selection_position = np.zeros(3)
+            &gt;&gt;&gt; index = structure.select(selection_position)
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; assert structure[index].symbol == &#34;Fe&#34;
         &#34;&#34;&#34;
         if len(self.atoms) == 0:
             raise PositionUnoccupiedError(position)
@@ -202,9 +246,21 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
             tolerance = 1.0e-6
         self.tolerance = tolerance
 
+    def __getitem__(self, key: int) -&gt; Atom:
+        return self.atoms[key]
+
+    def __setitem__(self, key: int, value: Atom) -&gt; None:
+        self.atoms[key] = value
+
+    def __delitem__(self, key: int) -&gt; None:
+        del self.atoms[key]
+
     def __iter__(self) -&gt; &#39;Structure&#39;:
         self._iter = 0
         return self
+
+    def __len__(self) -&gt; int:
+        return len(self.atoms)
 
     def __next__(self) -&gt; Atom:
         if self._iter == len(self):
@@ -212,9 +268,6 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         res = self.atoms[self._iter]
         self._iter += 1
         return res
-
-    def __len__(self) -&gt; int:
-        return len(self.atoms)
 
     def insert(self, atom: Atom) -&gt; None:
         &#34;&#34;&#34;Inserts an atom into the structure safely with bounds checking.
@@ -225,6 +278,16 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         Raises:
             `atompack.errors.PositionOccupiedError`: If the position is already occupied.
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
+
+        Example:
+            &gt;&gt;&gt; from atompack.atom import Atom
+            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; 
+            &gt;&gt;&gt; structure = Structure()
+            &gt;&gt;&gt; atom = Atom()
+            &gt;&gt;&gt; structure.insert(atom)
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; assert len(structure) == 1
         &#34;&#34;&#34;
         if len(self.atoms) == 0:
             self.atoms.append(atom)
@@ -244,6 +307,19 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+        Example:
+            &gt;&gt;&gt; from atompack.atom import Atom
+            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; import numpy as np
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; structure = Structure(atoms=atoms)
+            &gt;&gt;&gt; removal_position = np.zeros(3)
+            &gt;&gt;&gt; atom = structure.remove(removal_position)
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; assert atom.symbol == &#34;Fe&#34;
+            &gt;&gt;&gt; assert len(structure) == 0
         &#34;&#34;&#34;
         if len(self.atoms) == 0:
             raise PositionUnoccupiedError(position)
@@ -262,6 +338,18 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 
         Raises:
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+        Example:
+            &gt;&gt;&gt; from atompack.atom import Atom
+            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; import numpy as np
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; structure = Structure(atoms=atoms)
+            &gt;&gt;&gt; selection_position = np.zeros(3)
+            &gt;&gt;&gt; index = structure.select(selection_position)
+            &gt;&gt;&gt;
+            &gt;&gt;&gt; assert structure[index].symbol == &#34;Fe&#34;
         &#34;&#34;&#34;
         if len(self.atoms) == 0:
             raise PositionUnoccupiedError(position)
@@ -291,7 +379,17 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 </dl>
 <h2 id="raises">Raises</h2>
 <p><code><a title="atompack.errors.PositionOccupiedError" href="errors.html#atompack.errors.PositionOccupiedError">PositionOccupiedError</a></code>: If the position is already occupied.
-<code><a title="atompack.errors.PositionOutsideError" href="errors.html#atompack.errors.PositionOutsideError">PositionOutsideError</a></code>: If the position is out of bounds.</p></div>
+<code><a title="atompack.errors.PositionOutsideError" href="errors.html#atompack.errors.PositionOutsideError">PositionOutsideError</a></code>: If the position is out of bounds.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python">&gt;&gt;&gt; from atompack.atom import Atom
+&gt;&gt;&gt; from atompack.structure import Structure
+&gt;&gt;&gt; 
+&gt;&gt;&gt; structure = Structure()
+&gt;&gt;&gt; atom = Atom()
+&gt;&gt;&gt; structure.insert(atom)
+&gt;&gt;&gt;
+&gt;&gt;&gt; assert len(structure) == 1
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -305,6 +403,16 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
     Raises:
         `atompack.errors.PositionOccupiedError`: If the position is already occupied.
         `atompack.errors.PositionOutsideError`: If the position is out of bounds.
+
+    Example:
+        &gt;&gt;&gt; from atompack.atom import Atom
+        &gt;&gt;&gt; from atompack.structure import Structure
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; structure = Structure()
+        &gt;&gt;&gt; atom = Atom()
+        &gt;&gt;&gt; structure.insert(atom)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert len(structure) == 1
     &#34;&#34;&#34;
     if len(self.atoms) == 0:
         self.atoms.append(atom)
@@ -328,7 +436,20 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <dd>Position to remove the atom from.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
-<p><code><a title="atompack.errors.PositionUnoccupiedError" href="errors.html#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code>: If the position is not occupied.</p></div>
+<p><code><a title="atompack.errors.PositionUnoccupiedError" href="errors.html#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code>: If the position is not occupied.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python">&gt;&gt;&gt; from atompack.atom import Atom
+&gt;&gt;&gt; from atompack.structure import Structure
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt;
+&gt;&gt;&gt; atoms = [Atom(symbol=&quot;Fe&quot;)]
+&gt;&gt;&gt; structure = Structure(atoms=atoms)
+&gt;&gt;&gt; removal_position = np.zeros(3)
+&gt;&gt;&gt; atom = structure.remove(removal_position)
+&gt;&gt;&gt;
+&gt;&gt;&gt; assert atom.symbol == &quot;Fe&quot;
+&gt;&gt;&gt; assert len(structure) == 0
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -341,6 +462,19 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 
     Raises:
         `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+    Example:
+        &gt;&gt;&gt; from atompack.atom import Atom
+        &gt;&gt;&gt; from atompack.structure import Structure
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+        &gt;&gt;&gt; structure = Structure(atoms=atoms)
+        &gt;&gt;&gt; removal_position = np.zeros(3)
+        &gt;&gt;&gt; atom = structure.remove(removal_position)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert atom.symbol == &#34;Fe&#34;
+        &gt;&gt;&gt; assert len(structure) == 0
     &#34;&#34;&#34;
     if len(self.atoms) == 0:
         raise PositionUnoccupiedError(position)
@@ -363,7 +497,19 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <dd>Position to select the atom from.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
-<p><code><a title="atompack.errors.PositionUnoccupiedError" href="errors.html#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code>: If the position is not occupied.</p></div>
+<p><code><a title="atompack.errors.PositionUnoccupiedError" href="errors.html#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code>: If the position is not occupied.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python">&gt;&gt;&gt; from atompack.atom import Atom
+&gt;&gt;&gt; from atompack.structure import Structure
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt;
+&gt;&gt;&gt; atoms = [Atom(symbol=&quot;Fe&quot;)]
+&gt;&gt;&gt; structure = Structure(atoms=atoms)
+&gt;&gt;&gt; selection_position = np.zeros(3)
+&gt;&gt;&gt; index = structure.select(selection_position)
+&gt;&gt;&gt;
+&gt;&gt;&gt; assert structure[index].symbol == &quot;Fe&quot;
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -376,6 +522,18 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 
     Raises:
         `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
+
+    Example:
+        &gt;&gt;&gt; from atompack.atom import Atom
+        &gt;&gt;&gt; from atompack.structure import Structure
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+        &gt;&gt;&gt; structure = Structure(atoms=atoms)
+        &gt;&gt;&gt; selection_position = np.zeros(3)
+        &gt;&gt;&gt; index = structure.select(selection_position)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert structure[index].symbol == &#34;Fe&#34;
     &#34;&#34;&#34;
     if len(self.atoms) == 0:
         raise PositionUnoccupiedError(position)
