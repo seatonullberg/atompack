@@ -28,7 +28,7 @@ setup(
     version="0.2.1",
     description="A flexible Python library for atomic structure generation.",
     long_description=long_description,
-    long_description_content="text/markdown",
+    long_description_content_type="text/markdown",
     author="Seaton Ullberg",
     author_email="seatonullberg@gmail.com",
     url="https://github.com/seatonullberg/atompack",
