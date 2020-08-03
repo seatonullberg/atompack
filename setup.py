@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 include_dirs = [
-    "./extensions",
+    "./extensions/",
     np.get_include(),
 ]
 
@@ -25,7 +25,7 @@ extensions = [
 
 setup(
     name="atompack",
-    version="0.2.0",
+    version="0.2.1",
     description="A flexible Python library for atomic structure generation.",
     long_description=long_description,
     long_description_content="text/markdown",
