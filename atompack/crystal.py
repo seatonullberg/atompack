@@ -47,19 +47,19 @@ class Crystal(Structure):
     """
 
     def __init__(
-            self,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            b: float,
-            c: float,
-            alpha: float,
-            beta: float,
-            gamma: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        self,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        b: float,
+        c: float,
+        alpha: float,
+        beta: float,
+        gamma: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> None:
         if duplicates is None:
             duplicates = (1, 1, 1)
@@ -73,19 +73,19 @@ class Crystal(Structure):
 
     @classmethod
     def triclinic(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            b: float,
-            c: float,
-            alpha: float,
-            beta: float,
-            gamma: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        b: float,
+        c: float,
+        alpha: float,
+        beta: float,
+        gamma: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with triclinic constraints.
         
@@ -97,17 +97,17 @@ class Crystal(Structure):
 
     @classmethod
     def monoclinic(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            b: float,
-            c: float,
-            beta: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        b: float,
+        c: float,
+        beta: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with monoclinic constraints.
         
@@ -122,16 +122,16 @@ class Crystal(Structure):
 
     @classmethod
     def orthorhombic(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            b: float,
-            c: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        b: float,
+        c: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with orthorhombic constraints.
         
@@ -144,15 +144,15 @@ class Crystal(Structure):
 
     @classmethod
     def tetragonal(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            c: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        c: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with tetragonal constraints.
         
@@ -166,15 +166,15 @@ class Crystal(Structure):
 
     @classmethod
     def rhombohedral(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            alpha: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        alpha: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with rhombohedral constraints.
         
@@ -188,15 +188,15 @@ class Crystal(Structure):
 
     @classmethod
     def hexagonal(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            c: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        c: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with hexagonal constraints.
         
@@ -213,14 +213,14 @@ class Crystal(Structure):
 
     @classmethod
     def cubic(
-            cls,
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            duplicates: Optional[Tuple[int, int, int]] = None,
-            orientation: Optional[np.ndarray] = None,
-            pbc: Optional[Tuple[bool, bool, bool]] = None,
-            tolerance: float = 1.0e-6,
+        cls,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        duplicates: Optional[Tuple[int, int, int]] = None,
+        orientation: Optional[np.ndarray] = None,
+        pbc: Optional[Tuple[bool, bool, bool]] = None,
+        tolerance: float = 1.0e-6,
     ) -> 'Crystal':
         """Initializes a crystal with cubic constraints.
         
@@ -235,18 +235,18 @@ class Crystal(Structure):
     # TODO: Make a C extension to do this.
     @staticmethod
     def _build(
-            lattice_data: List[Dict[str, Any]],
-            lattice_sites: np.ndarray,
-            a: float,
-            b: float,
-            c: float,
-            alpha: float,
-            beta: float,
-            gamma: float,
-            duplicates: Tuple[int, int, int],
-            orientation: np.ndarray,
-            pbc: Tuple[bool, bool, bool],
-            tolerance: float,
+        lattice_data: List[Dict[str, Any]],
+        lattice_sites: np.ndarray,
+        a: float,
+        b: float,
+        c: float,
+        alpha: float,
+        beta: float,
+        gamma: float,
+        duplicates: Tuple[int, int, int],
+        orientation: np.ndarray,
+        pbc: Tuple[bool, bool, bool],
+        tolerance: float,
     ) -> Tuple[List[Atom], np.ndarray]:
         """Construct a crystalline lattice and populate it with atoms."""
         # calculate lattice vectors from metric tensor
