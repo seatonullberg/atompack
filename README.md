@@ -36,7 +36,7 @@ The following steps can be done with either `pipenv` or `pip`. I recommend using
 For `pipenv` users:
 
 ```bash
-$ pipenv install --dev -e .
+$ pipenv install --dev
 ```
 
 For `pip` users:
