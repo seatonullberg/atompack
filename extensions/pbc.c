@@ -4,32 +4,9 @@
 #include <Python.h>
 #include <float.h>
 #include <numpy/arrayobject.h>
-#include "util.h"
+#include "vector_math.h"
 
 static PyObject *py_pbc_nearest_neighbor(PyObject *self, PyObject *args);
-
-static PyMethodDef method_def[] = {
-    {"pbc_nearest_neighbor", py_pbc_nearest_neighbor, METH_VARARGS, "Returns the distance from and index of the nearest neighbor."},
-    {NULL, NULL, 0, NULL},
-};
-
-static struct PyModuleDef module_def = {
-    PyModuleDef_HEAD_INIT,
-    "_pbc",
-    "Module `_pbc` provides optimized C functions for operations with periodic boundary conditions.",
-    -1,
-    method_def,
-};
-
-PyMODINIT_FUNC PyInit__pbc(void)
-{
-    PyObject *module = PyModule_Create(&module_def);
-    if (module == NULL)
-    {
-        return NULL;
-    }
-    return module;
-}
 
 size_t pbc_nearest_neighbor(double position[3], double positions[][3], size_t length, double cell[3][3], int pbc[3], double *out)
 {
@@ -86,6 +63,33 @@ size_t pbc_nearest_neighbor(double position[3], double positions[][3], size_t le
     }
     *out = distance;
     return index;
+}
+
+/******************************
+*  Python Module Description  *
+******************************/
+
+static PyMethodDef method_def[] = {
+    {"pbc_nearest_neighbor", py_pbc_nearest_neighbor, METH_VARARGS, "Returns the distance from and index of the nearest neighbor."},
+    {NULL, NULL, 0, NULL},
+};
+
+static struct PyModuleDef module_def = {
+    PyModuleDef_HEAD_INIT,
+    "_pbc",
+    "Module `_pbc` provides optimized C functions for operations with periodic boundary conditions.",
+    -1,
+    method_def,
+};
+
+PyMODINIT_FUNC PyInit__pbc(void)
+{
+    PyObject *module = PyModule_Create(&module_def);
+    if (module == NULL)
+    {
+        return NULL;
+    }
+    return module;
 }
 
 static PyObject *py_pbc_nearest_neighbor(PyObject *self, PyObject *args)

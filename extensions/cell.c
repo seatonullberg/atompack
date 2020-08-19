@@ -3,32 +3,9 @@
 
 #include <Python.h>
 #include <numpy/arrayobject.h>
-#include "util.h"
+#include "vector_math.h"
 
 static PyObject *py_cell_contains(PyObject *self, PyObject *args);
-
-static PyMethodDef method_def[] = {
-    {"cell_contains", py_cell_contains, METH_VARARGS, "Returns True if point is within cell."},
-    {NULL, NULL, 0, NULL},
-};
-
-static struct PyModuleDef module_def = {
-    PyModuleDef_HEAD_INIT,
-    "_cell",
-    "Module `_cell` provides optimized C functions which operate on a 3x3 matrix representation of a prallelepiped cell.",
-    -1,
-    method_def,
-};
-
-PyMODINIT_FUNC PyInit__cell(void)
-{
-    PyObject *module = PyModule_Create(&module_def);
-    if (module == NULL)
-    {
-        return NULL;
-    }
-    return module;
-}
 
 // Populates an array with the vertices of a cell.
 void _vertices(double cell[3][3], double out[8][3])
@@ -121,6 +98,7 @@ void _normals(double cell[3][3], double out[6][3])
     }
 }
 
+// Returns 1 if position is within the cell else 0
 int cell_contains(double cell[3][3], double position[3], double tolerance)
 {
     double faces[6][3][3];
@@ -142,6 +120,33 @@ int cell_contains(double cell[3][3], double position[3], double tolerance)
         }
     }
     return 1; // true
+}
+
+/******************************
+*  Python Module Description  *
+******************************/
+
+static PyMethodDef method_def[] = {
+    {"cell_contains", py_cell_contains, METH_VARARGS, "Returns True if point is within cell."},
+    {NULL, NULL, 0, NULL},
+};
+
+static struct PyModuleDef module_def = {
+    PyModuleDef_HEAD_INIT,
+    "_cell",
+    "Module `_cell` provides optimized C functions which operate on a 3x3 matrix representation of a prallelepiped cell.",
+    -1,
+    method_def,
+};
+
+PyMODINIT_FUNC PyInit__cell(void)
+{
+    PyObject *module = PyModule_Create(&module_def);
+    if (module == NULL)
+    {
+        return NULL;
+    }
+    return module;
 }
 
 static PyObject *py_cell_contains(PyObject *self, PyObject *args)

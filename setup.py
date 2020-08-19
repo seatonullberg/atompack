@@ -13,12 +13,12 @@ include_dirs = [
 extensions = [
     Extension(
         "_cell",
-        sources=["./extensions/_cell.c"],
+        sources=["./extensions/cell.c"],
         include_dirs=include_dirs,
     ),
     Extension(
         "_pbc",
-        sources=["./extensions/_pbc.c"],
+        sources=["./extensions/pbc.c"],
         include_dirs=include_dirs,
     ),
 ]
