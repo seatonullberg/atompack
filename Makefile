@@ -5,7 +5,7 @@ _build_ext:
 
 bench:
 	@make _build_ext
-	@pipenv run pytest -v ./atompack ./benches 
+	@pipenv run pytest -v ./benches 
 
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf
