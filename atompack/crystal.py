@@ -26,7 +26,7 @@ class Crystal(Structure):
 
     Args:
         lattice_atoms: Atom at each lattice site.
-            Note: The `position` attribute is ignored and overwritten during initialization.
+            The `position` attribute is ignored and overwritten during initialization.
         lattice_sites: Fractional coordinates of atoms in the lattice.
         a: Length of the x direction basis vector.
         b: Length of the y direction basis vector.
@@ -49,7 +49,7 @@ class Crystal(Structure):
         >>> alpha = beta = gamma = np.pi / 2
         >>> crystal = Crystal(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma)
         >>>
-        >>> assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]))
+        >>> assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]),)
         >>> assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
     """
 
@@ -96,9 +96,9 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with triclinic constraints.
         
-        a != b != c
+        \\[a \\ne b \\ne c\\]
 
-        alpha != beta != gamma
+        \\[\\alpha \\ne \\beta \\ne \\gamma\\]
         """
         return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
 
@@ -118,11 +118,11 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with monoclinic constraints.
         
-        a != b != c
+        \\[a \\ne b \\ne c\\]
         
-        alpha == gamma == pi/2
+        \\[\\alpha \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         
-        beta != pi / 2
+        \\[\\beta \\ne \\frac{\\pi}{2}\\]
         """
         alpha = gamma = np.pi / 2
         return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
@@ -142,9 +142,9 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with orthorhombic constraints.
         
-        a != b != c
+        \\[a \\ne b \\ne c\\]
         
-        alpha == beta == gamma == pi / 2
+        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         """
         alpha = beta = gamma = np.pi / 2
         return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
@@ -163,9 +163,9 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with tetragonal constraints.
         
-        a == b != c
+        \\[a \\equiv b \\ne c\\]
         
-        alpha == beta == gamma == pi / 2
+        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         """
         b = a
         alpha = beta = gamma = np.pi / 2
@@ -185,9 +185,9 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with rhombohedral constraints.
         
-        a == b == c
+        \\[a \\equiv b \\equiv c\\]
         
-        alpha == beta == gamma != pi / 2
+        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\ne \\frac{\\pi}{2}\\]
         """
         b = c = a
         beta = gamma = alpha
@@ -207,11 +207,11 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with hexagonal constraints.
         
-        a == b != c
+        \\[a \\equiv b \\ne c\\]
         
-        alpha == beta == pi / 2
+        \\[\\alpha \\equiv \\beta \\equiv \\frac{\\pi}{2}\\]
         
-        gamma == 2 * pi / 3
+        \\[\\gamma \\equiv \\frac{2\\pi}{3}\\]
         """
         b = a
         alpha = beta = np.pi / 2
@@ -231,9 +231,9 @@ class Crystal(Structure):
     ) -> 'Crystal':
         """Initializes a crystal with cubic constraints.
         
-        a == b == c
+        \\[a \\equiv b \\equiv c\\]
         
-        alpha == beta == gamma == pi / 2
+        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         """
         b = c = a
         alpha = beta = gamma = np.pi / 2

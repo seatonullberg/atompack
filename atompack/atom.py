@@ -9,12 +9,12 @@ class Atom(object):
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
         This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` is left as a positional argument so that 
-        each instance is guaranteed to have it as an attribute.
+        elegant and pythonic way. `position` is left as an optional positional 
+        argument so that each instance is guaranteed to have it as an attribute.
 
     Args:
         position: Location vector in 3D cartesian space.
-            Note: Mutating `position` is a logical error if the change results in atoms 
+            Mutating `position` is a logical error if the change results in atoms 
             overlapping or existing out of bounds.
 
     Example:

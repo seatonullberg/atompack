@@ -30,9 +30,9 @@
 <pre><code class="python">from typing import List, Optional, Tuple
 
 import numpy as np
-
 from _cell import cell_contains
 from _pbc import pbc_nearest_neighbor
+
 from atompack.atom import Atom
 from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 
@@ -42,12 +42,14 @@ class Structure(object):
     
     Args:
         atoms: List of atoms in the structure.
-            Note: Mutating `atoms` is a logical error if the change results in atoms overlapping or existing out of bounds.
+            Mutating `atoms` is a logical error if the change results in atoms 
+            overlapping or existing out of bounds.
         basis: 3x3 matrix defining the boundaries of the structure.
-            Note: Mutating `basis` is a logical error if the change forces atoms out of bounds.
+            Mutating `basis` is a logical error if the change forces atoms out of bounds.
         pbc: Boolean array that indicates which boundaries are considered periodic.
         tolerance: Radius of tolerance for operations on the structure.
-            Note: Mutating `tolerance` is a logical error if the change results in atoms overlapping or existing out of bounds.
+            Mutating `tolerance` is a logical error because the behaviors which 
+            rely on it cannot be retroactively adjusted.
     &#34;&#34;&#34;
 
     def __init__(self,
@@ -200,15 +202,17 @@ class Structure(object):
 <dl>
 <dt><strong><code>atoms</code></strong></dt>
 <dd>List of atoms in the structure.
-Note: Mutating <code>atoms</code> is a logical error if the change results in atoms overlapping or existing out of bounds.</dd>
+Mutating <code>atoms</code> is a logical error if the change results in atoms
+overlapping or existing out of bounds.</dd>
 <dt><strong><code>basis</code></strong></dt>
 <dd>3x3 matrix defining the boundaries of the structure.
-Note: Mutating <code>basis</code> is a logical error if the change forces atoms out of bounds.</dd>
+Mutating <code>basis</code> is a logical error if the change forces atoms out of bounds.</dd>
 <dt><strong><code>pbc</code></strong></dt>
 <dd>Boolean array that indicates which boundaries are considered periodic.</dd>
 <dt><strong><code>tolerance</code></strong></dt>
 <dd>Radius of tolerance for operations on the structure.
-Note: Mutating <code>tolerance</code> is a logical error if the change results in atoms overlapping or existing out of bounds.</dd>
+Mutating <code>tolerance</code> is a logical error because the behaviors which
+rely on it cannot be retroactively adjusted.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -219,12 +223,14 @@ Note: Mutating <code>tolerance</code> is a logical error if the change results i
     
     Args:
         atoms: List of atoms in the structure.
-            Note: Mutating `atoms` is a logical error if the change results in atoms overlapping or existing out of bounds.
+            Mutating `atoms` is a logical error if the change results in atoms 
+            overlapping or existing out of bounds.
         basis: 3x3 matrix defining the boundaries of the structure.
-            Note: Mutating `basis` is a logical error if the change forces atoms out of bounds.
+            Mutating `basis` is a logical error if the change forces atoms out of bounds.
         pbc: Boolean array that indicates which boundaries are considered periodic.
         tolerance: Radius of tolerance for operations on the structure.
-            Note: Mutating `tolerance` is a logical error if the change results in atoms overlapping or existing out of bounds.
+            Mutating `tolerance` is a logical error because the behaviors which 
+            rely on it cannot be retroactively adjusted.
     &#34;&#34;&#34;
 
     def __init__(self,

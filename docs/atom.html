@@ -38,12 +38,12 @@ class Atom(object):
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
         This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` is left as a positional argument so that 
-        each instance is guaranteed to have it as an attribute.
+        elegant and pythonic way. `position` is left as an optional positional 
+        argument so that each instance is guaranteed to have it as an attribute.
 
     Args:
         position: Location vector in 3D cartesian space.
-            Note: Mutating `position` is a logical error if the change results in atoms 
+            Mutating `position` is a logical error if the change results in atoms 
             overlapping or existing out of bounds.
 
     Example:
@@ -84,13 +84,13 @@ class Atom(object):
 <h2 id="notes">Notes</h2>
 <p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.
 This enables arbitrary atomic data to be associated with each instance in an
-elegant and pythonic way. <code>position</code> is left as a positional argument so that
-each instance is guaranteed to have it as an attribute.</p>
+elegant and pythonic way. <code>position</code> is left as an optional positional
+argument so that each instance is guaranteed to have it as an attribute.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>position</code></strong></dt>
 <dd>Location vector in 3D cartesian space.
-Note: Mutating <code>position</code> is a logical error if the change results in atoms
+Mutating <code>position</code> is a logical error if the change results in atoms
 overlapping or existing out of bounds.</dd>
 </dl>
 <h2 id="example">Example</h2>
@@ -114,12 +114,12 @@ overlapping or existing out of bounds.</dd>
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
         This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` is left as a positional argument so that 
-        each instance is guaranteed to have it as an attribute.
+        elegant and pythonic way. `position` is left as an optional positional 
+        argument so that each instance is guaranteed to have it as an attribute.
 
     Args:
         position: Location vector in 3D cartesian space.
-            Note: Mutating `position` is a logical error if the change results in atoms 
+            Mutating `position` is a logical error if the change results in atoms 
             overlapping or existing out of bounds.
 
     Example:

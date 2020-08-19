@@ -13,12 +13,14 @@ class Structure(object):
     
     Args:
         atoms: List of atoms in the structure.
-            Note: Mutating `atoms` is a logical error if the change results in atoms overlapping or existing out of bounds.
+            Mutating `atoms` is a logical error if the change results in atoms 
+            overlapping or existing out of bounds.
         basis: 3x3 matrix defining the boundaries of the structure.
-            Note: Mutating `basis` is a logical error if the change forces atoms out of bounds.
+            Mutating `basis` is a logical error if the change forces atoms out of bounds.
         pbc: Boolean array that indicates which boundaries are considered periodic.
         tolerance: Radius of tolerance for operations on the structure.
-            Note: Mutating `tolerance` is a logical error if the change results in atoms overlapping or existing out of bounds.
+            Mutating `tolerance` is a logical error because the behaviors which 
+            rely on it cannot be retroactively adjusted.
     """
 
     def __init__(self,
