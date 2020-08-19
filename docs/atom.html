@@ -37,19 +37,33 @@ class Atom(object):
     
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-        This enables arbitrary atomic data to be associated with each instance in an elegant and pythonic way.
+        This enables arbitrary atomic data to be associated with each instance in an
+        elegant and pythonic way. `position` is left as a positional argument so that 
+        each instance is guaranteed to have it as an attribute.
 
     Args:
         position: Location vector in 3D cartesian space.
-            Mutating `position` is a logical error if the change results in atoms overlapping or a translation out of bounds.
+            Note: Mutating `position` is a logical error if the change results in atoms 
+            overlapping or existing out of bounds.
+
+    Example:
+        &gt;&gt;&gt; from atompack import Atom
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; position = np.array([1, 2, 3])
+        &gt;&gt;&gt; atom = Atom(position, symbol=&#34;O&#34;, charge=-2)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert np.array_equal(position, atom.position)
+        &gt;&gt;&gt; assert atom.symbol == &#34;O&#34;
+        &gt;&gt;&gt; assert atom.charge == -2
     &#34;&#34;&#34;
 
     def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)
         if position is None:
             position = np.zeros(3)
-        self.position = position</code></pre>
+        self.position = position
+        for k, v in kwargs.items():
+            setattr(self, k, v)</code></pre>
 </details>
 </section>
 <section>
@@ -69,13 +83,27 @@ class Atom(object):
 <div class="desc"><p>Representation of an atom with dynamic attributes.</p>
 <h2 id="notes">Notes</h2>
 <p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.
-This enables arbitrary atomic data to be associated with each instance in an elegant and pythonic way.</p>
+This enables arbitrary atomic data to be associated with each instance in an
+elegant and pythonic way. <code>position</code> is left as a positional argument so that
+each instance is guaranteed to have it as an attribute.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>position</code></strong></dt>
 <dd>Location vector in 3D cartesian space.
-Mutating <code>position</code> is a logical error if the change results in atoms overlapping or a translation out of bounds.</dd>
-</dl></div>
+Note: Mutating <code>position</code> is a logical error if the change results in atoms
+overlapping or existing out of bounds.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code class="python">&gt;&gt;&gt; from atompack import Atom
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; 
+&gt;&gt;&gt; position = np.array([1, 2, 3])
+&gt;&gt;&gt; atom = Atom(position, symbol=&quot;O&quot;, charge=-2)
+&gt;&gt;&gt;
+&gt;&gt;&gt; assert np.array_equal(position, atom.position)
+&gt;&gt;&gt; assert atom.symbol == &quot;O&quot;
+&gt;&gt;&gt; assert atom.charge == -2
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -85,19 +113,33 @@ Mutating <code>position</code> is a logical error if the change results in atoms
     
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-        This enables arbitrary atomic data to be associated with each instance in an elegant and pythonic way.
+        This enables arbitrary atomic data to be associated with each instance in an
+        elegant and pythonic way. `position` is left as a positional argument so that 
+        each instance is guaranteed to have it as an attribute.
 
     Args:
         position: Location vector in 3D cartesian space.
-            Mutating `position` is a logical error if the change results in atoms overlapping or a translation out of bounds.
+            Note: Mutating `position` is a logical error if the change results in atoms 
+            overlapping or existing out of bounds.
+
+    Example:
+        &gt;&gt;&gt; from atompack import Atom
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; position = np.array([1, 2, 3])
+        &gt;&gt;&gt; atom = Atom(position, symbol=&#34;O&#34;, charge=-2)
+        &gt;&gt;&gt;
+        &gt;&gt;&gt; assert np.array_equal(position, atom.position)
+        &gt;&gt;&gt; assert atom.symbol == &#34;O&#34;
+        &gt;&gt;&gt; assert atom.charge == -2
     &#34;&#34;&#34;
 
     def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)
         if position is None:
             position = np.zeros(3)
-        self.position = position</code></pre>
+        self.position = position
+        for k, v in kwargs.items():
+            setattr(self, k, v)</code></pre>
 </details>
 </dd>
 </dl>

@@ -9,16 +9,16 @@ from atompack.errors import (PositionOccupiedError, PositionOutsideError, Positi
 
 
 class Structure(object):
-    """Representation of an atomic structure with boundaries which may be periodic.
+    """Representation of a generic atomic structure.
     
     Args:
         atoms: List of atoms in the structure.
-            Mutating `atoms` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+            Note: Mutating `atoms` is a logical error if the change results in atoms overlapping or existing out of bounds.
         basis: 3x3 matrix defining the boundaries of the structure.
-            Mutating `basis` is a logical error if the change forces atoms out of bounds.
+            Note: Mutating `basis` is a logical error if the change forces atoms out of bounds.
         pbc: Boolean array that indicates which boundaries are considered periodic.
         tolerance: Radius of tolerance for operations on the structure.
-            Mutating `tolerance` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+            Note: Mutating `tolerance` is a logical error if the change results in atoms overlapping or existing out of bounds.
     """
 
     def __init__(self,
@@ -63,7 +63,7 @@ class Structure(object):
         return res
 
     def insert(self, atom: Atom) -> None:
-        """Inserts an atom into the structure safely with bounds checking.
+        """Inserts an atom into the structure safely with overlap and bounds checks.
         
         Args:
             atom: Atom inserted into the structure.
@@ -73,8 +73,7 @@ class Structure(object):
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
 
         Example:
-            >>> from atompack.atom import Atom
-            >>> from atompack.structure import Structure
+            >>> from atompack import Atom, Structure
             >>> 
             >>> structure = Structure()
             >>> atom = Atom()
@@ -102,8 +101,7 @@ class Structure(object):
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
         Example:
-            >>> from atompack.atom import Atom
-            >>> from atompack.structure import Structure
+            >>> from atompack import Atom, Structure
             >>> import numpy as np
             >>>
             >>> atoms = [Atom(symbol="Fe")]
@@ -133,14 +131,13 @@ class Structure(object):
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
         Example:
-            >>> from atompack.atom import Atom
-            >>> from atompack.structure import Structure
+            >>> from atompack import Atom, Structure
             >>> import numpy as np
             >>>
-            >>> atoms = [Atom(symbol="Fe")]
+            >>> position = np.zeros(3)
+            >>> atoms = [Atom(position, symbol="Fe")]
             >>> structure = Structure(atoms=atoms)
-            >>> selection_position = np.zeros(3)
-            >>> index = structure.select(selection_position)
+            >>> index = structure.select(position)
             >>>
             >>> assert structure[index].symbol == "Fe"
         """

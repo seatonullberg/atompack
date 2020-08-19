@@ -38,16 +38,16 @@ from atompack.errors import (PositionOccupiedError, PositionOutsideError, Positi
 
 
 class Structure(object):
-    &#34;&#34;&#34;Representation of an atomic structure with boundaries which may be periodic.
+    &#34;&#34;&#34;Representation of a generic atomic structure.
     
     Args:
         atoms: List of atoms in the structure.
-            Mutating `atoms` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+            Note: Mutating `atoms` is a logical error if the change results in atoms overlapping or existing out of bounds.
         basis: 3x3 matrix defining the boundaries of the structure.
-            Mutating `basis` is a logical error if the change forces atoms out of bounds.
+            Note: Mutating `basis` is a logical error if the change forces atoms out of bounds.
         pbc: Boolean array that indicates which boundaries are considered periodic.
         tolerance: Radius of tolerance for operations on the structure.
-            Mutating `tolerance` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+            Note: Mutating `tolerance` is a logical error if the change results in atoms overlapping or existing out of bounds.
     &#34;&#34;&#34;
 
     def __init__(self,
@@ -92,7 +92,7 @@ class Structure(object):
         return res
 
     def insert(self, atom: Atom) -&gt; None:
-        &#34;&#34;&#34;Inserts an atom into the structure safely with bounds checking.
+        &#34;&#34;&#34;Inserts an atom into the structure safely with overlap and bounds checks.
         
         Args:
             atom: Atom inserted into the structure.
@@ -102,8 +102,7 @@ class Structure(object):
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
 
         Example:
-            &gt;&gt;&gt; from atompack.atom import Atom
-            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; from atompack import Atom, Structure
             &gt;&gt;&gt; 
             &gt;&gt;&gt; structure = Structure()
             &gt;&gt;&gt; atom = Atom()
@@ -131,8 +130,7 @@ class Structure(object):
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
         Example:
-            &gt;&gt;&gt; from atompack.atom import Atom
-            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; from atompack import Atom, Structure
             &gt;&gt;&gt; import numpy as np
             &gt;&gt;&gt;
             &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
@@ -162,14 +160,13 @@ class Structure(object):
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
         Example:
-            &gt;&gt;&gt; from atompack.atom import Atom
-            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; from atompack import Atom, Structure
             &gt;&gt;&gt; import numpy as np
             &gt;&gt;&gt;
-            &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; position = np.zeros(3)
+            &gt;&gt;&gt; atoms = [Atom(position, symbol=&#34;Fe&#34;)]
             &gt;&gt;&gt; structure = Structure(atoms=atoms)
-            &gt;&gt;&gt; selection_position = np.zeros(3)
-            &gt;&gt;&gt; index = structure.select(selection_position)
+            &gt;&gt;&gt; index = structure.select(position)
             &gt;&gt;&gt;
             &gt;&gt;&gt; assert structure[index].symbol == &#34;Fe&#34;
         &#34;&#34;&#34;
@@ -198,36 +195,36 @@ class Structure(object):
 <span>(</span><span>atoms: Union[List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], NoneType] = None, basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: Union[float, NoneType] = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Representation of an atomic structure with boundaries which may be periodic.</p>
+<div class="desc"><p>Representation of a generic atomic structure.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>atoms</code></strong></dt>
 <dd>List of atoms in the structure.
-Mutating <code>atoms</code> is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.</dd>
+Note: Mutating <code>atoms</code> is a logical error if the change results in atoms overlapping or existing out of bounds.</dd>
 <dt><strong><code>basis</code></strong></dt>
 <dd>3x3 matrix defining the boundaries of the structure.
-Mutating <code>basis</code> is a logical error if the change forces atoms out of bounds.</dd>
+Note: Mutating <code>basis</code> is a logical error if the change forces atoms out of bounds.</dd>
 <dt><strong><code>pbc</code></strong></dt>
 <dd>Boolean array that indicates which boundaries are considered periodic.</dd>
 <dt><strong><code>tolerance</code></strong></dt>
 <dd>Radius of tolerance for operations on the structure.
-Mutating <code>tolerance</code> is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.</dd>
+Note: Mutating <code>tolerance</code> is a logical error if the change results in atoms overlapping or existing out of bounds.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Structure(object):
-    &#34;&#34;&#34;Representation of an atomic structure with boundaries which may be periodic.
+    &#34;&#34;&#34;Representation of a generic atomic structure.
     
     Args:
         atoms: List of atoms in the structure.
-            Mutating `atoms` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+            Note: Mutating `atoms` is a logical error if the change results in atoms overlapping or existing out of bounds.
         basis: 3x3 matrix defining the boundaries of the structure.
-            Mutating `basis` is a logical error if the change forces atoms out of bounds.
+            Note: Mutating `basis` is a logical error if the change forces atoms out of bounds.
         pbc: Boolean array that indicates which boundaries are considered periodic.
         tolerance: Radius of tolerance for operations on the structure.
-            Mutating `tolerance` is a logical error if the change results in atoms overlapping with eachother or atoms existing out of bounds.
+            Note: Mutating `tolerance` is a logical error if the change results in atoms overlapping or existing out of bounds.
     &#34;&#34;&#34;
 
     def __init__(self,
@@ -272,7 +269,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         return res
 
     def insert(self, atom: Atom) -&gt; None:
-        &#34;&#34;&#34;Inserts an atom into the structure safely with bounds checking.
+        &#34;&#34;&#34;Inserts an atom into the structure safely with overlap and bounds checks.
         
         Args:
             atom: Atom inserted into the structure.
@@ -282,8 +279,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
             `atompack.errors.PositionOutsideError`: If the position is out of bounds.
 
         Example:
-            &gt;&gt;&gt; from atompack.atom import Atom
-            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; from atompack import Atom, Structure
             &gt;&gt;&gt; 
             &gt;&gt;&gt; structure = Structure()
             &gt;&gt;&gt; atom = Atom()
@@ -311,8 +307,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
         Example:
-            &gt;&gt;&gt; from atompack.atom import Atom
-            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; from atompack import Atom, Structure
             &gt;&gt;&gt; import numpy as np
             &gt;&gt;&gt;
             &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
@@ -342,14 +337,13 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
             `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
         Example:
-            &gt;&gt;&gt; from atompack.atom import Atom
-            &gt;&gt;&gt; from atompack.structure import Structure
+            &gt;&gt;&gt; from atompack import Atom, Structure
             &gt;&gt;&gt; import numpy as np
             &gt;&gt;&gt;
-            &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; position = np.zeros(3)
+            &gt;&gt;&gt; atoms = [Atom(position, symbol=&#34;Fe&#34;)]
             &gt;&gt;&gt; structure = Structure(atoms=atoms)
-            &gt;&gt;&gt; selection_position = np.zeros(3)
-            &gt;&gt;&gt; index = structure.select(selection_position)
+            &gt;&gt;&gt; index = structure.select(position)
             &gt;&gt;&gt;
             &gt;&gt;&gt; assert structure[index].symbol == &#34;Fe&#34;
         &#34;&#34;&#34;
@@ -373,7 +367,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <span>def <span class="ident">insert</span></span>(<span>self, atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Inserts an atom into the structure safely with bounds checking.</p>
+<div class="desc"><p>Inserts an atom into the structure safely with overlap and bounds checks.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>atom</code></strong></dt>
@@ -383,8 +377,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <p><code><a title="atompack.errors.PositionOccupiedError" href="errors.html#atompack.errors.PositionOccupiedError">PositionOccupiedError</a></code>: If the position is already occupied.
 <code><a title="atompack.errors.PositionOutsideError" href="errors.html#atompack.errors.PositionOutsideError">PositionOutsideError</a></code>: If the position is out of bounds.</p>
 <h2 id="example">Example</h2>
-<pre><code class="python">&gt;&gt;&gt; from atompack.atom import Atom
-&gt;&gt;&gt; from atompack.structure import Structure
+<pre><code class="python">&gt;&gt;&gt; from atompack import Atom, Structure
 &gt;&gt;&gt; 
 &gt;&gt;&gt; structure = Structure()
 &gt;&gt;&gt; atom = Atom()
@@ -397,7 +390,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def insert(self, atom: Atom) -&gt; None:
-    &#34;&#34;&#34;Inserts an atom into the structure safely with bounds checking.
+    &#34;&#34;&#34;Inserts an atom into the structure safely with overlap and bounds checks.
     
     Args:
         atom: Atom inserted into the structure.
@@ -407,8 +400,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         `atompack.errors.PositionOutsideError`: If the position is out of bounds.
 
     Example:
-        &gt;&gt;&gt; from atompack.atom import Atom
-        &gt;&gt;&gt; from atompack.structure import Structure
+        &gt;&gt;&gt; from atompack import Atom, Structure
         &gt;&gt;&gt; 
         &gt;&gt;&gt; structure = Structure()
         &gt;&gt;&gt; atom = Atom()
@@ -440,8 +432,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <h2 id="raises">Raises</h2>
 <p><code><a title="atompack.errors.PositionUnoccupiedError" href="errors.html#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code>: If the position is not occupied.</p>
 <h2 id="example">Example</h2>
-<pre><code class="python">&gt;&gt;&gt; from atompack.atom import Atom
-&gt;&gt;&gt; from atompack.structure import Structure
+<pre><code class="python">&gt;&gt;&gt; from atompack import Atom, Structure
 &gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt;
 &gt;&gt;&gt; atoms = [Atom(symbol=&quot;Fe&quot;)]
@@ -466,8 +457,7 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
     Example:
-        &gt;&gt;&gt; from atompack.atom import Atom
-        &gt;&gt;&gt; from atompack.structure import Structure
+        &gt;&gt;&gt; from atompack import Atom, Structure
         &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt;
         &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
@@ -501,14 +491,13 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
 <h2 id="raises">Raises</h2>
 <p><code><a title="atompack.errors.PositionUnoccupiedError" href="errors.html#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code>: If the position is not occupied.</p>
 <h2 id="example">Example</h2>
-<pre><code class="python">&gt;&gt;&gt; from atompack.atom import Atom
-&gt;&gt;&gt; from atompack.structure import Structure
+<pre><code class="python">&gt;&gt;&gt; from atompack import Atom, Structure
 &gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt;
-&gt;&gt;&gt; atoms = [Atom(symbol=&quot;Fe&quot;)]
+&gt;&gt;&gt; position = np.zeros(3)
+&gt;&gt;&gt; atoms = [Atom(position, symbol=&quot;Fe&quot;)]
 &gt;&gt;&gt; structure = Structure(atoms=atoms)
-&gt;&gt;&gt; selection_position = np.zeros(3)
-&gt;&gt;&gt; index = structure.select(selection_position)
+&gt;&gt;&gt; index = structure.select(position)
 &gt;&gt;&gt;
 &gt;&gt;&gt; assert structure[index].symbol == &quot;Fe&quot;
 </code></pre></div>
@@ -526,14 +515,13 @@ Mutating <code>tolerance</code> is a logical error if the change results in atom
         `atompack.errors.PositionUnoccupiedError`: If the position is not occupied.
 
     Example:
-        &gt;&gt;&gt; from atompack.atom import Atom
-        &gt;&gt;&gt; from atompack.structure import Structure
+        &gt;&gt;&gt; from atompack import Atom, Structure
         &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt;
-        &gt;&gt;&gt; atoms = [Atom(symbol=&#34;Fe&#34;)]
+        &gt;&gt;&gt; position = np.zeros(3)
+        &gt;&gt;&gt; atoms = [Atom(position, symbol=&#34;Fe&#34;)]
         &gt;&gt;&gt; structure = Structure(atoms=atoms)
-        &gt;&gt;&gt; selection_position = np.zeros(3)
-        &gt;&gt;&gt; index = structure.select(selection_position)
+        &gt;&gt;&gt; index = structure.select(position)
         &gt;&gt;&gt;
         &gt;&gt;&gt; assert structure[index].symbol == &#34;Fe&#34;
     &#34;&#34;&#34;
