@@ -1,12 +1,11 @@
 MYPYPATH=./mypy
 
-bench:
-	@make build
-	@python3 -m pytest -v ./atompack ./benches 
+_build_ext:
+	@pipenv run python setup.py build_ext --inplace
 
-build:
-	@python3 setup.py build_ext --inplace
-	@python3 setup.py sdist bdist_wheel
+bench:
+	@make _build_ext
+	@pipenv run pytest -v ./benches 
 
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf
@@ -19,7 +18,8 @@ clean:
 	@find . | grep -E "(\.pyc|\.so|\.egg-info)" | xargs rm -rf
 
 document:
-	@pdoc --html --force\
+	@make _build_ext
+	@pipenv run pdoc --html --force\
 		--template-dir ./docs\
 		--output-dir ./docs\
 		./atompack
@@ -27,14 +27,14 @@ document:
 	@rm -rf ./docs/atompack
 
 format:
-	@python3 -m isort -rc ./atompack
-	@python3 -m yapf -rip --style='{based_on_style: google, column_limit: 120}' ./
+	@pipenv run isort ./atompack
+	@pipenv run yapf -rip --style='{based_on_style: google, column_limit: 120}' ./
 
 lint:
 	@export MYPYPATH=$(MYPYPATH);\
-		python3 -m mypy --config-file=$(MYPYPATH)/mypy.ini ./atompack
-	@python3 -m pyflakes ./atompack
+		pipenv run mypy --config-file=$(MYPYPATH)/mypy.ini ./atompack
+	@pipenv run pyflakes ./atompack
 
 test:
-	@make build
-	@python3 -m pytest --doctest-modules -v ./atompack ./tests
+	@make _build_ext
+	@pipenv run pytest --doctest-modules -v ./atompack ./tests
