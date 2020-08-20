@@ -32,7 +32,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -43,7 +43,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -54,7 +54,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -66,7 +66,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -77,7 +77,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -89,7 +89,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -100,7 +100,7 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
 
     @classmethod
@@ -111,5 +111,5 @@ class Molecule(Structure):
         basis: Optional[np.ndarray],
         pbc: Optional[Tuple[bool, bool, bool]],
         tolerance: float = 1.0e-6,
-    ) -> Molecule:
+    ) -> 'Molecule':
         pass
