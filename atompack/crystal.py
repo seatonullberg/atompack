@@ -2,9 +2,9 @@ import copy
 from typing import List, Optional, Tuple
 
 import numpy as np
+from _pbc import pbc_nearest_neighbor
 from scipy.spatial.transform import Rotation
 
-from _pbc import pbc_nearest_neighbor
 from atompack.atom import Atom
 from atompack.structure import Structure
 

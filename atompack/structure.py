@@ -1,9 +1,9 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
-
 from _cell import cell_contains
 from _pbc import pbc_nearest_neighbor
+
 from atompack.atom import Atom
 from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 
@@ -87,7 +87,7 @@ class Structure(object):
             self.atoms.append(atom)
             return
         if not cell_contains(self.basis, atom.position, self.tolerance):
-            raise PositionOutsideError(atom.position)
+            raise PositionOutsideError(atom.position, self.basis)
         distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
         if distance < self.tolerance:
             raise PositionOccupiedError(atom.position)
