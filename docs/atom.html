@@ -38,30 +38,34 @@ class Atom(object):
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
         This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` is left as an optional positional 
-        argument so that each instance is guaranteed to have it as an attribute.
+        elegant and pythonic way. `position` and `symbol` are left as optional arguments
+        with default values so that each instance is guaranteed to have them as 
+        attributes for use in internal operations.
 
     Args:
         position: Location vector in 3D cartesian space.
             Mutating `position` is a logical error if the change results in atoms 
             overlapping or existing out of bounds.
+        symbol: IUPAC chemical symbol.
 
     Example:
         &gt;&gt;&gt; from atompack import Atom
         &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt; 
-        &gt;&gt;&gt; position = np.array([1, 2, 3])
-        &gt;&gt;&gt; atom = Atom(position, symbol=&#34;O&#34;, charge=-2)
+        &gt;&gt;&gt; atom = Atom(charge=-2)
         &gt;&gt;&gt;
-        &gt;&gt;&gt; assert np.array_equal(position, atom.position)
-        &gt;&gt;&gt; assert atom.symbol == &#34;O&#34;
+        &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
+        &gt;&gt;&gt; assert atom.symbol == &#34;Undefined&#34;
         &gt;&gt;&gt; assert atom.charge == -2
     &#34;&#34;&#34;
 
-    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
+    def __init__(self, position: Optional[np.ndarray] = None, symbol: Optional[str] = None, **kwargs) -&gt; None:
         if position is None:
             position = np.zeros(3)
         self.position = position
+        if symbol is None:
+            symbol = &#34;Undefined&#34;
+        self.symbol = symbol
         for k, v in kwargs.items():
             setattr(self, k, v)</code></pre>
 </details>
@@ -77,31 +81,33 @@ class Atom(object):
 <dl>
 <dt id="atompack.atom.Atom"><code class="flex name class">
 <span>class <span class="ident">Atom</span></span>
-<span>(</span><span>position: Union[numpy.ndarray, NoneType] = None, **kwargs)</span>
+<span>(</span><span>position: Union[numpy.ndarray, NoneType] = None, symbol: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Representation of an atom with dynamic attributes.</p>
 <h2 id="notes">Notes</h2>
 <p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.
 This enables arbitrary atomic data to be associated with each instance in an
-elegant and pythonic way. <code>position</code> is left as an optional positional
-argument so that each instance is guaranteed to have it as an attribute.</p>
+elegant and pythonic way. <code>position</code> and <code>symbol</code> are left as optional arguments
+with default values so that each instance is guaranteed to have them as
+attributes for use in internal operations.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>position</code></strong></dt>
 <dd>Location vector in 3D cartesian space.
 Mutating <code>position</code> is a logical error if the change results in atoms
 overlapping or existing out of bounds.</dd>
+<dt><strong><code>symbol</code></strong></dt>
+<dd>IUPAC chemical symbol.</dd>
 </dl>
 <h2 id="example">Example</h2>
 <pre><code class="python">&gt;&gt;&gt; from atompack import Atom
 &gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; 
-&gt;&gt;&gt; position = np.array([1, 2, 3])
-&gt;&gt;&gt; atom = Atom(position, symbol=&quot;O&quot;, charge=-2)
+&gt;&gt;&gt; atom = Atom(charge=-2)
 &gt;&gt;&gt;
-&gt;&gt;&gt; assert np.array_equal(position, atom.position)
-&gt;&gt;&gt; assert atom.symbol == &quot;O&quot;
+&gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
+&gt;&gt;&gt; assert atom.symbol == &quot;Undefined&quot;
 &gt;&gt;&gt; assert atom.charge == -2
 </code></pre></div>
 <details class="source">
@@ -114,30 +120,34 @@ overlapping or existing out of bounds.</dd>
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
         This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` is left as an optional positional 
-        argument so that each instance is guaranteed to have it as an attribute.
+        elegant and pythonic way. `position` and `symbol` are left as optional arguments
+        with default values so that each instance is guaranteed to have them as 
+        attributes for use in internal operations.
 
     Args:
         position: Location vector in 3D cartesian space.
             Mutating `position` is a logical error if the change results in atoms 
             overlapping or existing out of bounds.
+        symbol: IUPAC chemical symbol.
 
     Example:
         &gt;&gt;&gt; from atompack import Atom
         &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt; 
-        &gt;&gt;&gt; position = np.array([1, 2, 3])
-        &gt;&gt;&gt; atom = Atom(position, symbol=&#34;O&#34;, charge=-2)
+        &gt;&gt;&gt; atom = Atom(charge=-2)
         &gt;&gt;&gt;
-        &gt;&gt;&gt; assert np.array_equal(position, atom.position)
-        &gt;&gt;&gt; assert atom.symbol == &#34;O&#34;
+        &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
+        &gt;&gt;&gt; assert atom.symbol == &#34;Undefined&#34;
         &gt;&gt;&gt; assert atom.charge == -2
     &#34;&#34;&#34;
 
-    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
+    def __init__(self, position: Optional[np.ndarray] = None, symbol: Optional[str] = None, **kwargs) -&gt; None:
         if position is None:
             position = np.zeros(3)
         self.position = position
+        if symbol is None:
+            symbol = &#34;Undefined&#34;
+        self.symbol = symbol
         for k, v in kwargs.items():
             setattr(self, k, v)</code></pre>
 </details>

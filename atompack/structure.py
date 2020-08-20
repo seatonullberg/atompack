@@ -137,7 +137,7 @@ class Structure(object):
             >>> import numpy as np
             >>>
             >>> position = np.zeros(3)
-            >>> atoms = [Atom(position, symbol="Fe")]
+            >>> atoms = [Atom(position=position, symbol="Fe")]
             >>> structure = Structure(atoms=atoms)
             >>> index = structure.select(position)
             >>>

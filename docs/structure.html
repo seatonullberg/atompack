@@ -30,9 +30,9 @@
 <pre><code class="python">from typing import List, Optional, Tuple
 
 import numpy as np
-
 from _cell import cell_contains
 from _pbc import pbc_nearest_neighbor
+
 from atompack.atom import Atom
 from atompack.errors import (PositionOccupiedError, PositionOutsideError, PositionUnoccupiedError)
 
@@ -116,7 +116,7 @@ class Structure(object):
             self.atoms.append(atom)
             return
         if not cell_contains(self.basis, atom.position, self.tolerance):
-            raise PositionOutsideError(atom.position)
+            raise PositionOutsideError(atom.position, self.basis)
         distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
         if distance &lt; self.tolerance:
             raise PositionOccupiedError(atom.position)
@@ -166,7 +166,7 @@ class Structure(object):
             &gt;&gt;&gt; import numpy as np
             &gt;&gt;&gt;
             &gt;&gt;&gt; position = np.zeros(3)
-            &gt;&gt;&gt; atoms = [Atom(position, symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; atoms = [Atom(position=position, symbol=&#34;Fe&#34;)]
             &gt;&gt;&gt; structure = Structure(atoms=atoms)
             &gt;&gt;&gt; index = structure.select(position)
             &gt;&gt;&gt;
@@ -297,7 +297,7 @@ rely on it cannot be retroactively adjusted.</dd>
             self.atoms.append(atom)
             return
         if not cell_contains(self.basis, atom.position, self.tolerance):
-            raise PositionOutsideError(atom.position)
+            raise PositionOutsideError(atom.position, self.basis)
         distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
         if distance &lt; self.tolerance:
             raise PositionOccupiedError(atom.position)
@@ -347,7 +347,7 @@ rely on it cannot be retroactively adjusted.</dd>
             &gt;&gt;&gt; import numpy as np
             &gt;&gt;&gt;
             &gt;&gt;&gt; position = np.zeros(3)
-            &gt;&gt;&gt; atoms = [Atom(position, symbol=&#34;Fe&#34;)]
+            &gt;&gt;&gt; atoms = [Atom(position=position, symbol=&#34;Fe&#34;)]
             &gt;&gt;&gt; structure = Structure(atoms=atoms)
             &gt;&gt;&gt; index = structure.select(position)
             &gt;&gt;&gt;
@@ -419,7 +419,7 @@ rely on it cannot be retroactively adjusted.</dd>
         self.atoms.append(atom)
         return
     if not cell_contains(self.basis, atom.position, self.tolerance):
-        raise PositionOutsideError(atom.position)
+        raise PositionOutsideError(atom.position, self.basis)
     distance, _ = pbc_nearest_neighbor(atom.position, self._positions(), self.basis, self.pbc)
     if distance &lt; self.tolerance:
         raise PositionOccupiedError(atom.position)
@@ -502,7 +502,7 @@ rely on it cannot be retroactively adjusted.</dd>
 &gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt;
 &gt;&gt;&gt; position = np.zeros(3)
-&gt;&gt;&gt; atoms = [Atom(position, symbol=&quot;Fe&quot;)]
+&gt;&gt;&gt; atoms = [Atom(position=position, symbol=&quot;Fe&quot;)]
 &gt;&gt;&gt; structure = Structure(atoms=atoms)
 &gt;&gt;&gt; index = structure.select(position)
 &gt;&gt;&gt;
@@ -526,7 +526,7 @@ rely on it cannot be retroactively adjusted.</dd>
         &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt;
         &gt;&gt;&gt; position = np.zeros(3)
-        &gt;&gt;&gt; atoms = [Atom(position, symbol=&#34;Fe&#34;)]
+        &gt;&gt;&gt; atoms = [Atom(position=position, symbol=&#34;Fe&#34;)]
         &gt;&gt;&gt; structure = Structure(atoms=atoms)
         &gt;&gt;&gt; index = structure.select(position)
         &gt;&gt;&gt;

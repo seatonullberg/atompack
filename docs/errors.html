@@ -28,12 +28,14 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PositionError(Exception):
+    &#34;&#34;&#34;Base class for position errors.&#34;&#34;&#34;
 
     def __init__(self, position):
         self.position = position
 
 
 class PositionOccupiedError(PositionError):
+    &#34;&#34;&#34;Error raised when a position is unexpectedly occupied.&#34;&#34;&#34;
 
     def __init__(self, position):
         super().__init__(position)
@@ -43,6 +45,7 @@ class PositionOccupiedError(PositionError):
 
 
 class PositionUnoccupiedError(PositionError):
+    &#34;&#34;&#34;Error raised when a position is unexpectedly unoccupied.&#34;&#34;&#34;
 
     def __init__(self, position):
         super().__init__(position)
@@ -52,12 +55,14 @@ class PositionUnoccupiedError(PositionError):
 
 
 class PositionOutsideError(PositionError):
+    &#34;&#34;&#34;Error raised when a position is unexpectedly outside of the bounding box.&#34;&#34;&#34;
 
-    def __init__(self, position):
+    def __init__(self, position, basis):
+        self.basis = basis
         super().__init__(position)
 
     def __str__(self):
-        return &#34;Position &#39;{}&#39; is outside of the allowable bounding area.&#34;.format(self.position)</code></pre>
+        return &#34;Position &#39;{}&#39; is outside of the allowable bounding area &#39;{}&#39;.&#34;.format(self.position, self.basis)</code></pre>
 </details>
 </section>
 <section>
@@ -74,12 +79,13 @@ class PositionOutsideError(PositionError):
 <span>(</span><span>position)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Base class for position errors.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PositionError(Exception):
+    &#34;&#34;&#34;Base class for position errors.&#34;&#34;&#34;
 
     def __init__(self, position):
         self.position = position</code></pre>
@@ -101,12 +107,13 @@ class PositionOutsideError(PositionError):
 <span>(</span><span>position)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Error raised when a position is unexpectedly occupied.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PositionOccupiedError(PositionError):
+    &#34;&#34;&#34;Error raised when a position is unexpectedly occupied.&#34;&#34;&#34;
 
     def __init__(self, position):
         super().__init__(position)
@@ -123,21 +130,23 @@ class PositionOutsideError(PositionError):
 </dd>
 <dt id="atompack.errors.PositionOutsideError"><code class="flex name class">
 <span>class <span class="ident">PositionOutsideError</span></span>
-<span>(</span><span>position)</span>
+<span>(</span><span>position, basis)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Error raised when a position is unexpectedly outside of the bounding box.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PositionOutsideError(PositionError):
+    &#34;&#34;&#34;Error raised when a position is unexpectedly outside of the bounding box.&#34;&#34;&#34;
 
-    def __init__(self, position):
+    def __init__(self, position, basis):
+        self.basis = basis
         super().__init__(position)
 
     def __str__(self):
-        return &#34;Position &#39;{}&#39; is outside of the allowable bounding area.&#34;.format(self.position)</code></pre>
+        return &#34;Position &#39;{}&#39; is outside of the allowable bounding area &#39;{}&#39;.&#34;.format(self.position, self.basis)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -151,12 +160,13 @@ class PositionOutsideError(PositionError):
 <span>(</span><span>position)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Error raised when a position is unexpectedly unoccupied.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PositionUnoccupiedError(PositionError):
+    &#34;&#34;&#34;Error raised when a position is unexpectedly unoccupied.&#34;&#34;&#34;
 
     def __init__(self, position):
         super().__init__(position)
