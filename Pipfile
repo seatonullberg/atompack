@@ -16,6 +16,8 @@ pytest-benchmark = "*"
 numpy = "*"
 scipy = "*"
 atompack = {editable = true, path = "."}
+python-igraph = "*"
+rtree = "*"
 
 [requires]
 python_version = "3.8"
