@@ -40,7 +40,7 @@ class UnitCell(Topology):
         c: float,
         alpha: float,
         beta: float,
-        gamma: float, 
+        gamma: float,
     ) -> 'UnitCell':
         """Initializes a unit cell with triclinic constraints.
         
