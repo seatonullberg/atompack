@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from igraph import Graph, Vertex
 
+from _cell import cell_contains
 from atompack.atom import Atom
 
 
@@ -88,3 +89,22 @@ class Topology(object):
     def atoms(self) -> List[Atom]:
         """Returns a list of all atoms in the topology."""
         return [vertex["atom"] for vertex in self._graph.vs]
+
+
+class BoundedTopology(Topology):
+    """An undirected graph of atoms within a bounding paralellpiped cell.
+    
+    Args:
+        vectors: 3x3 matrix which defines the paralellpiped cell. 
+    """
+
+    def __init__(self, vectors: np.ndarray) -> None:
+        self.vectors = vectors
+        super().__init__()
+
+    def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -> bool:
+        return cell_contains(self.vectors, position, tolerance)
+
+    def enforce(self) -> None:
+        pass
+    
