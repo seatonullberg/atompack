@@ -1,7 +1,7 @@
 import numpy as np
 
 from atompack.atom import Atom
-from atompack.topology import Topology
+from atompack.topology import Topology, BoundedTopology
 
 
 def test_topology_insert():
@@ -78,3 +78,20 @@ def test_topology_atoms():
     atom = Atom(symbol="H")
     t.insert(atom)
     assert t.atoms[0].symbol == "H"
+
+
+def test_bounded_topology_contains():
+    vectors = np.identity(3)
+    bt = BoundedTopology(vectors)
+    assert bt.contains(np.array([0.5, 0.5, 0.5]))
+    assert not bt.contains(np.array([1.5, 1.5, 1.5]))
+
+
+def test_bounded_topology_enforce():
+    vectors = np.identity(3)
+    bt = BoundedTopology(vectors)
+    bt.insert(Atom(np.array([0.5, 0.5, 0.5])))
+    bt.insert(Atom(np.array([1.25, -1.75, 0.5])))
+    bt.enforce()
+    assert np.array_equal(bt.atoms[0].position, np.array([0.5, 0.5, 0.5])) 
+    assert np.array_equal(bt.atoms[1].position, np.array([0.25, 0.25, 0.5]))

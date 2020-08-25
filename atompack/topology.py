@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from igraph import Graph, Vertex
 
-from _cell import cell_contains
+from _cell import cell_contains, cell_enforce
 from atompack.atom import Atom
 
 
@@ -103,8 +103,13 @@ class BoundedTopology(Topology):
         super().__init__()
 
     def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -> bool:
+        """Returns True if position is within the bounds of the topology."""
         return cell_contains(self.vectors, position, tolerance)
 
-    def enforce(self) -> None:
-        pass
-    
+    def enforce(self, tolerance: float = 1.0e-6) -> None:
+        """Enforces that all atoms in the topology are within the bounds.
+            Any atoms found to be out of bounds will have their positions mutated to bring them back in.
+        """
+        for vertex in self._graph.vs:
+            atom = vertex["atom"]
+            cell_enforce(self.vectors, atom._position, tolerance)

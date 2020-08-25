@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from scipy.spatial.transform import Rotation
 
+from _cell import cell_enforce
 from atompack.atom import Atom
 from atompack.topology import Topology
 
@@ -272,14 +273,10 @@ class Crystal(Topology):
                         position = np.matmul(atom.position, self._unit_cell.vectors) + offset
                         position = rotation.apply(position)
 
-                        # TODO: transform the position into the lattice
-                        for i, mag in enumerate(oriented_lattice_vector_mags):
-                            if position[i] >= mag - self._tolerance:
-                                position[i] -= mag
-                            if position[i] <= -self._tolerance:
-                                position[i] += mag
+                        # transform the position into the lattice
+                        cell_enforce(oriented_lattice_vectors, position, self._tolerance)
 
-                        # TODO: accept the atom if the position is not yet occupied
+                        # accept the atom if the position is not yet occupied
                         positions = np.array([atom.position for atom in atoms])
                         is_occupied = False
                         for _position in positions:

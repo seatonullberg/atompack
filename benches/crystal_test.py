@@ -18,51 +18,34 @@ def bench_crystal(unit_cell, scale, orientation, rotation, tolerance):
     return Crystal(unit_cell, scale, orientation, rotation, tolerance)
 
 
-def test_bench_crystal_cubic_100_orientation(benchmark):
+def test_bench_crystal_cubic_1x1x1(benchmark):
     unit_cell = get_cubic_unit_cell()
     scale = (1, 1, 1)
     orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     tolerance = 1.0e-6
     args = (unit_cell, scale, orientation, rotation, tolerance)
-    benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    res = benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    assert len(res.atoms) == 2
 
 
-def test_bench_crystal_cubic_110_orientation(benchmark):
-    unit_cell = get_cubic_unit_cell()
-    scale = (1, 1, 1)
-    orientation = np.array([[-1, 1, 0], [0, 0, 1], [1, 1, 0]])
-    rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    tolerance = 1.0e-6
-    args = (unit_cell, scale, orientation, rotation, tolerance)
-    benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
-
-
-def test_bench_crystal_cubic_111_orientation(benchmark):
-    unit_cell = get_cubic_unit_cell()
-    scale = (1, 1, 1)
-    orientation = np.array([[1, -1, 0], [1, 1, -2], [1, 1, 1]])
-    rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    tolerance = 1.0e-6
-    args = (unit_cell, scale, orientation, rotation, tolerance)
-    benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
-
-
-def test_bench_crystal_cubic_2x2x2_supercell(benchmark):
+def test_bench_crystal_cubic_2x2x2(benchmark):
     unit_cell = get_cubic_unit_cell()
     scale = (2, 2, 2)
-    orientation = np.array([[1, -1, 0], [1, 1, -2], [1, 1, 1]])
+    orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     tolerance = 1.0e-6
     args = (unit_cell, scale, orientation, rotation, tolerance)
-    benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    res = benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    assert len(res.atoms) == 16
 
 
-def test_bench_crystal_cubic_3x3x3_supercell(benchmark):
+def test_bench_crystal_cubic_3x3x3(benchmark):
     unit_cell = get_cubic_unit_cell()
     scale = (3, 3, 3)
-    orientation = np.array([[1, -1, 0], [1, 1, -2], [1, 1, 1]])
+    orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     tolerance = 1.0e-6
     args = (unit_cell, scale, orientation, rotation, tolerance)
-    benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    res = benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    assert len(res.atoms) == 54
