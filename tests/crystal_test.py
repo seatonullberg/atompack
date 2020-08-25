@@ -26,7 +26,7 @@ def test_crystal_metric_tensor():
 def test_crystal_cubic_100_orientation():
     unit_cell = get_cubic_unit_cell()
     crystal = Crystal(unit_cell)
-    res_vectors = crystal.vectors
+    res_vectors = crystal.lattice_vectors
     target_vectors = np.array([[2.85, 0.0, 0.0], [0.0, 2.85, 0.0], [0.0, 0.0, 2.85]])
     assert_array_almost_equal(res_vectors, target_vectors)
     res_positions = np.array([atom.position for atom in crystal.atoms])
@@ -38,7 +38,7 @@ def test_crystal_cubic_110_orientation():
     unit_cell = get_cubic_unit_cell()
     orientation = np.array([[-1, 1, 0], [0, 0, 1], [1, 1, 0]])
     crystal = Crystal(unit_cell, orientation=orientation)
-    res_vectors = crystal.vectors
+    res_vectors = crystal.lattice_vectors
     target_vectors = np.array([[np.sqrt(2) * 2.85, 0, 0], [0, 2.85, 0], [0, 0, np.sqrt(2) * 2.85]])
     assert_array_almost_equal(res_vectors, target_vectors)
     res_positions = np.array([atom.position for atom in crystal.atoms])
@@ -55,7 +55,7 @@ def test_crystal_cubic_111_orientation():
     unit_cell = get_cubic_unit_cell()
     orientation = np.array([[1, -1, 0], [1, 1, -2], [1, 1, 1]])
     crystal = Crystal(unit_cell, orientation=orientation)
-    res_vectors = crystal.vectors
+    res_vectors = crystal.lattice_vectors
     target_vectors = np.array([[np.sqrt(2) * 2.85, 0, 0], [0, np.sqrt(6) * 2.85, 0], [0, 0, np.sqrt(3) * 2.85]])
     assert_array_almost_equal(res_vectors, target_vectors)
     res_positions = np.array([atom.position for atom in crystal.atoms])
@@ -80,7 +80,7 @@ def test_crystal_cubic_2x2x2_super_cell():
     unit_cell = get_cubic_unit_cell()
     scale = (2, 2, 2)
     crystal = Crystal(unit_cell, scale=scale)
-    res_vectors = crystal.vectors
+    res_vectors = crystal.lattice_vectors
     target_vectors = np.array([[5.7, 0, 0], [0, 5.7, 0], [0, 0, 5.7]])
     assert_array_almost_equal(res_vectors, target_vectors)
     res_positions = np.array([atom.position for atom in crystal.atoms])

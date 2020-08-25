@@ -95,16 +95,25 @@ class BoundedTopology(Topology):
     """An undirected graph of atoms within a bounding paralellpiped cell.
     
     Args:
-        vectors: 3x3 matrix which defines the paralellpiped cell. 
+        cell: 3x3 matrix which defines the bounding area. 
     """
 
-    def __init__(self, vectors: np.ndarray) -> None:
-        self.vectors = vectors
+    def __init__(self, cell: np.ndarray) -> None:
+        self.cell = cell
         super().__init__()
 
     def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -> bool:
         """Returns True if position is within the bounds of the topology."""
-        return cell_contains(self.vectors, position, tolerance)
+        return cell_contains(self.cell, position, tolerance)
+
+    def check(self, tolerance: float = 1.0e-6) -> List[int]:
+        """Returns the indices of atoms which are out of bounds."""
+        indices = []
+        for vertex in self._graph.vs:
+            position = vertex["atom"].position
+            if not self.contains(position, tolerance):
+                indices.append(vertex.index)
+        return indices
 
     def enforce(self, tolerance: float = 1.0e-6) -> None:
         """Enforces that all atoms in the topology are within the bounds.
@@ -112,4 +121,4 @@ class BoundedTopology(Topology):
         """
         for vertex in self._graph.vs:
             atom = vertex["atom"]
-            cell_enforce(self.vectors, atom._position, tolerance)
+            cell_enforce(self.cell, atom._position, tolerance)

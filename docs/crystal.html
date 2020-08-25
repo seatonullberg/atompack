@@ -52,14 +52,15 @@ class UnitCell(Topology):
                  gamma: float) -&gt; None:
         self.a, self.b, self.c = a, b, c
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
-        self._vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
+        self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
         super().__init__()
         for atom in atoms:
             self.insert(atom)
 
     @property
-    def vectors(self):
-        return self._vectors
+    def lattice_vectors(self):
+        &#34;&#34;&#34;Returns the lattice vectors of the unit cell.&#34;&#34;&#34;
+        return self._lattice_vectors
 
     @classmethod
     def triclinic(
@@ -250,15 +251,15 @@ class Crystal(Topology):
             rotation = np.identity(3)
         self._rotation = rotation
         self._tolerance = tolerance
-        atoms, self._vectors = self._build()
+        atoms, self._lattice_vectors = self._build()
         super().__init__()
         for atom in atoms:
             self.insert(atom)
 
     @property
-    def vectors(self) -&gt; np.ndarray:
+    def lattice_vectors(self) -&gt; np.ndarray:
         &#34;&#34;&#34;Returns the lattice vectors of the crystal.&#34;&#34;&#34;
-        return self._vectors
+        return self._lattice_vectors
 
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
@@ -267,16 +268,16 @@ class Crystal(Topology):
         # - scale
 
         # calculate the magnitude of the lattice vectors
-        lattice_vector_mags = np.linalg.norm(self._unit_cell.vectors, axis=0)
+        lattice_vector_mags = np.linalg.norm(self._unit_cell.lattice_vectors, axis=0)
 
         # calculate the unit vector of each lattice vector
-        lattice_unit_vectors = self._unit_cell.vectors / lattice_vector_mags
+        lattice_unit_vectors = self._unit_cell.lattice_vectors / lattice_vector_mags
 
         # calculate the rotation matrix between the unoriented and oriented lattice vectors
         rotation = Rotation.align_vectors(lattice_unit_vectors, self._orientation)[0]
 
         # align the lattice vectors with the orientation
-        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.vectors)
+        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.lattice_vectors)
 
         # use QR decomposition to calculate an orthogonal representation
         # TODO: this should be optional
@@ -295,11 +296,11 @@ class Crystal(Topology):
         for xsize in range(min_ortho_size[0]):
             for ysize in range(min_ortho_size[1]):
                 for zsize in range(min_ortho_size[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.vectors)
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.lattice_vectors)
                     for atom in self._unit_cell.atoms:
 
                         # calculate the cartesian position
-                        position = np.matmul(atom.position, self._unit_cell.vectors) + offset
+                        position = np.matmul(atom.position, self._unit_cell.lattice_vectors) + offset
                         position = rotation.apply(position)
 
                         # transform the position into the lattice
@@ -396,15 +397,15 @@ class Crystal(Topology):
             rotation = np.identity(3)
         self._rotation = rotation
         self._tolerance = tolerance
-        atoms, self._vectors = self._build()
+        atoms, self._lattice_vectors = self._build()
         super().__init__()
         for atom in atoms:
             self.insert(atom)
 
     @property
-    def vectors(self) -&gt; np.ndarray:
+    def lattice_vectors(self) -&gt; np.ndarray:
         &#34;&#34;&#34;Returns the lattice vectors of the crystal.&#34;&#34;&#34;
-        return self._vectors
+        return self._lattice_vectors
 
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
@@ -413,16 +414,16 @@ class Crystal(Topology):
         # - scale
 
         # calculate the magnitude of the lattice vectors
-        lattice_vector_mags = np.linalg.norm(self._unit_cell.vectors, axis=0)
+        lattice_vector_mags = np.linalg.norm(self._unit_cell.lattice_vectors, axis=0)
 
         # calculate the unit vector of each lattice vector
-        lattice_unit_vectors = self._unit_cell.vectors / lattice_vector_mags
+        lattice_unit_vectors = self._unit_cell.lattice_vectors / lattice_vector_mags
 
         # calculate the rotation matrix between the unoriented and oriented lattice vectors
         rotation = Rotation.align_vectors(lattice_unit_vectors, self._orientation)[0]
 
         # align the lattice vectors with the orientation
-        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.vectors)
+        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.lattice_vectors)
 
         # use QR decomposition to calculate an orthogonal representation
         # TODO: this should be optional
@@ -441,11 +442,11 @@ class Crystal(Topology):
         for xsize in range(min_ortho_size[0]):
             for ysize in range(min_ortho_size[1]):
                 for zsize in range(min_ortho_size[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.vectors)
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.lattice_vectors)
                     for atom in self._unit_cell.atoms:
 
                         # calculate the cartesian position
-                        position = np.matmul(atom.position, self._unit_cell.vectors) + offset
+                        position = np.matmul(atom.position, self._unit_cell.lattice_vectors) + offset
                         position = rotation.apply(position)
 
                         # transform the position into the lattice
@@ -489,7 +490,7 @@ class Crystal(Topology):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="atompack.crystal.Crystal.vectors"><code class="name">var <span class="ident">vectors</span> : numpy.ndarray</code></dt>
+<dt id="atompack.crystal.Crystal.lattice_vectors"><code class="name">var <span class="ident">lattice_vectors</span> : numpy.ndarray</code></dt>
 <dd>
 <div class="desc"><p>Returns the lattice vectors of the crystal.</p></div>
 <details class="source">
@@ -497,9 +498,9 @@ class Crystal(Topology):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def vectors(self) -&gt; np.ndarray:
+def lattice_vectors(self) -&gt; np.ndarray:
     &#34;&#34;&#34;Returns the lattice vectors of the crystal.&#34;&#34;&#34;
-    return self._vectors</code></pre>
+    return self._lattice_vectors</code></pre>
 </details>
 </dd>
 </dl>
@@ -536,14 +537,15 @@ def vectors(self) -&gt; np.ndarray:
                  gamma: float) -&gt; None:
         self.a, self.b, self.c = a, b, c
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
-        self._vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
+        self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
         super().__init__()
         for atom in atoms:
             self.insert(atom)
 
     @property
-    def vectors(self):
-        return self._vectors
+    def lattice_vectors(self):
+        &#34;&#34;&#34;Returns the lattice vectors of the unit cell.&#34;&#34;&#34;
+        return self._lattice_vectors
 
     @classmethod
     def triclinic(
@@ -1018,16 +1020,17 @@ def triclinic(
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="atompack.crystal.UnitCell.vectors"><code class="name">var <span class="ident">vectors</span></code></dt>
+<dt id="atompack.crystal.UnitCell.lattice_vectors"><code class="name">var <span class="ident">lattice_vectors</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the lattice vectors of the unit cell.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def vectors(self):
-    return self._vectors</code></pre>
+def lattice_vectors(self):
+    &#34;&#34;&#34;Returns the lattice vectors of the unit cell.&#34;&#34;&#34;
+    return self._lattice_vectors</code></pre>
 </details>
 </dd>
 </dl>
@@ -1071,7 +1074,7 @@ def vectors(self):
 <li>
 <h4><code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code></h4>
 <ul class="">
-<li><code><a title="atompack.crystal.Crystal.vectors" href="#atompack.crystal.Crystal.vectors">vectors</a></code></li>
+<li><code><a title="atompack.crystal.Crystal.lattice_vectors" href="#atompack.crystal.Crystal.lattice_vectors">lattice_vectors</a></code></li>
 </ul>
 </li>
 <li>
@@ -1079,12 +1082,12 @@ def vectors(self):
 <ul class="two-column">
 <li><code><a title="atompack.crystal.UnitCell.cubic" href="#atompack.crystal.UnitCell.cubic">cubic</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.hexagonal" href="#atompack.crystal.UnitCell.hexagonal">hexagonal</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.lattice_vectors" href="#atompack.crystal.UnitCell.lattice_vectors">lattice_vectors</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.monoclinic" href="#atompack.crystal.UnitCell.monoclinic">monoclinic</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.orthorhombic" href="#atompack.crystal.UnitCell.orthorhombic">orthorhombic</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.rhombohedral" href="#atompack.crystal.UnitCell.rhombohedral">rhombohedral</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.tetragonal" href="#atompack.crystal.UnitCell.tetragonal">tetragonal</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.triclinic" href="#atompack.crystal.UnitCell.triclinic">triclinic</a></code></li>
-<li><code><a title="atompack.crystal.UnitCell.vectors" href="#atompack.crystal.UnitCell.vectors">vectors</a></code></li>
 </ul>
 </li>
 </ul>

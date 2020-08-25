@@ -81,15 +81,25 @@ def test_topology_atoms():
 
 
 def test_bounded_topology_contains():
-    vectors = np.identity(3)
-    bt = BoundedTopology(vectors)
+    cell = np.identity(3)
+    bt = BoundedTopology(cell)
     assert bt.contains(np.array([0.5, 0.5, 0.5]))
     assert not bt.contains(np.array([1.5, 1.5, 1.5]))
 
 
+def test_bounded_topology_check():
+    cell = np.identity(3)
+    bt = BoundedTopology(cell)
+    bt.insert(Atom(np.array([0.5, 0.5, 0.5])))
+    bt.insert(Atom(np.array([1.25, -1.75, 0.5])))
+    indices = bt.check()
+    assert len(indices) == 1
+    assert indices[0] == 1
+
+
 def test_bounded_topology_enforce():
-    vectors = np.identity(3)
-    bt = BoundedTopology(vectors)
+    cell = np.identity(3)
+    bt = BoundedTopology(cell)
     bt.insert(Atom(np.array([0.5, 0.5, 0.5])))
     bt.insert(Atom(np.array([1.25, -1.75, 0.5])))
     bt.enforce()

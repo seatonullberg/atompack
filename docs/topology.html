@@ -124,16 +124,25 @@ class BoundedTopology(Topology):
     &#34;&#34;&#34;An undirected graph of atoms within a bounding paralellpiped cell.
     
     Args:
-        vectors: 3x3 matrix which defines the paralellpiped cell. 
+        cell: 3x3 matrix which defines the bounding area. 
     &#34;&#34;&#34;
 
-    def __init__(self, vectors: np.ndarray) -&gt; None:
-        self.vectors = vectors
+    def __init__(self, cell: np.ndarray) -&gt; None:
+        self.cell = cell
         super().__init__()
 
     def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -&gt; bool:
         &#34;&#34;&#34;Returns True if position is within the bounds of the topology.&#34;&#34;&#34;
-        return cell_contains(self.vectors, position, tolerance)
+        return cell_contains(self.cell, position, tolerance)
+
+    def check(self, tolerance: float = 1.0e-6) -&gt; List[int]:
+        &#34;&#34;&#34;Returns the indices of atoms which are out of bounds.&#34;&#34;&#34;
+        indices = []
+        for vertex in self._graph.vs:
+            position = vertex[&#34;atom&#34;].position
+            if not self.contains(position, tolerance):
+                indices.append(vertex.index)
+        return indices
 
     def enforce(self, tolerance: float = 1.0e-6) -&gt; None:
         &#34;&#34;&#34;Enforces that all atoms in the topology are within the bounds.
@@ -141,7 +150,7 @@ class BoundedTopology(Topology):
         &#34;&#34;&#34;
         for vertex in self._graph.vs:
             atom = vertex[&#34;atom&#34;]
-            cell_enforce(self.vectors, atom._position, tolerance)</code></pre>
+            cell_enforce(self.cell, atom._position, tolerance)</code></pre>
 </details>
 </section>
 <section>
@@ -155,14 +164,14 @@ class BoundedTopology(Topology):
 <dl>
 <dt id="atompack.topology.BoundedTopology"><code class="flex name class">
 <span>class <span class="ident">BoundedTopology</span></span>
-<span>(</span><span>vectors: numpy.ndarray)</span>
+<span>(</span><span>cell: numpy.ndarray)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>An undirected graph of atoms within a bounding paralellpiped cell.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>vectors</code></strong></dt>
-<dd>3x3 matrix which defines the paralellpiped cell.</dd>
+<dt><strong><code>cell</code></strong></dt>
+<dd>3x3 matrix which defines the bounding area.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -172,16 +181,25 @@ class BoundedTopology(Topology):
     &#34;&#34;&#34;An undirected graph of atoms within a bounding paralellpiped cell.
     
     Args:
-        vectors: 3x3 matrix which defines the paralellpiped cell. 
+        cell: 3x3 matrix which defines the bounding area. 
     &#34;&#34;&#34;
 
-    def __init__(self, vectors: np.ndarray) -&gt; None:
-        self.vectors = vectors
+    def __init__(self, cell: np.ndarray) -&gt; None:
+        self.cell = cell
         super().__init__()
 
     def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -&gt; bool:
         &#34;&#34;&#34;Returns True if position is within the bounds of the topology.&#34;&#34;&#34;
-        return cell_contains(self.vectors, position, tolerance)
+        return cell_contains(self.cell, position, tolerance)
+
+    def check(self, tolerance: float = 1.0e-6) -&gt; List[int]:
+        &#34;&#34;&#34;Returns the indices of atoms which are out of bounds.&#34;&#34;&#34;
+        indices = []
+        for vertex in self._graph.vs:
+            position = vertex[&#34;atom&#34;].position
+            if not self.contains(position, tolerance):
+                indices.append(vertex.index)
+        return indices
 
     def enforce(self, tolerance: float = 1.0e-6) -&gt; None:
         &#34;&#34;&#34;Enforces that all atoms in the topology are within the bounds.
@@ -189,7 +207,7 @@ class BoundedTopology(Topology):
         &#34;&#34;&#34;
         for vertex in self._graph.vs:
             atom = vertex[&#34;atom&#34;]
-            cell_enforce(self.vectors, atom._position, tolerance)</code></pre>
+            cell_enforce(self.cell, atom._position, tolerance)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -197,6 +215,25 @@ class BoundedTopology(Topology):
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="atompack.topology.BoundedTopology.check"><code class="name flex">
+<span>def <span class="ident">check</span></span>(<span>self, tolerance: float = 1e-06) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the indices of atoms which are out of bounds.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check(self, tolerance: float = 1.0e-6) -&gt; List[int]:
+    &#34;&#34;&#34;Returns the indices of atoms which are out of bounds.&#34;&#34;&#34;
+    indices = []
+    for vertex in self._graph.vs:
+        position = vertex[&#34;atom&#34;].position
+        if not self.contains(position, tolerance):
+            indices.append(vertex.index)
+    return indices</code></pre>
+</details>
+</dd>
 <dt id="atompack.topology.BoundedTopology.contains"><code class="name flex">
 <span>def <span class="ident">contains</span></span>(<span>self, position: numpy.ndarray, tolerance: float = 1e-06) ‑> bool</span>
 </code></dt>
@@ -208,7 +245,7 @@ class BoundedTopology(Topology):
 </summary>
 <pre><code class="python">def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -&gt; bool:
     &#34;&#34;&#34;Returns True if position is within the bounds of the topology.&#34;&#34;&#34;
-    return cell_contains(self.vectors, position, tolerance)</code></pre>
+    return cell_contains(self.cell, position, tolerance)</code></pre>
 </details>
 </dd>
 <dt id="atompack.topology.BoundedTopology.enforce"><code class="name flex">
@@ -227,7 +264,7 @@ Any atoms found to be out of bounds will have their positions mutated to bring t
     &#34;&#34;&#34;
     for vertex in self._graph.vs:
         atom = vertex[&#34;atom&#34;]
-        cell_enforce(self.vectors, atom._position, tolerance)</code></pre>
+        cell_enforce(self.cell, atom._position, tolerance)</code></pre>
 </details>
 </dd>
 </dl>
@@ -548,6 +585,7 @@ If <code>translation</code> is a Nx3 matrix each row will be mapped to each atom
 <li>
 <h4><code><a title="atompack.topology.BoundedTopology" href="#atompack.topology.BoundedTopology">BoundedTopology</a></code></h4>
 <ul class="">
+<li><code><a title="atompack.topology.BoundedTopology.check" href="#atompack.topology.BoundedTopology.check">check</a></code></li>
 <li><code><a title="atompack.topology.BoundedTopology.contains" href="#atompack.topology.BoundedTopology.contains">contains</a></code></li>
 <li><code><a title="atompack.topology.BoundedTopology.enforce" href="#atompack.topology.BoundedTopology.enforce">enforce</a></code></li>
 </ul>
