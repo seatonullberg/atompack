@@ -5,7 +5,6 @@ from atompack.crystal import Crystal, UnitCell
 
 
 def get_cubic_unit_cell():
-    # Fe BCC
     a, b, c = 2.85, 2.85, 2.85
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
     atoms = [
