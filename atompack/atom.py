@@ -29,8 +29,8 @@ class Atom(object):
         # process position
         if position is None:
             position = np.zeros(3)
-        self.position = position
+        self._position = position
 
-    # @property
-    # def position(self) -> np.ndarray:
-    #     return self._position
+    @property
+    def position(self) -> np.ndarray:
+        return self._position

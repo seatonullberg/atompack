@@ -5,7 +5,7 @@ _build_ext:
 
 bench:
 	@make _build_ext
-	@pipenv run pytest -v ./benches 
+	@pipenv run pytest --benchmark-columns="min, median, max, stddev, rounds, iterations" -v ./benches 
 
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf

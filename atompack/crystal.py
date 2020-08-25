@@ -2,11 +2,10 @@ import copy
 from typing import List, Optional, Tuple
 
 import numpy as np
-from _pbc import pbc_nearest_neighbor
 from scipy.spatial.transform import Rotation
 
 from atompack.atom import Atom
-from atompack.structure import Structure
+from atompack.topology import Topology
 
 
 def metric_tensor(a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> np.ndarray:
@@ -16,106 +15,50 @@ def metric_tensor(a: float, b: float, c: float, alpha: float, beta: float, gamma
                      [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
 
 
-class Crystal(Structure):
-    """Representation of a crystalline lattice.
-    
-    Note:
-        It is a logical error to mutate any of these attributes because the result 
-        of any changes will not be reflected in the shape of the basis or the 
-        content of the atoms list.
+class UnitCell(Topology):
+    """Representation of a paralellpiped tileable unit cell."""
 
-    Args:
-        lattice_atoms: Atom at each lattice site.
-            The `position` attribute is ignored and overwritten during initialization.
-        lattice_sites: Fractional coordinates of atoms in the lattice.
-        a: Length of the x direction basis vector.
-        b: Length of the y direction basis vector.
-        c: Length of the z direction basis vector.
-        alpha: Angle between y and z directions in radians.
-        beta: Angle between x and z directions in radians.
-        gamma: Angle between x and y directions in radians.
-        duplicates: Number of duplications to apply to the finished structure along each direction.
-        orientation: 3x3 matrix describing the alignment of the basis vectors.
+    def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
+                 gamma: float) -> None:
+        self.a, self.b, self.c = a, b, c
+        self.alpha, self.beta, self.gamma = alpha, beta, gamma
+        self._vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
 
-    Example:
-        >>> from atompack import Atom, Crystal
-        >>> import numpy as np
-        >>>
-        >>> # Anitferromagnetic Cr
-        >>> lattice_atoms = [Atom(symbol="Cr", magmom=1.0), Atom(symbol="Cr", magmom=-1.0)]
-        >>> # BCC lattice
-        >>> lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
-        >>> a = b = c = 2.85
-        >>> alpha = beta = gamma = np.pi / 2
-        >>> crystal = Crystal(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma)
-        >>>
-        >>> assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]),)
-        >>> assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
-    """
-
-    def __init__(
-        self,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> None:
-        if duplicates is None:
-            duplicates = (1, 1, 1)
-        if orientation is None:
-            orientation = np.identity(3)
-        if pbc is None:
-            pbc = (False, False, False)
-        atoms, basis = self._build(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation,
-                                   pbc, tolerance)
-        super().__init__(atoms, basis, pbc, tolerance)
+    @property
+    def vectors(self):
+        return self._vectors
 
     @classmethod
     def triclinic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
         alpha: float,
         beta: float,
-        gamma: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
-        """Initializes a crystal with triclinic constraints.
+        gamma: float, 
+    ) -> 'UnitCell':
+        """Initializes a unit cell with triclinic constraints.
         
         \\[a \\ne b \\ne c\\]
 
         \\[\\alpha \\ne \\beta \\ne \\gamma\\]
         """
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def monoclinic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
         beta: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
+    ) -> 'UnitCell':
         """Initializes a crystal with monoclinic constraints.
         
         \\[a \\ne b \\ne c\\]
@@ -125,21 +68,16 @@ class Crystal(Structure):
         \\[\\beta \\ne \\frac{\\pi}{2}\\]
         """
         alpha = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def orthorhombic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
+    ) -> 'UnitCell':
         """Initializes a crystal with orthorhombic constraints.
         
         \\[a \\ne b \\ne c\\]
@@ -147,20 +85,15 @@ class Crystal(Structure):
         \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         """
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def tetragonal(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
+    ) -> 'UnitCell':
         """Initializes a crystal with tetragonal constraints.
         
         \\[a \\equiv b \\ne c\\]
@@ -169,20 +102,15 @@ class Crystal(Structure):
         """
         b = a
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def rhombohedral(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         alpha: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
+    ) -> 'UnitCell':
         """Initializes a crystal with rhombohedral constraints.
         
         \\[a \\equiv b \\equiv c\\]
@@ -191,20 +119,15 @@ class Crystal(Structure):
         """
         b = c = a
         beta = gamma = alpha
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def hexagonal(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
+    ) -> 'UnitCell':
         """Initializes a crystal with hexagonal constraints.
         
         \\[a \\equiv b \\ne c\\]
@@ -216,19 +139,14 @@ class Crystal(Structure):
         b = a
         alpha = beta = np.pi / 2
         gamma = 2 * np.pi / 3
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def cubic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -> 'Crystal':
+    ) -> 'UnitCell':
         """Initializes a crystal with cubic constraints.
         
         \\[a \\equiv b \\equiv c\\]
@@ -237,79 +155,116 @@ class Crystal(Structure):
         """
         b = c = a
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
-    @staticmethod
-    def _build(
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-        duplicates: Tuple[int, int, int],
-        orientation: np.ndarray,
-        pbc: Tuple[bool, bool, bool],
-        tolerance: float,
-    ) -> Tuple[List[Atom], np.ndarray]:
-        """Construct a crystalline lattice and populate it with atoms."""
-        # calculate lattice vectors from metric tensor
-        lattice_vectors = np.sqrt(metric_tensor(a, b, c, alpha, beta, gamma))
 
-        # calculate the magnitude of each lattice vector
-        lattice_vectors_magnitude = np.linalg.norm(lattice_vectors, axis=0)
+class Crystal(Topology):
+    """Representation of a generic crystal."""
+
+    def __init__(self,
+                 unit_cell: UnitCell,
+                 scale: Optional[Tuple[int, int, int]] = None,
+                 orientation: Optional[np.ndarray] = None,
+                 rotation: Optional[np.ndarray] = None,
+                 tolerance: float = 1.0e-6) -> None:
+        self._unit_cell = unit_cell
+        if scale is None:
+            scale = (1, 1, 1)
+        self._scale = scale
+        if orientation is None:
+            orientation = np.identity(3)
+        self._orientation = orientation
+        if rotation is None:
+            rotation = np.identity(3)
+        self._rotation = rotation
+        self._tolerance = tolerance
+        atoms, self._vectors = self._build()
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
+
+    @property
+    def vectors(self) -> np.ndarray:
+        """Returns the lattice vectors of the crystal."""
+        return self._vectors
+
+    def _build(self) -> Tuple[List[Atom], np.ndarray]:
+        # transforms are applied in the following order:
+        # - orientation
+        # - rotation
+        # - scale
+
+        # calculate the magnitude of the lattice vectors
+        lattice_vector_mags = np.linalg.norm(self._unit_cell.vectors, axis=0)
 
         # calculate the unit vector of each lattice vector
-        lattice_vectors_hat = lattice_vectors / lattice_vectors_magnitude
+        lattice_unit_vectors = self._unit_cell.vectors / lattice_vector_mags
 
-        # calculate rotation matrix between natural orientation and desired orientation
-        rotation = Rotation.align_vectors(lattice_vectors_hat, orientation)[0]
+        # calculate the rotation matrix between the unoriented and oriented lattice vectors
+        rotation = Rotation.align_vectors(lattice_unit_vectors, self._orientation)[0]
 
-        # align the lattice vectors with the desired orientation by applying the
-        lattice_vectors_oriented = np.matmul(orientation, lattice_vectors)
+        # align the lattice vectors with the orientation
+        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.vectors)
 
-        # use QR decomposition to calculate an orthogonal representation of the oriented lattice vectors
-        _, r = np.linalg.qr(lattice_vectors_oriented.T)
-        lattice_vectors_oriented = np.abs(r) * np.array(duplicates)
-        lattice_vectors_oriented_magnitude = np.linalg.norm(lattice_vectors_oriented, axis=0)
+        # use QR decomposition to calculate an orthogonal representation
+        # TODO: this should be optional
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
+        oriented_lattice_vectors = np.abs(r)  # removed multiplication by scale
 
-        # determine smallest possible size
-        minimum_orthogonal_size = np.ceil(
-            lattice_vectors_oriented_magnitude / lattice_vectors_magnitude) * np.array(duplicates)
-        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
+        # calculate the magnitude of the oriented lattice vectors
+        oriented_lattice_vector_mags = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
+        # determine smallest orthogonal size
+        min_ortho_size = np.ceil(oriented_lattice_vector_mags / lattice_vector_mags)
+        min_ortho_size = min_ortho_size.astype(int)
+
+        # place the atoms
         atoms: List[Atom] = []
-        for xsize in range(minimum_orthogonal_size[0]):
-            for ysize in range(minimum_orthogonal_size[1]):
-                for zsize in range(minimum_orthogonal_size[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), lattice_vectors)
-                    for lattice_atom, site in zip(lattice_atoms, lattice_sites):
+        for xsize in range(min_ortho_size[0]):
+            for ysize in range(min_ortho_size[1]):
+                for zsize in range(min_ortho_size[2]):
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.vectors)
+                    for atom in self._unit_cell.atoms:
 
-                        # assign the cartesian position
-                        position = np.matmul(site, lattice_vectors) + offset
+                        # calculate the cartesian position
+                        position = atom.position + offset
                         position = rotation.apply(position)
 
-                        # transform the position back into the bounding box
-                        for i in range(3):
-                            if position[i] < -tolerance:
-                                new_position = position[i]
-                                while new_position < -tolerance:
-                                    new_position += lattice_vectors_oriented_magnitude[i]
-                                position[i] = new_position
-                            elif position[i] >= lattice_vectors_oriented_magnitude[i] - tolerance:
-                                new_position = position[i]
-                                while new_position >= lattice_vectors_oriented_magnitude[i] - tolerance:
-                                    new_position -= lattice_vectors_oriented_magnitude[i]
-                                position[i] = new_position
+                        # TODO: transform the position into the lattice
+                        for i, mag in enumerate(oriented_lattice_vector_mags):
+                            if position[i] >= mag - self._tolerance:
+                                position[i] -= mag
+                            if position[i] <= -self._tolerance:
+                                position[i] += mag
 
-                        # accept the atom if the position is not occupied
+                        # TODO: accept the atom if the position is not yet occupied
                         positions = np.array([atom.position for atom in atoms])
-                        distance, _ = pbc_nearest_neighbor(position, positions, lattice_vectors_oriented, pbc)
-                        if distance > tolerance:
-                            atom = copy.deepcopy(lattice_atom)
-                            atom.position = position
+                        is_occupied = False
+                        for _position in positions:
+                            if np.linalg.norm(position - _position) < self._tolerance:
+                                is_occupied = True
+                                break
+                        if not is_occupied:
+                            atom = copy.deepcopy(atom)
+                            atom._position = position
                             atoms.append(atom)
 
-        return atoms, lattice_vectors_oriented
+        # TODO: apply a rotation matrix
+
+        # tile the crystal in all directions
+        current_atoms = copy.deepcopy(atoms)
+        for xsize in range(self._scale[0]):
+            for ysize in range(self._scale[1]):
+                for zsize in range(self._scale[2]):
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), oriented_lattice_vectors)
+                    if np.linalg.norm(offset) < self._tolerance:
+                        continue
+                    for atom in current_atoms:
+                        atom = copy.deepcopy(atom)
+                        atom._position += offset
+                        atoms.append(atom)
+
+        # multiply the oriented lattice vectors by the scale
+        scaled_oriented_lattice_vectors = oriented_lattice_vectors * np.array(self._scale)
+
+        return atoms, scaled_oriented_lattice_vectors
