@@ -58,8 +58,8 @@ def test_topology_merge():
     assert len(t._graph.vs) == 2
     assert len(new_t._graph.vs) == 1
     assert len(t._graph.es) == 0
-    bonds = [(0, 0)]
-    t.merge(new_t, bonds=bonds)
+    edges = [(0, 0)]
+    t.merge(new_t, edges=edges)
     assert len(t._graph.vs) == 3
     assert len(t._graph.es) == 1
     assert t._graph.es[0].source == 0

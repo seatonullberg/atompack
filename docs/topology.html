@@ -27,7 +27,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import List
+<pre><code class="python">from typing import List, Optional, Tuple
 
 import numpy as np
 from igraph import Graph, Vertex
@@ -67,9 +67,40 @@ class Topology(object):
                 distance = d
         return index
 
-    def merge(self, other: &#39;Topology&#39;) -&gt; List[int]:
-        &#34;&#34;&#34;Combines two topologies and returns the indices of the new atoms.&#34;&#34;&#34;
-        return [self.insert(vertex[&#34;atom&#34;]) for vertex in other._graph.vs]
+    def translate(self, translation: np.ndarray) -&gt; None:
+        &#34;&#34;&#34;Translates all atoms in the topology.
+        
+        Args:
+            translation: The translation to apply.
+                If `translation` is a 1x3 vector that vector will be applied to each atom.
+                If `translation` is a Nx3 matrix each row will be mapped to each atom.  
+        &#34;&#34;&#34;
+        shape = translation.shape
+        n_atoms = len(self._graph.vs)
+        if shape == (3,):
+            for vertex in self._graph.vs:
+                vertex[&#34;atom&#34;]._position += translation
+        elif shape == (n_atoms, 3):
+            for i, vertex in enumerate(self._graph.vs):
+                vertex[&#34;atom&#34;]._position += translation[i]
+        else:
+            raise ValueError
+
+    def merge(self, other: &#39;Topology&#39;, edges: Optional[List[Tuple[int, int]]] = None) -&gt; List[int]:
+        &#34;&#34;&#34;Combines two topologies and returns the indices of the merged atoms.
+        
+        Args:
+            other: The topology to merge in.
+            edges: List of edges to create upon merge.
+                In each tuple, the first index should be from `self` 
+                and the second index should be from `other`.
+        &#34;&#34;&#34;
+        if edges is None:
+            edges = []
+        indices = [self.insert(vertex[&#34;atom&#34;]) for vertex in other._graph.vs]
+        for edge in edges:
+            self.connect(edge[0], indices[edge[1]])
+        return indices
 
     def remove(self, index: int) -&gt; None:
         &#34;&#34;&#34;Removes an atom from the topology by index.
@@ -138,9 +169,40 @@ class Topology(object):
                 distance = d
         return index
 
-    def merge(self, other: &#39;Topology&#39;) -&gt; List[int]:
-        &#34;&#34;&#34;Combines two topologies and returns the indices of the new atoms.&#34;&#34;&#34;
-        return [self.insert(vertex[&#34;atom&#34;]) for vertex in other._graph.vs]
+    def translate(self, translation: np.ndarray) -&gt; None:
+        &#34;&#34;&#34;Translates all atoms in the topology.
+        
+        Args:
+            translation: The translation to apply.
+                If `translation` is a 1x3 vector that vector will be applied to each atom.
+                If `translation` is a Nx3 matrix each row will be mapped to each atom.  
+        &#34;&#34;&#34;
+        shape = translation.shape
+        n_atoms = len(self._graph.vs)
+        if shape == (3,):
+            for vertex in self._graph.vs:
+                vertex[&#34;atom&#34;]._position += translation
+        elif shape == (n_atoms, 3):
+            for i, vertex in enumerate(self._graph.vs):
+                vertex[&#34;atom&#34;]._position += translation[i]
+        else:
+            raise ValueError
+
+    def merge(self, other: &#39;Topology&#39;, edges: Optional[List[Tuple[int, int]]] = None) -&gt; List[int]:
+        &#34;&#34;&#34;Combines two topologies and returns the indices of the merged atoms.
+        
+        Args:
+            other: The topology to merge in.
+            edges: List of edges to create upon merge.
+                In each tuple, the first index should be from `self` 
+                and the second index should be from `other`.
+        &#34;&#34;&#34;
+        if edges is None:
+            edges = []
+        indices = [self.insert(vertex[&#34;atom&#34;]) for vertex in other._graph.vs]
+        for edge in edges:
+            self.connect(edge[0], indices[edge[1]])
+        return indices
 
     def remove(self, index: int) -&gt; None:
         &#34;&#34;&#34;Removes an atom from the topology by index.
@@ -228,17 +290,38 @@ def atoms(self) -&gt; List[Atom]:
 </details>
 </dd>
 <dt id="atompack.topology.Topology.merge"><code class="name flex">
-<span>def <span class="ident">merge</span></span>(<span>self, other: <a title="atompack.topology.Topology" href="#atompack.topology.Topology">Topology</a>) ‑> List[int]</span>
+<span>def <span class="ident">merge</span></span>(<span>self, other: <a title="atompack.topology.Topology" href="#atompack.topology.Topology">Topology</a>, edges: Union[List[Tuple[int, int]], NoneType] = None) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Combines two topologies and returns the indices of the new atoms.</p></div>
+<div class="desc"><p>Combines two topologies and returns the indices of the merged atoms.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>other</code></strong></dt>
+<dd>The topology to merge in.</dd>
+<dt><strong><code>edges</code></strong></dt>
+<dd>List of edges to create upon merge.
+In each tuple, the first index should be from <code>self</code>
+and the second index should be from <code>other</code>.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def merge(self, other: &#39;Topology&#39;) -&gt; List[int]:
-    &#34;&#34;&#34;Combines two topologies and returns the indices of the new atoms.&#34;&#34;&#34;
-    return [self.insert(vertex[&#34;atom&#34;]) for vertex in other._graph.vs]</code></pre>
+<pre><code class="python">def merge(self, other: &#39;Topology&#39;, edges: Optional[List[Tuple[int, int]]] = None) -&gt; List[int]:
+    &#34;&#34;&#34;Combines two topologies and returns the indices of the merged atoms.
+    
+    Args:
+        other: The topology to merge in.
+        edges: List of edges to create upon merge.
+            In each tuple, the first index should be from `self` 
+            and the second index should be from `other`.
+    &#34;&#34;&#34;
+    if edges is None:
+        edges = []
+    indices = [self.insert(vertex[&#34;atom&#34;]) for vertex in other._graph.vs]
+    for edge in edges:
+        self.connect(edge[0], indices[edge[1]])
+    return indices</code></pre>
 </details>
 </dd>
 <dt id="atompack.topology.Topology.nearest"><code class="name flex">
@@ -288,6 +371,42 @@ afterwards to be renumbered.</p></div>
     self._graph.delete_vertices(index)</code></pre>
 </details>
 </dd>
+<dt id="atompack.topology.Topology.translate"><code class="name flex">
+<span>def <span class="ident">translate</span></span>(<span>self, translation: numpy.ndarray) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translates all atoms in the topology.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>translation</code></strong></dt>
+<dd>The translation to apply.
+If <code>translation</code> is a 1x3 vector that vector will be applied to each atom.
+If <code>translation</code> is a Nx3 matrix each row will be mapped to each atom.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def translate(self, translation: np.ndarray) -&gt; None:
+    &#34;&#34;&#34;Translates all atoms in the topology.
+    
+    Args:
+        translation: The translation to apply.
+            If `translation` is a 1x3 vector that vector will be applied to each atom.
+            If `translation` is a Nx3 matrix each row will be mapped to each atom.  
+    &#34;&#34;&#34;
+    shape = translation.shape
+    n_atoms = len(self._graph.vs)
+    if shape == (3,):
+        for vertex in self._graph.vs:
+            vertex[&#34;atom&#34;]._position += translation
+    elif shape == (n_atoms, 3):
+        for i, vertex in enumerate(self._graph.vs):
+            vertex[&#34;atom&#34;]._position += translation[i]
+    else:
+        raise ValueError</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -316,6 +435,7 @@ afterwards to be renumbered.</p></div>
 <li><code><a title="atompack.topology.Topology.merge" href="#atompack.topology.Topology.merge">merge</a></code></li>
 <li><code><a title="atompack.topology.Topology.nearest" href="#atompack.topology.Topology.nearest">nearest</a></code></li>
 <li><code><a title="atompack.topology.Topology.remove" href="#atompack.topology.Topology.remove">remove</a></code></li>
+<li><code><a title="atompack.topology.Topology.translate" href="#atompack.topology.Topology.translate">translate</a></code></li>
 </ul>
 </li>
 </ul>

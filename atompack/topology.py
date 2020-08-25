@@ -57,20 +57,20 @@ class Topology(object):
         else:
             raise ValueError
 
-    def merge(self, other: 'Topology', bonds: Optional[List[Tuple[int, int]]] = None) -> List[int]:
+    def merge(self, other: 'Topology', edges: Optional[List[Tuple[int, int]]] = None) -> List[int]:
         """Combines two topologies and returns the indices of the merged atoms.
         
         Args:
             other: The topology to merge in.
-            bonds: List of edges to create upon merge.
-                The first index in each tuple should be an index from `self` 
-                and the second index should be an index from `other`.
+            edges: List of edges to create upon merge.
+                In each tuple, the first index should be from `self` 
+                and the second index should be from `other`.
         """
-        if bonds is None:
-            bonds = []
+        if edges is None:
+            edges = []
         indices = [self.insert(vertex["atom"]) for vertex in other._graph.vs]
-        for bond in bonds:
-            self.connect(bond[0], indices[bond[1]])
+        for edge in edges:
+            self.connect(edge[0], indices[edge[1]])
         return indices
 
     def remove(self, index: int) -> None:
