@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional, Tuple
 
 import numpy as np
 from igraph import Graph, Vertex
@@ -38,9 +38,40 @@ class Topology(object):
                 distance = d
         return index
 
-    def merge(self, other: 'Topology') -> List[int]:
-        """Combines two topologies and returns the indices of the new atoms."""
-        return [self.insert(vertex["atom"]) for vertex in other._graph.vs]
+    def translate(self, translation: np.ndarray) -> None:
+        """Translates all atoms in the topology.
+        
+        Args:
+            translation: The translation to apply.
+                If `translation` is a 1x3 vector that vector will be applied to each atom.
+                If `translation` is a Nx3 matrix each row will be mapped to each atom.  
+        """
+        shape = translation.shape
+        n_atoms = len(self._graph.vs)
+        if shape == (3,):
+            for vertex in self._graph.vs:
+                vertex["atom"]._position += translation
+        elif shape == (n_atoms, 3):
+            for i, vertex in enumerate(self._graph.vs):
+                vertex["atom"]._position += translation[i]
+        else:
+            raise ValueError
+
+    def merge(self, other: 'Topology', bonds: Optional[List[Tuple[int, int]]] = None) -> List[int]:
+        """Combines two topologies and returns the indices of the merged atoms.
+        
+        Args:
+            other: The topology to merge in.
+            bonds: List of edges to create upon merge.
+                The first index in each tuple should be an index from `self` 
+                and the second index should be an index from `other`.
+        """
+        if bonds is None:
+            bonds = []
+        indices = [self.insert(vertex["atom"]) for vertex in other._graph.vs]
+        for bond in bonds:
+            self.connect(bond[0], indices[bond[1]])
+        return indices
 
     def remove(self, index: int) -> None:
         """Removes an atom from the topology by index.

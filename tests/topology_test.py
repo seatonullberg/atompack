@@ -37,6 +37,18 @@ def test_topology_nearest():
     assert t.nearest(position) == 3
 
 
+def test_topology_translate():
+    t = Topology()
+    t.insert(Atom(np.array([0.5, 0.5, 0.5])))
+    t.insert(Atom(np.array([1.0, 1.0, 1.0])))
+    t.translate(np.array([1.0, 2.0, 3.0]))
+    assert np.array_equal(t.atoms[0].position, np.array([1.5, 2.5, 3.5]))
+    assert np.array_equal(t.atoms[1].position, np.array([2.0, 3.0, 4.0]))
+    t.translate(np.array([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0]]))
+    assert np.array_equal(t.atoms[0].position, np.array([2.5, 3.5, 4.5]))
+    assert np.array_equal(t.atoms[1].position, np.array([4.0, 5.0, 6.0]))
+
+
 def test_topology_merge():
     t = Topology()
     t.insert(Atom())
@@ -45,6 +57,13 @@ def test_topology_merge():
     t.merge(new_t)
     assert len(t._graph.vs) == 2
     assert len(new_t._graph.vs) == 1
+    assert len(t._graph.es) == 0
+    bonds = [(0, 0)]
+    t.merge(new_t, bonds=bonds)
+    assert len(t._graph.vs) == 3
+    assert len(t._graph.es) == 1
+    assert t._graph.es[0].source == 0
+    assert t._graph.es[0].target == 2
 
 
 def test_topology_remove():
