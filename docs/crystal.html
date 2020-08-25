@@ -31,11 +31,10 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
-from _pbc import pbc_nearest_neighbor
 from scipy.spatial.transform import Rotation
 
 from atompack.atom import Atom
-from atompack.structure import Structure
+from atompack.topology import Topology
 
 
 def metric_tensor(a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -&gt; np.ndarray:
@@ -45,106 +44,92 @@ def metric_tensor(a: float, b: float, c: float, alpha: float, beta: float, gamma
                      [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
 
 
-class Crystal(Structure):
-    &#34;&#34;&#34;Representation of a crystalline lattice.
-    
-    Note:
-        It is a logical error to mutate any of these attributes because the result 
-        of any changes will not be reflected in the shape of the basis or the 
-        content of the atoms list.
+class UnitCell(Topology):
+    &#34;&#34;&#34;Representation of a paralellpiped tileable unit cell.&#34;&#34;&#34;
 
-    Args:
-        lattice_atoms: Atom at each lattice site.
-            The `position` attribute is ignored and overwritten during initialization.
-        lattice_sites: Fractional coordinates of atoms in the lattice.
-        a: Length of the x direction basis vector.
-        b: Length of the y direction basis vector.
-        c: Length of the z direction basis vector.
-        alpha: Angle between y and z directions in radians.
-        beta: Angle between x and z directions in radians.
-        gamma: Angle between x and y directions in radians.
-        duplicates: Number of duplications to apply to the finished structure along each direction.
-        orientation: 3x3 matrix describing the alignment of the basis vectors.
+    def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
+                 gamma: float) -&gt; None:
+        self.a, self.b, self.c = a, b, c
+        self.alpha, self.beta, self.gamma = alpha, beta, gamma
+        self._vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
 
-    Example:
-        &gt;&gt;&gt; from atompack import Atom, Crystal
-        &gt;&gt;&gt; import numpy as np
-        &gt;&gt;&gt;
-        &gt;&gt;&gt; # Anitferromagnetic Cr
-        &gt;&gt;&gt; lattice_atoms = [Atom(symbol=&#34;Cr&#34;, magmom=1.0), Atom(symbol=&#34;Cr&#34;, magmom=-1.0)]
-        &gt;&gt;&gt; # BCC lattice
-        &gt;&gt;&gt; lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
-        &gt;&gt;&gt; a = b = c = 2.85
-        &gt;&gt;&gt; alpha = beta = gamma = np.pi / 2
-        &gt;&gt;&gt; crystal = Crystal(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma)
-        &gt;&gt;&gt;
-        &gt;&gt;&gt; assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]),)
-        &gt;&gt;&gt; assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
-    &#34;&#34;&#34;
-
-    def __init__(
-        self,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; None:
-        if duplicates is None:
-            duplicates = (1, 1, 1)
-        if orientation is None:
-            orientation = np.identity(3)
-        if pbc is None:
-            pbc = (False, False, False)
-        atoms, basis = self._build(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation,
-                                   pbc, tolerance)
-        super().__init__(atoms, basis, pbc, tolerance)
+    @property
+    def vectors(self):
+        return self._vectors
 
     @classmethod
     def triclinic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
         alpha: float,
         beta: float,
         gamma: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Initializes a crystal with triclinic constraints.
+    ) -&gt; &#39;UnitCell&#39;:
+        &#34;&#34;&#34;Initializes a unit cell with triclinic constraints.
         
         \\[a \\ne b \\ne c\\]
 
         \\[\\alpha \\ne \\beta \\ne \\gamma\\]
+
+        Example:
+            &gt;&gt;&gt; from atompack import Atom, Crystal
+            &gt;&gt;&gt; import numpy as np
+            &gt;&gt;&gt; 
+            &gt;&gt;&gt; # Ag2F5: https://materialsproject.org/materials/mp-542298/#
+            &gt;&gt;&gt; # angstroms
+            &gt;&gt;&gt; a, b, c = 5.197, 7.589, 11.446
+            &gt;&gt;&gt; # radians
+            &gt;&gt;&gt; alpha, beta, gamma = 1.536, 1.557, 1.271
+            &gt;&gt;&gt; # fractional coordinates
+            &gt;&gt;&gt; atoms = [
+            ...     Atom(np.array([0.0428, 0.2779, 0.7534]), symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.046, 0.7848, 0.7656]),  symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.5, 0.0]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.0, 0.5]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.0, 0.0]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.5, 0.5]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.954, 0.2152, 0.2344]),  symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.9572, 0.7221, 0.2466]), symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.0487, 0.0776, 0.3825]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.056, 0.9765, 0.1535]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.1279, 0.6441, 0.9187]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.1539, 0.5451, 0.6861]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.2065, 0.6609, 0.399]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.2783, 0.5616, 0.1509]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.3273, 0.2291, 0.9045]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.3611, 0.122, 0.6541]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.4498, 0.2667, 0.4277]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.4799, 0.1616, 0.1324]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.5201, 0.8384, 0.8676]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.5502, 0.7333, 0.5723]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.6389, 0.878, 0.3459]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.6727, 0.7709, 0.0955]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.7217, 0.4384, 0.8491]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.7935, 0.3391, 0.601]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.8461, 0.4549, 0.3139]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.8721, 0.3559, 0.0813]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.944, 0.0235, 0.8465]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.9513, 0.9224, 0.6175]), symbol=&#34;F&#34;),
+            ... ]
+            &gt;&gt;&gt; unit_cell = UnitCell.triclinic(atoms, a, b, c, alpha, beta, gamma)
         &#34;&#34;&#34;
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def monoclinic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
         beta: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with monoclinic constraints.
         
         \\[a \\ne b \\ne c\\]
@@ -154,21 +139,16 @@ class Crystal(Structure):
         \\[\\beta \\ne \\frac{\\pi}{2}\\]
         &#34;&#34;&#34;
         alpha = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def orthorhombic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with orthorhombic constraints.
         
         \\[a \\ne b \\ne c\\]
@@ -176,20 +156,15 @@ class Crystal(Structure):
         \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         &#34;&#34;&#34;
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def tetragonal(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with tetragonal constraints.
         
         \\[a \\equiv b \\ne c\\]
@@ -198,20 +173,15 @@ class Crystal(Structure):
         &#34;&#34;&#34;
         b = a
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def rhombohedral(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         alpha: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with rhombohedral constraints.
         
         \\[a \\equiv b \\equiv c\\]
@@ -220,20 +190,15 @@ class Crystal(Structure):
         &#34;&#34;&#34;
         b = c = a
         beta = gamma = alpha
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def hexagonal(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with hexagonal constraints.
         
         \\[a \\equiv b \\ne c\\]
@@ -245,19 +210,14 @@ class Crystal(Structure):
         b = a
         alpha = beta = np.pi / 2
         gamma = 2 * np.pi / 3
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def cubic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with cubic constraints.
         
         \\[a \\equiv b \\equiv c\\]
@@ -266,82 +226,119 @@ class Crystal(Structure):
         &#34;&#34;&#34;
         b = c = a
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
-    @staticmethod
-    def _build(
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-        duplicates: Tuple[int, int, int],
-        orientation: np.ndarray,
-        pbc: Tuple[bool, bool, bool],
-        tolerance: float,
-    ) -&gt; Tuple[List[Atom], np.ndarray]:
-        &#34;&#34;&#34;Construct a crystalline lattice and populate it with atoms.&#34;&#34;&#34;
-        # calculate lattice vectors from metric tensor
-        lattice_vectors = np.sqrt(metric_tensor(a, b, c, alpha, beta, gamma))
 
-        # calculate the magnitude of each lattice vector
-        lattice_vectors_magnitude = np.linalg.norm(lattice_vectors, axis=0)
+class Crystal(Topology):
+    &#34;&#34;&#34;Representation of a generic crystal.&#34;&#34;&#34;
+
+    def __init__(self,
+                 unit_cell: UnitCell,
+                 scale: Optional[Tuple[int, int, int]] = None,
+                 orientation: Optional[np.ndarray] = None,
+                 rotation: Optional[np.ndarray] = None,
+                 tolerance: float = 1.0e-6) -&gt; None:
+        self._unit_cell = unit_cell
+        if scale is None:
+            scale = (1, 1, 1)
+        self._scale = scale
+        if orientation is None:
+            orientation = np.identity(3)
+        self._orientation = orientation
+        if rotation is None:
+            rotation = np.identity(3)
+        self._rotation = rotation
+        self._tolerance = tolerance
+        atoms, self._vectors = self._build()
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
+
+    @property
+    def vectors(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the lattice vectors of the crystal.&#34;&#34;&#34;
+        return self._vectors
+
+    def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
+        # transforms are applied in the following order:
+        # - orientation
+        # - rotation
+        # - scale
+
+        # calculate the magnitude of the lattice vectors
+        lattice_vector_mags = np.linalg.norm(self._unit_cell.vectors, axis=0)
 
         # calculate the unit vector of each lattice vector
-        lattice_vectors_hat = lattice_vectors / lattice_vectors_magnitude
+        lattice_unit_vectors = self._unit_cell.vectors / lattice_vector_mags
 
-        # calculate rotation matrix between natural orientation and desired orientation
-        rotation = Rotation.align_vectors(lattice_vectors_hat, orientation)[0]
+        # calculate the rotation matrix between the unoriented and oriented lattice vectors
+        rotation = Rotation.align_vectors(lattice_unit_vectors, self._orientation)[0]
 
-        # align the lattice vectors with the desired orientation by applying the
-        lattice_vectors_oriented = np.matmul(orientation, lattice_vectors)
+        # align the lattice vectors with the orientation
+        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.vectors)
 
-        # use QR decomposition to calculate an orthogonal representation of the oriented lattice vectors
-        _, r = np.linalg.qr(lattice_vectors_oriented.T)
-        lattice_vectors_oriented = np.abs(r) * np.array(duplicates)
-        lattice_vectors_oriented_magnitude = np.linalg.norm(lattice_vectors_oriented, axis=0)
+        # use QR decomposition to calculate an orthogonal representation
+        # TODO: this should be optional
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
+        oriented_lattice_vectors = np.abs(r)  # removed multiplication by scale
 
-        # determine smallest possible size
-        minimum_orthogonal_size = np.ceil(
-            lattice_vectors_oriented_magnitude / lattice_vectors_magnitude) * np.array(duplicates)
-        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
+        # calculate the magnitude of the oriented lattice vectors
+        oriented_lattice_vector_mags = np.linalg.norm(oriented_lattice_vectors, axis=0)
 
+        # determine smallest orthogonal size
+        min_ortho_size = np.ceil(oriented_lattice_vector_mags / lattice_vector_mags)
+        min_ortho_size = min_ortho_size.astype(int)
+
+        # place the atoms
         atoms: List[Atom] = []
-        for xsize in range(minimum_orthogonal_size[0]):
-            for ysize in range(minimum_orthogonal_size[1]):
-                for zsize in range(minimum_orthogonal_size[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), lattice_vectors)
-                    for lattice_atom, site in zip(lattice_atoms, lattice_sites):
+        for xsize in range(min_ortho_size[0]):
+            for ysize in range(min_ortho_size[1]):
+                for zsize in range(min_ortho_size[2]):
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.vectors)
+                    for atom in self._unit_cell.atoms:
 
-                        # assign the cartesian position
-                        position = np.matmul(site, lattice_vectors) + offset
+                        # calculate the cartesian position
+                        position = np.matmul(atom.position, self._unit_cell.vectors) + offset
                         position = rotation.apply(position)
 
-                        # transform the position back into the bounding box
-                        for i in range(3):
-                            if position[i] &lt; -tolerance:
-                                new_position = position[i]
-                                while new_position &lt; -tolerance:
-                                    new_position += lattice_vectors_oriented_magnitude[i]
-                                position[i] = new_position
-                            elif position[i] &gt;= lattice_vectors_oriented_magnitude[i] - tolerance:
-                                new_position = position[i]
-                                while new_position &gt;= lattice_vectors_oriented_magnitude[i] - tolerance:
-                                    new_position -= lattice_vectors_oriented_magnitude[i]
-                                position[i] = new_position
+                        # TODO: transform the position into the lattice
+                        for i, mag in enumerate(oriented_lattice_vector_mags):
+                            if position[i] &gt;= mag - self._tolerance:
+                                position[i] -= mag
+                            if position[i] &lt;= -self._tolerance:
+                                position[i] += mag
 
-                        # accept the atom if the position is not occupied
+                        # TODO: accept the atom if the position is not yet occupied
                         positions = np.array([atom.position for atom in atoms])
-                        distance, _ = pbc_nearest_neighbor(position, positions, lattice_vectors_oriented, pbc)
-                        if distance &gt; tolerance:
-                            atom = copy.deepcopy(lattice_atom)
-                            atom.position = position
+                        is_occupied = False
+                        for _position in positions:
+                            if np.linalg.norm(position - _position) &lt; self._tolerance:
+                                is_occupied = True
+                                break
+                        if not is_occupied:
+                            atom = copy.deepcopy(atom)
+                            atom._position = position
                             atoms.append(atom)
 
-        return atoms, lattice_vectors_oriented</code></pre>
+        # TODO: apply a rotation matrix
+
+        # tile the crystal in all directions
+        current_atoms = copy.deepcopy(atoms)
+        for xsize in range(self._scale[0]):
+            for ysize in range(self._scale[1]):
+                for zsize in range(self._scale[2]):
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), oriented_lattice_vectors)
+                    if np.linalg.norm(offset) &lt; self._tolerance:
+                        continue
+                    for atom in current_atoms:
+                        atom = copy.deepcopy(atom)
+                        atom._position += offset
+                        atoms.append(atom)
+
+        # multiply the oriented lattice vectors by the scale
+        scaled_oriented_lattice_vectors = oriented_lattice_vectors * np.array(self._scale)
+
+        return atoms, scaled_oriented_lattice_vectors</code></pre>
 </details>
 </section>
 <section>
@@ -374,157 +371,256 @@ class Crystal(Structure):
 <dl>
 <dt id="atompack.crystal.Crystal"><code class="flex name class">
 <span>class <span class="ident">Crystal</span></span>
-<span>(</span><span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, b: float, c: float, alpha: float, beta: float, gamma: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06)</span>
+<span>(</span><span>unit_cell: <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a>, scale: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, rotation: Union[numpy.ndarray, NoneType] = None, tolerance: float = 1e-06)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Representation of a crystalline lattice.</p>
-<h2 id="note">Note</h2>
-<p>It is a logical error to mutate any of these attributes because the result
-of any changes will not be reflected in the shape of the basis or the
-content of the atoms list.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>lattice_atoms</code></strong></dt>
-<dd>Atom at each lattice site.
-The <code>position</code> attribute is ignored and overwritten during initialization.</dd>
-<dt><strong><code>lattice_sites</code></strong></dt>
-<dd>Fractional coordinates of atoms in the lattice.</dd>
-<dt><strong><code>a</code></strong></dt>
-<dd>Length of the x direction basis vector.</dd>
-<dt><strong><code>b</code></strong></dt>
-<dd>Length of the y direction basis vector.</dd>
-<dt><strong><code>c</code></strong></dt>
-<dd>Length of the z direction basis vector.</dd>
-<dt><strong><code>alpha</code></strong></dt>
-<dd>Angle between y and z directions in radians.</dd>
-<dt><strong><code>beta</code></strong></dt>
-<dd>Angle between x and z directions in radians.</dd>
-<dt><strong><code>gamma</code></strong></dt>
-<dd>Angle between x and y directions in radians.</dd>
-<dt><strong><code>duplicates</code></strong></dt>
-<dd>Number of duplications to apply to the finished structure along each direction.</dd>
-<dt><strong><code>orientation</code></strong></dt>
-<dd>3x3 matrix describing the alignment of the basis vectors.</dd>
-</dl>
-<h2 id="example">Example</h2>
-<pre><code class="python">&gt;&gt;&gt; from atompack import Atom, Crystal
-&gt;&gt;&gt; import numpy as np
-&gt;&gt;&gt;
-&gt;&gt;&gt; # Anitferromagnetic Cr
-&gt;&gt;&gt; lattice_atoms = [Atom(symbol=&quot;Cr&quot;, magmom=1.0), Atom(symbol=&quot;Cr&quot;, magmom=-1.0)]
-&gt;&gt;&gt; # BCC lattice
-&gt;&gt;&gt; lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
-&gt;&gt;&gt; a = b = c = 2.85
-&gt;&gt;&gt; alpha = beta = gamma = np.pi / 2
-&gt;&gt;&gt; crystal = Crystal(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma)
-&gt;&gt;&gt;
-&gt;&gt;&gt; assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]),)
-&gt;&gt;&gt; assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
-</code></pre></div>
+<div class="desc"><p>Representation of a generic crystal.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Crystal(Structure):
-    &#34;&#34;&#34;Representation of a crystalline lattice.
-    
-    Note:
-        It is a logical error to mutate any of these attributes because the result 
-        of any changes will not be reflected in the shape of the basis or the 
-        content of the atoms list.
+<pre><code class="python">class Crystal(Topology):
+    &#34;&#34;&#34;Representation of a generic crystal.&#34;&#34;&#34;
 
-    Args:
-        lattice_atoms: Atom at each lattice site.
-            The `position` attribute is ignored and overwritten during initialization.
-        lattice_sites: Fractional coordinates of atoms in the lattice.
-        a: Length of the x direction basis vector.
-        b: Length of the y direction basis vector.
-        c: Length of the z direction basis vector.
-        alpha: Angle between y and z directions in radians.
-        beta: Angle between x and z directions in radians.
-        gamma: Angle between x and y directions in radians.
-        duplicates: Number of duplications to apply to the finished structure along each direction.
-        orientation: 3x3 matrix describing the alignment of the basis vectors.
-
-    Example:
-        &gt;&gt;&gt; from atompack import Atom, Crystal
-        &gt;&gt;&gt; import numpy as np
-        &gt;&gt;&gt;
-        &gt;&gt;&gt; # Anitferromagnetic Cr
-        &gt;&gt;&gt; lattice_atoms = [Atom(symbol=&#34;Cr&#34;, magmom=1.0), Atom(symbol=&#34;Cr&#34;, magmom=-1.0)]
-        &gt;&gt;&gt; # BCC lattice
-        &gt;&gt;&gt; lattice_sites = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]])
-        &gt;&gt;&gt; a = b = c = 2.85
-        &gt;&gt;&gt; alpha = beta = gamma = np.pi / 2
-        &gt;&gt;&gt; crystal = Crystal(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma)
-        &gt;&gt;&gt;
-        &gt;&gt;&gt; assert np.allclose(crystal[0].position, np.array([0.0, 0.0, 0.0]),)
-        &gt;&gt;&gt; assert np.allclose(crystal[1].position, np.array([1.425, 1.425, 1.425]))
-    &#34;&#34;&#34;
-
-    def __init__(
-        self,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; None:
-        if duplicates is None:
-            duplicates = (1, 1, 1)
+    def __init__(self,
+                 unit_cell: UnitCell,
+                 scale: Optional[Tuple[int, int, int]] = None,
+                 orientation: Optional[np.ndarray] = None,
+                 rotation: Optional[np.ndarray] = None,
+                 tolerance: float = 1.0e-6) -&gt; None:
+        self._unit_cell = unit_cell
+        if scale is None:
+            scale = (1, 1, 1)
+        self._scale = scale
         if orientation is None:
             orientation = np.identity(3)
-        if pbc is None:
-            pbc = (False, False, False)
-        atoms, basis = self._build(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation,
-                                   pbc, tolerance)
-        super().__init__(atoms, basis, pbc, tolerance)
+        self._orientation = orientation
+        if rotation is None:
+            rotation = np.identity(3)
+        self._rotation = rotation
+        self._tolerance = tolerance
+        atoms, self._vectors = self._build()
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
+
+    @property
+    def vectors(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the lattice vectors of the crystal.&#34;&#34;&#34;
+        return self._vectors
+
+    def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
+        # transforms are applied in the following order:
+        # - orientation
+        # - rotation
+        # - scale
+
+        # calculate the magnitude of the lattice vectors
+        lattice_vector_mags = np.linalg.norm(self._unit_cell.vectors, axis=0)
+
+        # calculate the unit vector of each lattice vector
+        lattice_unit_vectors = self._unit_cell.vectors / lattice_vector_mags
+
+        # calculate the rotation matrix between the unoriented and oriented lattice vectors
+        rotation = Rotation.align_vectors(lattice_unit_vectors, self._orientation)[0]
+
+        # align the lattice vectors with the orientation
+        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.vectors)
+
+        # use QR decomposition to calculate an orthogonal representation
+        # TODO: this should be optional
+        _, r = np.linalg.qr(oriented_lattice_vectors.T)
+        oriented_lattice_vectors = np.abs(r)  # removed multiplication by scale
+
+        # calculate the magnitude of the oriented lattice vectors
+        oriented_lattice_vector_mags = np.linalg.norm(oriented_lattice_vectors, axis=0)
+
+        # determine smallest orthogonal size
+        min_ortho_size = np.ceil(oriented_lattice_vector_mags / lattice_vector_mags)
+        min_ortho_size = min_ortho_size.astype(int)
+
+        # place the atoms
+        atoms: List[Atom] = []
+        for xsize in range(min_ortho_size[0]):
+            for ysize in range(min_ortho_size[1]):
+                for zsize in range(min_ortho_size[2]):
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.vectors)
+                    for atom in self._unit_cell.atoms:
+
+                        # calculate the cartesian position
+                        position = np.matmul(atom.position, self._unit_cell.vectors) + offset
+                        position = rotation.apply(position)
+
+                        # TODO: transform the position into the lattice
+                        for i, mag in enumerate(oriented_lattice_vector_mags):
+                            if position[i] &gt;= mag - self._tolerance:
+                                position[i] -= mag
+                            if position[i] &lt;= -self._tolerance:
+                                position[i] += mag
+
+                        # TODO: accept the atom if the position is not yet occupied
+                        positions = np.array([atom.position for atom in atoms])
+                        is_occupied = False
+                        for _position in positions:
+                            if np.linalg.norm(position - _position) &lt; self._tolerance:
+                                is_occupied = True
+                                break
+                        if not is_occupied:
+                            atom = copy.deepcopy(atom)
+                            atom._position = position
+                            atoms.append(atom)
+
+        # TODO: apply a rotation matrix
+
+        # tile the crystal in all directions
+        current_atoms = copy.deepcopy(atoms)
+        for xsize in range(self._scale[0]):
+            for ysize in range(self._scale[1]):
+                for zsize in range(self._scale[2]):
+                    offset = np.matmul(np.array([xsize, ysize, zsize]), oriented_lattice_vectors)
+                    if np.linalg.norm(offset) &lt; self._tolerance:
+                        continue
+                    for atom in current_atoms:
+                        atom = copy.deepcopy(atom)
+                        atom._position += offset
+                        atoms.append(atom)
+
+        # multiply the oriented lattice vectors by the scale
+        scaled_oriented_lattice_vectors = oriented_lattice_vectors * np.array(self._scale)
+
+        return atoms, scaled_oriented_lattice_vectors</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.crystal.Crystal.vectors"><code class="name">var <span class="ident">vectors</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"><p>Returns the lattice vectors of the crystal.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def vectors(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the lattice vectors of the crystal.&#34;&#34;&#34;
+    return self._vectors</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
+<ul class="hlist">
+<li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.connect" href="topology.html#atompack.topology.Topology.connect">connect</a></code></li>
+<li><code><a title="atompack.topology.Topology.disconnect" href="topology.html#atompack.topology.Topology.disconnect">disconnect</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert" href="topology.html#atompack.topology.Topology.insert">insert</a></code></li>
+<li><code><a title="atompack.topology.Topology.merge" href="topology.html#atompack.topology.Topology.merge">merge</a></code></li>
+<li><code><a title="atompack.topology.Topology.nearest" href="topology.html#atompack.topology.Topology.nearest">nearest</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove" href="topology.html#atompack.topology.Topology.remove">remove</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="atompack.crystal.UnitCell"><code class="flex name class">
+<span>class <span class="ident">UnitCell</span></span>
+<span>(</span><span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, b: float, c: float, alpha: float, beta: float, gamma: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of a paralellpiped tileable unit cell.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UnitCell(Topology):
+    &#34;&#34;&#34;Representation of a paralellpiped tileable unit cell.&#34;&#34;&#34;
+
+    def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
+                 gamma: float) -&gt; None:
+        self.a, self.b, self.c = a, b, c
+        self.alpha, self.beta, self.gamma = alpha, beta, gamma
+        self._vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
+
+    @property
+    def vectors(self):
+        return self._vectors
 
     @classmethod
     def triclinic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
         alpha: float,
         beta: float,
         gamma: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Initializes a crystal with triclinic constraints.
+    ) -&gt; &#39;UnitCell&#39;:
+        &#34;&#34;&#34;Initializes a unit cell with triclinic constraints.
         
         \\[a \\ne b \\ne c\\]
 
         \\[\\alpha \\ne \\beta \\ne \\gamma\\]
+
+        Example:
+            &gt;&gt;&gt; from atompack import Atom, Crystal
+            &gt;&gt;&gt; import numpy as np
+            &gt;&gt;&gt; 
+            &gt;&gt;&gt; # Ag2F5: https://materialsproject.org/materials/mp-542298/#
+            &gt;&gt;&gt; # angstroms
+            &gt;&gt;&gt; a, b, c = 5.197, 7.589, 11.446
+            &gt;&gt;&gt; # radians
+            &gt;&gt;&gt; alpha, beta, gamma = 1.536, 1.557, 1.271
+            &gt;&gt;&gt; # fractional coordinates
+            &gt;&gt;&gt; atoms = [
+            ...     Atom(np.array([0.0428, 0.2779, 0.7534]), symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.046, 0.7848, 0.7656]),  symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.5, 0.0]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.0, 0.5]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.0, 0.0]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.5, 0.5, 0.5]),          symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.954, 0.2152, 0.2344]),  symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.9572, 0.7221, 0.2466]), symbol=&#34;Ag&#34;),
+            ...     Atom(np.array([0.0487, 0.0776, 0.3825]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.056, 0.9765, 0.1535]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.1279, 0.6441, 0.9187]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.1539, 0.5451, 0.6861]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.2065, 0.6609, 0.399]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.2783, 0.5616, 0.1509]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.3273, 0.2291, 0.9045]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.3611, 0.122, 0.6541]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.4498, 0.2667, 0.4277]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.4799, 0.1616, 0.1324]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.5201, 0.8384, 0.8676]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.5502, 0.7333, 0.5723]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.6389, 0.878, 0.3459]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.6727, 0.7709, 0.0955]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.7217, 0.4384, 0.8491]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.7935, 0.3391, 0.601]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.8461, 0.4549, 0.3139]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.8721, 0.3559, 0.0813]), symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.944, 0.0235, 0.8465]),  symbol=&#34;F&#34;),
+            ...     Atom(np.array([0.9513, 0.9224, 0.6175]), symbol=&#34;F&#34;),
+            ... ]
+            &gt;&gt;&gt; unit_cell = UnitCell.triclinic(atoms, a, b, c, alpha, beta, gamma)
         &#34;&#34;&#34;
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def monoclinic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
         beta: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with monoclinic constraints.
         
         \\[a \\ne b \\ne c\\]
@@ -534,21 +630,16 @@ The <code>position</code> attribute is ignored and overwritten during initializa
         \\[\\beta \\ne \\frac{\\pi}{2}\\]
         &#34;&#34;&#34;
         alpha = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def orthorhombic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         b: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with orthorhombic constraints.
         
         \\[a \\ne b \\ne c\\]
@@ -556,20 +647,15 @@ The <code>position</code> attribute is ignored and overwritten during initializa
         \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
         &#34;&#34;&#34;
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def tetragonal(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with tetragonal constraints.
         
         \\[a \\equiv b \\ne c\\]
@@ -578,20 +664,15 @@ The <code>position</code> attribute is ignored and overwritten during initializa
         &#34;&#34;&#34;
         b = a
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def rhombohedral(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         alpha: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with rhombohedral constraints.
         
         \\[a \\equiv b \\equiv c\\]
@@ -600,20 +681,15 @@ The <code>position</code> attribute is ignored and overwritten during initializa
         &#34;&#34;&#34;
         b = c = a
         beta = gamma = alpha
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def hexagonal(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
         c: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with hexagonal constraints.
         
         \\[a \\equiv b \\ne c\\]
@@ -625,19 +701,14 @@ The <code>position</code> attribute is ignored and overwritten during initializa
         b = a
         alpha = beta = np.pi / 2
         gamma = 2 * np.pi / 3
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
+        return cls(atoms, a, b, c, alpha, beta, gamma)
 
     @classmethod
     def cubic(
         cls,
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
+        atoms: List[Atom],
         a: float,
-        duplicates: Optional[Tuple[int, int, int]] = None,
-        orientation: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Crystal&#39;:
+    ) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes a crystal with cubic constraints.
         
         \\[a \\equiv b \\equiv c\\]
@@ -646,91 +717,16 @@ The <code>position</code> attribute is ignored and overwritten during initializa
         &#34;&#34;&#34;
         b = c = a
         alpha = beta = gamma = np.pi / 2
-        return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
-
-    @staticmethod
-    def _build(
-        lattice_atoms: List[Atom],
-        lattice_sites: np.ndarray,
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-        duplicates: Tuple[int, int, int],
-        orientation: np.ndarray,
-        pbc: Tuple[bool, bool, bool],
-        tolerance: float,
-    ) -&gt; Tuple[List[Atom], np.ndarray]:
-        &#34;&#34;&#34;Construct a crystalline lattice and populate it with atoms.&#34;&#34;&#34;
-        # calculate lattice vectors from metric tensor
-        lattice_vectors = np.sqrt(metric_tensor(a, b, c, alpha, beta, gamma))
-
-        # calculate the magnitude of each lattice vector
-        lattice_vectors_magnitude = np.linalg.norm(lattice_vectors, axis=0)
-
-        # calculate the unit vector of each lattice vector
-        lattice_vectors_hat = lattice_vectors / lattice_vectors_magnitude
-
-        # calculate rotation matrix between natural orientation and desired orientation
-        rotation = Rotation.align_vectors(lattice_vectors_hat, orientation)[0]
-
-        # align the lattice vectors with the desired orientation by applying the
-        lattice_vectors_oriented = np.matmul(orientation, lattice_vectors)
-
-        # use QR decomposition to calculate an orthogonal representation of the oriented lattice vectors
-        _, r = np.linalg.qr(lattice_vectors_oriented.T)
-        lattice_vectors_oriented = np.abs(r) * np.array(duplicates)
-        lattice_vectors_oriented_magnitude = np.linalg.norm(lattice_vectors_oriented, axis=0)
-
-        # determine smallest possible size
-        minimum_orthogonal_size = np.ceil(
-            lattice_vectors_oriented_magnitude / lattice_vectors_magnitude) * np.array(duplicates)
-        minimum_orthogonal_size = minimum_orthogonal_size.astype(int)
-
-        atoms: List[Atom] = []
-        for xsize in range(minimum_orthogonal_size[0]):
-            for ysize in range(minimum_orthogonal_size[1]):
-                for zsize in range(minimum_orthogonal_size[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), lattice_vectors)
-                    for lattice_atom, site in zip(lattice_atoms, lattice_sites):
-
-                        # assign the cartesian position
-                        position = np.matmul(site, lattice_vectors) + offset
-                        position = rotation.apply(position)
-
-                        # transform the position back into the bounding box
-                        for i in range(3):
-                            if position[i] &lt; -tolerance:
-                                new_position = position[i]
-                                while new_position &lt; -tolerance:
-                                    new_position += lattice_vectors_oriented_magnitude[i]
-                                position[i] = new_position
-                            elif position[i] &gt;= lattice_vectors_oriented_magnitude[i] - tolerance:
-                                new_position = position[i]
-                                while new_position &gt;= lattice_vectors_oriented_magnitude[i] - tolerance:
-                                    new_position -= lattice_vectors_oriented_magnitude[i]
-                                position[i] = new_position
-
-                        # accept the atom if the position is not occupied
-                        positions = np.array([atom.position for atom in atoms])
-                        distance, _ = pbc_nearest_neighbor(position, positions, lattice_vectors_oriented, pbc)
-                        if distance &gt; tolerance:
-                            atom = copy.deepcopy(lattice_atom)
-                            atom.position = position
-                            atoms.append(atom)
-
-        return atoms, lattice_vectors_oriented</code></pre>
+        return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="atompack.structure.Structure" href="structure.html#atompack.structure.Structure">Structure</a></li>
+<li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="atompack.crystal.Crystal.cubic"><code class="name flex">
-<span>def <span class="ident">cubic</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.cubic"><code class="name flex">
+<span>def <span class="ident">cubic</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a crystal with cubic constraints.</p>
@@ -743,14 +739,9 @@ The <code>position</code> attribute is ignored and overwritten during initializa
 <pre><code class="python">@classmethod
 def cubic(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
+) -&gt; &#39;UnitCell&#39;:
     &#34;&#34;&#34;Initializes a crystal with cubic constraints.
     
     \\[a \\equiv b \\equiv c\\]
@@ -759,11 +750,11 @@ def cubic(
     &#34;&#34;&#34;
     b = c = a
     alpha = beta = gamma = np.pi / 2
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
-<dt id="atompack.crystal.Crystal.hexagonal"><code class="name flex">
-<span>def <span class="ident">hexagonal</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, c: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.hexagonal"><code class="name flex">
+<span>def <span class="ident">hexagonal</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, c: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a crystal with hexagonal constraints.</p>
@@ -777,15 +768,10 @@ def cubic(
 <pre><code class="python">@classmethod
 def hexagonal(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
     c: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
+) -&gt; &#39;UnitCell&#39;:
     &#34;&#34;&#34;Initializes a crystal with hexagonal constraints.
     
     \\[a \\equiv b \\ne c\\]
@@ -797,11 +783,11 @@ def hexagonal(
     b = a
     alpha = beta = np.pi / 2
     gamma = 2 * np.pi / 3
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
-<dt id="atompack.crystal.Crystal.monoclinic"><code class="name flex">
-<span>def <span class="ident">monoclinic</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, b: float, c: float, beta: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.monoclinic"><code class="name flex">
+<span>def <span class="ident">monoclinic</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, b: float, c: float, beta: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a crystal with monoclinic constraints.</p>
@@ -815,17 +801,12 @@ def hexagonal(
 <pre><code class="python">@classmethod
 def monoclinic(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
     b: float,
     c: float,
     beta: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
+) -&gt; &#39;UnitCell&#39;:
     &#34;&#34;&#34;Initializes a crystal with monoclinic constraints.
     
     \\[a \\ne b \\ne c\\]
@@ -835,11 +816,11 @@ def monoclinic(
     \\[\\beta \\ne \\frac{\\pi}{2}\\]
     &#34;&#34;&#34;
     alpha = gamma = np.pi / 2
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
-<dt id="atompack.crystal.Crystal.orthorhombic"><code class="name flex">
-<span>def <span class="ident">orthorhombic</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, b: float, c: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.orthorhombic"><code class="name flex">
+<span>def <span class="ident">orthorhombic</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, b: float, c: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a crystal with orthorhombic constraints.</p>
@@ -852,16 +833,11 @@ def monoclinic(
 <pre><code class="python">@classmethod
 def orthorhombic(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
     b: float,
     c: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
+) -&gt; &#39;UnitCell&#39;:
     &#34;&#34;&#34;Initializes a crystal with orthorhombic constraints.
     
     \\[a \\ne b \\ne c\\]
@@ -869,11 +845,11 @@ def orthorhombic(
     \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
     &#34;&#34;&#34;
     alpha = beta = gamma = np.pi / 2
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
-<dt id="atompack.crystal.Crystal.rhombohedral"><code class="name flex">
-<span>def <span class="ident">rhombohedral</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, alpha: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.rhombohedral"><code class="name flex">
+<span>def <span class="ident">rhombohedral</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, alpha: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a crystal with rhombohedral constraints.</p>
@@ -886,15 +862,10 @@ def orthorhombic(
 <pre><code class="python">@classmethod
 def rhombohedral(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
     alpha: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
+) -&gt; &#39;UnitCell&#39;:
     &#34;&#34;&#34;Initializes a crystal with rhombohedral constraints.
     
     \\[a \\equiv b \\equiv c\\]
@@ -903,11 +874,11 @@ def rhombohedral(
     &#34;&#34;&#34;
     b = c = a
     beta = gamma = alpha
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
-<dt id="atompack.crystal.Crystal.tetragonal"><code class="name flex">
-<span>def <span class="ident">tetragonal</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, c: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.tetragonal"><code class="name flex">
+<span>def <span class="ident">tetragonal</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, c: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a crystal with tetragonal constraints.</p>
@@ -920,15 +891,10 @@ def rhombohedral(
 <pre><code class="python">@classmethod
 def tetragonal(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
     c: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
+) -&gt; &#39;UnitCell&#39;:
     &#34;&#34;&#34;Initializes a crystal with tetragonal constraints.
     
     \\[a \\equiv b \\ne c\\]
@@ -937,16 +903,58 @@ def tetragonal(
     &#34;&#34;&#34;
     b = a
     alpha = beta = gamma = np.pi / 2
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
-<dt id="atompack.crystal.Crystal.triclinic"><code class="name flex">
-<span>def <span class="ident">triclinic</span></span>(<span>lattice_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lattice_sites: numpy.ndarray, a: float, b: float, c: float, alpha: float, beta: float, gamma: float, duplicates: Union[Tuple[int, int, int], NoneType] = None, orientation: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+<dt id="atompack.crystal.UnitCell.triclinic"><code class="name flex">
+<span>def <span class="ident">triclinic</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], a: float, b: float, c: float, alpha: float, beta: float, gamma: float) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a crystal with triclinic constraints.</p>
+<div class="desc"><p>Initializes a unit cell with triclinic constraints.</p>
 <p><span><span class="MathJax_Preview">a \ne b \ne c</span><script type="math/tex; mode=display">a \ne b \ne c</script></span></p>
-<p><span><span class="MathJax_Preview">\alpha \ne \beta \ne \gamma</span><script type="math/tex; mode=display">\alpha \ne \beta \ne \gamma</script></span></p></div>
+<p><span><span class="MathJax_Preview">\alpha \ne \beta \ne \gamma</span><script type="math/tex; mode=display">\alpha \ne \beta \ne \gamma</script></span></p>
+<h2 id="example">Example</h2>
+<pre><code class="python">&gt;&gt;&gt; from atompack import Atom, Crystal
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; 
+&gt;&gt;&gt; # Ag2F5: &lt;https://materialsproject.org/materials/mp-542298/#&gt;
+&gt;&gt;&gt; # angstroms
+&gt;&gt;&gt; a, b, c = 5.197, 7.589, 11.446
+&gt;&gt;&gt; # radians
+&gt;&gt;&gt; alpha, beta, gamma = 1.536, 1.557, 1.271
+&gt;&gt;&gt; # fractional coordinates
+&gt;&gt;&gt; atoms = [
+...     Atom(np.array([0.0428, 0.2779, 0.7534]), symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.046, 0.7848, 0.7656]),  symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.5, 0.5, 0.0]),          symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.5, 0.0, 0.5]),          symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.5, 0.0, 0.0]),          symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.5, 0.5, 0.5]),          symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.954, 0.2152, 0.2344]),  symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.9572, 0.7221, 0.2466]), symbol=&quot;Ag&quot;),
+...     Atom(np.array([0.0487, 0.0776, 0.3825]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.056, 0.9765, 0.1535]),  symbol=&quot;F&quot;),
+...     Atom(np.array([0.1279, 0.6441, 0.9187]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.1539, 0.5451, 0.6861]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.2065, 0.6609, 0.399]),  symbol=&quot;F&quot;),
+...     Atom(np.array([0.2783, 0.5616, 0.1509]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.3273, 0.2291, 0.9045]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.3611, 0.122, 0.6541]),  symbol=&quot;F&quot;),
+...     Atom(np.array([0.4498, 0.2667, 0.4277]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.4799, 0.1616, 0.1324]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.5201, 0.8384, 0.8676]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.5502, 0.7333, 0.5723]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.6389, 0.878, 0.3459]),  symbol=&quot;F&quot;),
+...     Atom(np.array([0.6727, 0.7709, 0.0955]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.7217, 0.4384, 0.8491]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.7935, 0.3391, 0.601]),  symbol=&quot;F&quot;),
+...     Atom(np.array([0.8461, 0.4549, 0.3139]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.8721, 0.3559, 0.0813]), symbol=&quot;F&quot;),
+...     Atom(np.array([0.944, 0.0235, 0.8465]),  symbol=&quot;F&quot;),
+...     Atom(np.array([0.9513, 0.9224, 0.6175]), symbol=&quot;F&quot;),
+... ]
+&gt;&gt;&gt; unit_cell = UnitCell.triclinic(atoms, a, b, c, alpha, beta, gamma)
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -954,36 +962,92 @@ def tetragonal(
 <pre><code class="python">@classmethod
 def triclinic(
     cls,
-    lattice_atoms: List[Atom],
-    lattice_sites: np.ndarray,
+    atoms: List[Atom],
     a: float,
     b: float,
     c: float,
     alpha: float,
     beta: float,
     gamma: float,
-    duplicates: Optional[Tuple[int, int, int]] = None,
-    orientation: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Crystal&#39;:
-    &#34;&#34;&#34;Initializes a crystal with triclinic constraints.
+) -&gt; &#39;UnitCell&#39;:
+    &#34;&#34;&#34;Initializes a unit cell with triclinic constraints.
     
     \\[a \\ne b \\ne c\\]
 
     \\[\\alpha \\ne \\beta \\ne \\gamma\\]
+
+    Example:
+        &gt;&gt;&gt; from atompack import Atom, Crystal
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # Ag2F5: https://materialsproject.org/materials/mp-542298/#
+        &gt;&gt;&gt; # angstroms
+        &gt;&gt;&gt; a, b, c = 5.197, 7.589, 11.446
+        &gt;&gt;&gt; # radians
+        &gt;&gt;&gt; alpha, beta, gamma = 1.536, 1.557, 1.271
+        &gt;&gt;&gt; # fractional coordinates
+        &gt;&gt;&gt; atoms = [
+        ...     Atom(np.array([0.0428, 0.2779, 0.7534]), symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.046, 0.7848, 0.7656]),  symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.5, 0.5, 0.0]),          symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.5, 0.0, 0.5]),          symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.5, 0.0, 0.0]),          symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.5, 0.5, 0.5]),          symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.954, 0.2152, 0.2344]),  symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.9572, 0.7221, 0.2466]), symbol=&#34;Ag&#34;),
+        ...     Atom(np.array([0.0487, 0.0776, 0.3825]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.056, 0.9765, 0.1535]),  symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.1279, 0.6441, 0.9187]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.1539, 0.5451, 0.6861]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.2065, 0.6609, 0.399]),  symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.2783, 0.5616, 0.1509]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.3273, 0.2291, 0.9045]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.3611, 0.122, 0.6541]),  symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.4498, 0.2667, 0.4277]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.4799, 0.1616, 0.1324]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.5201, 0.8384, 0.8676]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.5502, 0.7333, 0.5723]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.6389, 0.878, 0.3459]),  symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.6727, 0.7709, 0.0955]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.7217, 0.4384, 0.8491]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.7935, 0.3391, 0.601]),  symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.8461, 0.4549, 0.3139]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.8721, 0.3559, 0.0813]), symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.944, 0.0235, 0.8465]),  symbol=&#34;F&#34;),
+        ...     Atom(np.array([0.9513, 0.9224, 0.6175]), symbol=&#34;F&#34;),
+        ... ]
+        &gt;&gt;&gt; unit_cell = UnitCell.triclinic(atoms, a, b, c, alpha, beta, gamma)
     &#34;&#34;&#34;
-    return cls(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)</code></pre>
+    return cls(atoms, a, b, c, alpha, beta, gamma)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.crystal.UnitCell.vectors"><code class="name">var <span class="ident">vectors</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def vectors(self):
+    return self._vectors</code></pre>
 </details>
 </dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="atompack.structure.Structure" href="structure.html#atompack.structure.Structure">Structure</a></b></code>:
+<li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
 <ul class="hlist">
-<li><code><a title="atompack.structure.Structure.insert" href="structure.html#atompack.structure.Structure.insert">insert</a></code></li>
-<li><code><a title="atompack.structure.Structure.remove" href="structure.html#atompack.structure.Structure.remove">remove</a></code></li>
-<li><code><a title="atompack.structure.Structure.select" href="structure.html#atompack.structure.Structure.select">select</a></code></li>
+<li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.connect" href="topology.html#atompack.topology.Topology.connect">connect</a></code></li>
+<li><code><a title="atompack.topology.Topology.disconnect" href="topology.html#atompack.topology.Topology.disconnect">disconnect</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert" href="topology.html#atompack.topology.Topology.insert">insert</a></code></li>
+<li><code><a title="atompack.topology.Topology.merge" href="topology.html#atompack.topology.Topology.merge">merge</a></code></li>
+<li><code><a title="atompack.topology.Topology.nearest" href="topology.html#atompack.topology.Topology.nearest">nearest</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove" href="topology.html#atompack.topology.Topology.remove">remove</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1011,14 +1075,21 @@ def triclinic(
 <ul>
 <li>
 <h4><code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.crystal.Crystal.vectors" href="#atompack.crystal.Crystal.vectors">vectors</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></code></h4>
 <ul class="two-column">
-<li><code><a title="atompack.crystal.Crystal.cubic" href="#atompack.crystal.Crystal.cubic">cubic</a></code></li>
-<li><code><a title="atompack.crystal.Crystal.hexagonal" href="#atompack.crystal.Crystal.hexagonal">hexagonal</a></code></li>
-<li><code><a title="atompack.crystal.Crystal.monoclinic" href="#atompack.crystal.Crystal.monoclinic">monoclinic</a></code></li>
-<li><code><a title="atompack.crystal.Crystal.orthorhombic" href="#atompack.crystal.Crystal.orthorhombic">orthorhombic</a></code></li>
-<li><code><a title="atompack.crystal.Crystal.rhombohedral" href="#atompack.crystal.Crystal.rhombohedral">rhombohedral</a></code></li>
-<li><code><a title="atompack.crystal.Crystal.tetragonal" href="#atompack.crystal.Crystal.tetragonal">tetragonal</a></code></li>
-<li><code><a title="atompack.crystal.Crystal.triclinic" href="#atompack.crystal.Crystal.triclinic">triclinic</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.cubic" href="#atompack.crystal.UnitCell.cubic">cubic</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.hexagonal" href="#atompack.crystal.UnitCell.hexagonal">hexagonal</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.monoclinic" href="#atompack.crystal.UnitCell.monoclinic">monoclinic</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.orthorhombic" href="#atompack.crystal.UnitCell.orthorhombic">orthorhombic</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.rhombohedral" href="#atompack.crystal.UnitCell.rhombohedral">rhombohedral</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.tetragonal" href="#atompack.crystal.UnitCell.tetragonal">tetragonal</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.triclinic" href="#atompack.crystal.UnitCell.triclinic">triclinic</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.vectors" href="#atompack.crystal.UnitCell.vectors">vectors</a></code></li>
 </ul>
 </li>
 </ul>

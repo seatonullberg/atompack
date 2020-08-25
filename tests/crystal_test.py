@@ -6,12 +6,11 @@ from atompack.crystal import Crystal, UnitCell, metric_tensor
 
 
 def get_cubic_unit_cell():
-    # Fe BCC
     a, b, c = 2.85, 2.85, 2.85
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
     atoms = [
         Atom(np.array([0, 0, 0])),
-        Atom(np.array([1.425, 1.425, 1.425])),
+        Atom(np.array([0.5, 0.5, 0.5])),
     ]
     return UnitCell(atoms, a, b, c, alpha, beta, gamma)
 
@@ -58,10 +57,8 @@ def test_crystal_cubic_111_orientation():
     crystal = Crystal(unit_cell, orientation=orientation)
     res_vectors = crystal.vectors
     target_vectors = np.array([[np.sqrt(2) * 2.85, 0, 0], [0, np.sqrt(6) * 2.85, 0], [0, 0, np.sqrt(3) * 2.85]])
-    print(target_vectors)
     assert_array_almost_equal(res_vectors, target_vectors)
     res_positions = np.array([atom.position for atom in crystal.atoms])
-    print(res_positions)
     target_positions = np.array([
         [0.00000000, 0.00000000, 0.00000000],
         [0.00000000, 0.00000000, 2.46817240],

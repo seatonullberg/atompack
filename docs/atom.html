@@ -33,20 +33,13 @@ import numpy as np
 
 
 class Atom(object):
-    &#34;&#34;&#34;Representation of an atom with dynamic attributes.
+    &#34;&#34;&#34;Representation of a single atom.
     
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-        This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` and `symbol` are left as optional arguments
-        with default values so that each instance is guaranteed to have them as 
-        attributes for use in internal operations.
 
     Args:
-        position: Location vector in 3D cartesian space.
-            Mutating `position` is a logical error if the change results in atoms 
-            overlapping or existing out of bounds.
-        symbol: IUPAC chemical symbol.
+        position: Position vector in 3D cartesian space.
 
     Example:
         &gt;&gt;&gt; from atompack import Atom
@@ -55,19 +48,21 @@ class Atom(object):
         &gt;&gt;&gt; atom = Atom(charge=-2)
         &gt;&gt;&gt;
         &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
-        &gt;&gt;&gt; assert atom.symbol == &#34;Undefined&#34;
         &gt;&gt;&gt; assert atom.charge == -2
     &#34;&#34;&#34;
 
-    def __init__(self, position: Optional[np.ndarray] = None, symbol: Optional[str] = None, **kwargs) -&gt; None:
+    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
+        # set attributes dynamically
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        # process position
         if position is None:
             position = np.zeros(3)
-        self.position = position
-        if symbol is None:
-            symbol = &#34;Undefined&#34;
-        self.symbol = symbol
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+        self._position = position
+
+    @property
+    def position(self) -&gt; np.ndarray:
+        return self._position</code></pre>
 </details>
 </section>
 <section>
@@ -81,24 +76,16 @@ class Atom(object):
 <dl>
 <dt id="atompack.atom.Atom"><code class="flex name class">
 <span>class <span class="ident">Atom</span></span>
-<span>(</span><span>position: Union[numpy.ndarray, NoneType] = None, symbol: Union[str, NoneType] = None, **kwargs)</span>
+<span>(</span><span>position: Union[numpy.ndarray, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Representation of an atom with dynamic attributes.</p>
+<div class="desc"><p>Representation of a single atom.</p>
 <h2 id="notes">Notes</h2>
-<p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.
-This enables arbitrary atomic data to be associated with each instance in an
-elegant and pythonic way. <code>position</code> and <code>symbol</code> are left as optional arguments
-with default values so that each instance is guaranteed to have them as
-attributes for use in internal operations.</p>
+<p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>position</code></strong></dt>
-<dd>Location vector in 3D cartesian space.
-Mutating <code>position</code> is a logical error if the change results in atoms
-overlapping or existing out of bounds.</dd>
-<dt><strong><code>symbol</code></strong></dt>
-<dd>IUPAC chemical symbol.</dd>
+<dd>Position vector in 3D cartesian space.</dd>
 </dl>
 <h2 id="example">Example</h2>
 <pre><code class="python">&gt;&gt;&gt; from atompack import Atom
@@ -107,7 +94,6 @@ overlapping or existing out of bounds.</dd>
 &gt;&gt;&gt; atom = Atom(charge=-2)
 &gt;&gt;&gt;
 &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
-&gt;&gt;&gt; assert atom.symbol == &quot;Undefined&quot;
 &gt;&gt;&gt; assert atom.charge == -2
 </code></pre></div>
 <details class="source">
@@ -115,20 +101,13 @@ overlapping or existing out of bounds.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Atom(object):
-    &#34;&#34;&#34;Representation of an atom with dynamic attributes.
+    &#34;&#34;&#34;Representation of a single atom.
     
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-        This enables arbitrary atomic data to be associated with each instance in an
-        elegant and pythonic way. `position` and `symbol` are left as optional arguments
-        with default values so that each instance is guaranteed to have them as 
-        attributes for use in internal operations.
 
     Args:
-        position: Location vector in 3D cartesian space.
-            Mutating `position` is a logical error if the change results in atoms 
-            overlapping or existing out of bounds.
-        symbol: IUPAC chemical symbol.
+        position: Position vector in 3D cartesian space.
 
     Example:
         &gt;&gt;&gt; from atompack import Atom
@@ -137,20 +116,37 @@ overlapping or existing out of bounds.</dd>
         &gt;&gt;&gt; atom = Atom(charge=-2)
         &gt;&gt;&gt;
         &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
-        &gt;&gt;&gt; assert atom.symbol == &#34;Undefined&#34;
         &gt;&gt;&gt; assert atom.charge == -2
     &#34;&#34;&#34;
 
-    def __init__(self, position: Optional[np.ndarray] = None, symbol: Optional[str] = None, **kwargs) -&gt; None:
+    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
+        # set attributes dynamically
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        # process position
         if position is None:
             position = np.zeros(3)
-        self.position = position
-        if symbol is None:
-            symbol = &#34;Undefined&#34;
-        self.symbol = symbol
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+        self._position = position
+
+    @property
+    def position(self) -&gt; np.ndarray:
+        return self._position</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.atom.Atom.position"><code class="name">var <span class="ident">position</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def position(self) -&gt; np.ndarray:
+    return self._position</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -170,6 +166,9 @@ overlapping or existing out of bounds.</dd>
 <ul>
 <li>
 <h4><code><a title="atompack.atom.Atom" href="#atompack.atom.Atom">Atom</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.atom.Atom.position" href="#atompack.atom.Atom.position">position</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

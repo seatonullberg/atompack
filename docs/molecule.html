@@ -27,70 +27,31 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Dict, List, Optional, Tuple
+<pre><code class="python">from typing import List, Tuple
 
 import numpy as np
-from _cell import cell_contains
 
 from atompack.atom import Atom
-from atompack.errors import PositionOccupiedError, PositionOutsideError
-from atompack.structure import Structure
+from atompack.topology import Topology
 
 
-class Molecule(Structure):
-    &#34;&#34;&#34;Representation of a molecule.
-    
-    Note:
-        It is a logical error to mutate any of these attributes because the result 
-        of any changes will not be reflected in the shape of the basis or the 
-        content of the atoms list.
-    &#34;&#34;&#34;
+class Molecule(Topology):
+    &#34;&#34;&#34;Representation of a molecule.&#34;&#34;&#34;
 
-    def __init__(
-        self,
-        atoms: List[Atom],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; None:
-        super().__init__(atoms, basis, pbc, tolerance)
+    def __init__(self, atoms: List[Atom], bonds: List[Tuple[int, int]]) -&gt; None:
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
+        for a, b in bonds:
+            self.connect(a, b)
 
     @classmethod
-    def linear2(
-        cls,
-        atoms: List[Atom],
-        bond_distance: float,
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Molecule&#39;:
+    def linear2(cls, atoms: List[Atom], bond_length: float) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a pair/linear configuration.&#34;&#34;&#34;
-        # generate positions
-        if bond_distance &lt; tolerance:
-            raise PositionOccupiedError(np.zeros(3))
-        atoms[0].position = np.zeros(3)
-        atoms[1].position = np.array([bond_distance, 0.0, 0.0])
-        # validate basis
-        if basis is None:
-            # generate a minimally sized cubic basis
-            basis = np.array([bond_distance, bond_distance, bond_distance])
-        else:
-            # ensure all positions fit in the basis
-            for atom in atoms:
-                if not cell_contains(basis, atom.position, tolerance):
-                    raise PositionOutsideError(atom.position, basis)
-        return cls(atoms, basis, pbc, tolerance)
+        pass
 
     @classmethod
-    def linear3(
-        cls,
-        core_atom: Atom,
-        bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Molecule&#39;:
+    def linear3(cls, core_atom: Atom, bonded_atoms: List[Atom], bond_lengths: List[float]) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a triplet/linear configuration.&#34;&#34;&#34;
         pass
 
@@ -99,10 +60,7 @@ class Molecule(Structure):
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a trigonal planar configuration.&#34;&#34;&#34;
         pass
@@ -112,13 +70,10 @@ class Molecule(Structure):
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
+        bond_lengths: List[float],
         theta: float,
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a bent configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with a bent/angular configuration.&#34;&#34;&#34;
         pass
 
     @classmethod
@@ -126,10 +81,7 @@ class Molecule(Structure):
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        bond_lengths: List[Atom],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a tetrahedral configuration.&#34;&#34;&#34;
         pass
@@ -139,13 +91,10 @@ class Molecule(Structure):
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
+        bond_lengths: List[float],
         theta: float,
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal pyrimidal configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with a trigonal pyramidal configuration.&#34;&#34;&#34;
         pass
 
     @classmethod
@@ -154,10 +103,8 @@ class Molecule(Structure):
         core_atom: Atom,
         axial_atoms: List[Atom],
         lateral_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        axial_bond_lengths: List[float],
+        lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a trigonal bipyramidal configuration.&#34;&#34;&#34;
         pass
@@ -168,10 +115,8 @@ class Molecule(Structure):
         core_atom: Atom,
         axial_atoms: List[Atom],
         lateral_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        axial_bond_lengths: List[float],
+        lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with an octahedral configuration.&#34;&#34;&#34;
         pass</code></pre>
@@ -188,72 +133,31 @@ class Molecule(Structure):
 <dl>
 <dt id="atompack.molecule.Molecule"><code class="flex name class">
 <span>class <span class="ident">Molecule</span></span>
-<span>(</span><span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06)</span>
+<span>(</span><span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bonds: List[Tuple[int, int]])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Representation of a molecule.</p>
-<h2 id="note">Note</h2>
-<p>It is a logical error to mutate any of these attributes because the result
-of any changes will not be reflected in the shape of the basis or the
-content of the atoms list.</p></div>
+<div class="desc"><p>Representation of a molecule.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Molecule(Structure):
-    &#34;&#34;&#34;Representation of a molecule.
-    
-    Note:
-        It is a logical error to mutate any of these attributes because the result 
-        of any changes will not be reflected in the shape of the basis or the 
-        content of the atoms list.
-    &#34;&#34;&#34;
+<pre><code class="python">class Molecule(Topology):
+    &#34;&#34;&#34;Representation of a molecule.&#34;&#34;&#34;
 
-    def __init__(
-        self,
-        atoms: List[Atom],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; None:
-        super().__init__(atoms, basis, pbc, tolerance)
+    def __init__(self, atoms: List[Atom], bonds: List[Tuple[int, int]]) -&gt; None:
+        super().__init__()
+        for atom in atoms:
+            self.insert(atom)
+        for a, b in bonds:
+            self.connect(a, b)
 
     @classmethod
-    def linear2(
-        cls,
-        atoms: List[Atom],
-        bond_distance: float,
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Molecule&#39;:
+    def linear2(cls, atoms: List[Atom], bond_length: float) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a pair/linear configuration.&#34;&#34;&#34;
-        # generate positions
-        if bond_distance &lt; tolerance:
-            raise PositionOccupiedError(np.zeros(3))
-        atoms[0].position = np.zeros(3)
-        atoms[1].position = np.array([bond_distance, 0.0, 0.0])
-        # validate basis
-        if basis is None:
-            # generate a minimally sized cubic basis
-            basis = np.array([bond_distance, bond_distance, bond_distance])
-        else:
-            # ensure all positions fit in the basis
-            for atom in atoms:
-                if not cell_contains(basis, atom.position, tolerance):
-                    raise PositionOutsideError(atom.position, basis)
-        return cls(atoms, basis, pbc, tolerance)
+        pass
 
     @classmethod
-    def linear3(
-        cls,
-        core_atom: Atom,
-        bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
-    ) -&gt; &#39;Molecule&#39;:
+    def linear3(cls, core_atom: Atom, bonded_atoms: List[Atom], bond_lengths: List[float]) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a triplet/linear configuration.&#34;&#34;&#34;
         pass
 
@@ -262,10 +166,7 @@ content of the atoms list.</p></div>
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a trigonal planar configuration.&#34;&#34;&#34;
         pass
@@ -275,13 +176,10 @@ content of the atoms list.</p></div>
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
+        bond_lengths: List[float],
         theta: float,
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a bent configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with a bent/angular configuration.&#34;&#34;&#34;
         pass
 
     @classmethod
@@ -289,10 +187,7 @@ content of the atoms list.</p></div>
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        bond_lengths: List[Atom],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a tetrahedral configuration.&#34;&#34;&#34;
         pass
@@ -302,13 +197,10 @@ content of the atoms list.</p></div>
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
+        bond_lengths: List[float],
         theta: float,
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal pyrimidal configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with a trigonal pyramidal configuration.&#34;&#34;&#34;
         pass
 
     @classmethod
@@ -317,10 +209,8 @@ content of the atoms list.</p></div>
         core_atom: Atom,
         axial_atoms: List[Atom],
         lateral_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        axial_bond_lengths: List[float],
+        lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with a trigonal bipyramidal configuration.&#34;&#34;&#34;
         pass
@@ -331,25 +221,23 @@ content of the atoms list.</p></div>
         core_atom: Atom,
         axial_atoms: List[Atom],
         lateral_atoms: List[Atom],
-        bond_distances: Dict[Tuple[str, str], float],
-        basis: Optional[np.ndarray] = None,
-        pbc: Optional[Tuple[bool, bool, bool]] = None,
-        tolerance: float = 1.0e-6,
+        axial_bond_lengths: List[float],
+        lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
         &#34;&#34;&#34;Initializes a molecule with an octahedral configuration.&#34;&#34;&#34;
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="atompack.structure.Structure" href="structure.html#atompack.structure.Structure">Structure</a></li>
+<li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
 </ul>
 <h3>Static methods</h3>
 <dl>
 <dt id="atompack.molecule.Molecule.bent"><code class="name flex">
-<span>def <span class="ident">bent</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], theta: float, basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">bent</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float], theta: float) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a bent configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with a bent/angular configuration.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -359,18 +247,15 @@ def bent(
     cls,
     core_atom: Atom,
     bonded_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
+    bond_lengths: List[float],
     theta: float,
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a bent configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with a bent/angular configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.linear2"><code class="name flex">
-<span>def <span class="ident">linear2</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distance: float, basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">linear2</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_length: float) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a molecule with a pair/linear configuration.</p></div>
@@ -379,34 +264,13 @@ def bent(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def linear2(
-    cls,
-    atoms: List[Atom],
-    bond_distance: float,
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Molecule&#39;:
+def linear2(cls, atoms: List[Atom], bond_length: float) -&gt; &#39;Molecule&#39;:
     &#34;&#34;&#34;Initializes a molecule with a pair/linear configuration.&#34;&#34;&#34;
-    # generate positions
-    if bond_distance &lt; tolerance:
-        raise PositionOccupiedError(np.zeros(3))
-    atoms[0].position = np.zeros(3)
-    atoms[1].position = np.array([bond_distance, 0.0, 0.0])
-    # validate basis
-    if basis is None:
-        # generate a minimally sized cubic basis
-        basis = np.array([bond_distance, bond_distance, bond_distance])
-    else:
-        # ensure all positions fit in the basis
-        for atom in atoms:
-            if not cell_contains(basis, atom.position, tolerance):
-                raise PositionOutsideError(atom.position, basis)
-    return cls(atoms, basis, pbc, tolerance)</code></pre>
+    pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.linear3"><code class="name flex">
-<span>def <span class="ident">linear3</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">linear3</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a molecule with a triplet/linear configuration.</p></div>
@@ -415,21 +279,13 @@ def linear2(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def linear3(
-    cls,
-    core_atom: Atom,
-    bonded_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
-) -&gt; &#39;Molecule&#39;:
+def linear3(cls, core_atom: Atom, bonded_atoms: List[Atom], bond_lengths: List[float]) -&gt; &#39;Molecule&#39;:
     &#34;&#34;&#34;Initializes a molecule with a triplet/linear configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.octahedral"><code class="name flex">
-<span>def <span class="ident">octahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, axial_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lateral_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">octahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, axial_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lateral_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], axial_bond_lengths: List[float], lateral_bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a molecule with an octahedral configuration.</p></div>
@@ -443,17 +299,15 @@ def octahedral(
     core_atom: Atom,
     axial_atoms: List[Atom],
     lateral_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
+    axial_bond_lengths: List[float],
+    lateral_bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
     &#34;&#34;&#34;Initializes a molecule with an octahedral configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.tetrahedral"><code class="name flex">
-<span>def <span class="ident">tetrahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">tetrahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a molecule with a tetrahedral configuration.</p></div>
@@ -466,17 +320,14 @@ def tetrahedral(
     cls,
     core_atom: Atom,
     bonded_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
+    bond_lengths: List[Atom],
 ) -&gt; &#39;Molecule&#39;:
     &#34;&#34;&#34;Initializes a molecule with a tetrahedral configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.trigonal_bipyramidal"><code class="name flex">
-<span>def <span class="ident">trigonal_bipyramidal</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, axial_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lateral_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">trigonal_bipyramidal</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, axial_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lateral_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], axial_bond_lengths: List[float], lateral_bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a molecule with a trigonal bipyramidal configuration.</p></div>
@@ -490,17 +341,15 @@ def trigonal_bipyramidal(
     core_atom: Atom,
     axial_atoms: List[Atom],
     lateral_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
+    axial_bond_lengths: List[float],
+    lateral_bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
     &#34;&#34;&#34;Initializes a molecule with a trigonal bipyramidal configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.trigonal_planar"><code class="name flex">
-<span>def <span class="ident">trigonal_planar</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">trigonal_planar</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes a molecule with a trigonal planar configuration.</p></div>
@@ -513,20 +362,17 @@ def trigonal_planar(
     cls,
     core_atom: Atom,
     bonded_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
+    bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
     &#34;&#34;&#34;Initializes a molecule with a trigonal planar configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.trigonal_pyramidal"><code class="name flex">
-<span>def <span class="ident">trigonal_pyramidal</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_distances: Dict[Tuple[str, str], float], theta: float, basis: Union[numpy.ndarray, NoneType] = None, pbc: Union[Tuple[bool, bool, bool], NoneType] = None, tolerance: float = 1e-06) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">trigonal_pyramidal</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float], theta: float) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a trigonal pyrimidal configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with a trigonal pyramidal configuration.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -536,24 +382,25 @@ def trigonal_pyramidal(
     cls,
     core_atom: Atom,
     bonded_atoms: List[Atom],
-    bond_distances: Dict[Tuple[str, str], float],
+    bond_lengths: List[float],
     theta: float,
-    basis: Optional[np.ndarray] = None,
-    pbc: Optional[Tuple[bool, bool, bool]] = None,
-    tolerance: float = 1.0e-6,
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a trigonal pyrimidal configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with a trigonal pyramidal configuration.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="atompack.structure.Structure" href="structure.html#atompack.structure.Structure">Structure</a></b></code>:
+<li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
 <ul class="hlist">
-<li><code><a title="atompack.structure.Structure.insert" href="structure.html#atompack.structure.Structure.insert">insert</a></code></li>
-<li><code><a title="atompack.structure.Structure.remove" href="structure.html#atompack.structure.Structure.remove">remove</a></code></li>
-<li><code><a title="atompack.structure.Structure.select" href="structure.html#atompack.structure.Structure.select">select</a></code></li>
+<li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.connect" href="topology.html#atompack.topology.Topology.connect">connect</a></code></li>
+<li><code><a title="atompack.topology.Topology.disconnect" href="topology.html#atompack.topology.Topology.disconnect">disconnect</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert" href="topology.html#atompack.topology.Topology.insert">insert</a></code></li>
+<li><code><a title="atompack.topology.Topology.merge" href="topology.html#atompack.topology.Topology.merge">merge</a></code></li>
+<li><code><a title="atompack.topology.Topology.nearest" href="topology.html#atompack.topology.Topology.nearest">nearest</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove" href="topology.html#atompack.topology.Topology.remove">remove</a></code></li>
 </ul>
 </li>
 </ul>
