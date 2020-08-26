@@ -23,6 +23,7 @@ def test_cell_contains_outside():
     tolerance = 1.0e-6
     assert not cell_contains(cell, position, tolerance)
 
+
 def test_cell_enforce_inside():
     cell = np.identity(3)
     position = np.array([0.5, 0.5, 0.5])
@@ -30,6 +31,7 @@ def test_cell_enforce_inside():
     cell_enforce(cell, position, tolerance)
     target_position = np.array([0.5, 0.5, 0.5])
     assert np.array_equal(position, target_position)
+
 
 def test_cell_enforce_surface():
     cell = np.identity(3)
@@ -40,6 +42,7 @@ def test_cell_enforce_surface():
     target_position = np.array([0.0, 0.0, 0.5])
     assert np.array_equal(position, target_position)
 
+
 def test_cell_enforce_above():
     cell = np.identity(3)
     position = np.array([0.5, 0.5, 1.75])
@@ -47,6 +50,7 @@ def test_cell_enforce_above():
     cell_enforce(cell, position, tolerance)
     target_position = np.array([0.5, 0.5, 0.75])
     assert np.array_equal(position, target_position)
+
 
 def test_cell_enforce_below():
     cell = np.identity(3)

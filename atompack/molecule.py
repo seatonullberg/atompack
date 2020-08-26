@@ -55,7 +55,6 @@ class Molecule(Topology):
             The `position` attribute of each atom is ignored and overwritten.
         """
         pass
-        
 
     @classmethod
     def bent(

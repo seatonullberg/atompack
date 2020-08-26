@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
-from igraph import Graph, Vertex
+from igraph import Graph
 
 from _cell import cell_contains, cell_enforce
 from atompack.atom import Atom

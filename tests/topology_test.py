@@ -106,5 +106,5 @@ def test_bounded_topology_enforce():
     bt.insert(Atom(np.array([0.5, 0.5, 0.5])))
     bt.insert(Atom(np.array([1.25, -1.75, 0.5])))
     bt.enforce()
-    assert np.array_equal(bt.atoms[0].position, np.array([0.5, 0.5, 0.5])) 
+    assert np.array_equal(bt.atoms[0].position, np.array([0.5, 0.5, 0.5]))
     assert np.array_equal(bt.atoms[1].position, np.array([0.25, 0.25, 0.5]))
