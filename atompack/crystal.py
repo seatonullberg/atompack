@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from _cell import cell_enforce
+from atompack._cell import cell_enforce
 from atompack.atom import Atom
 from atompack.topology import Topology
 

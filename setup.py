@@ -12,12 +12,12 @@ include_dirs = [
 
 extensions = [
     Extension(
-        "_cell",
+        "atompack._cell",
         sources=["./extensions/cell.c"],
         include_dirs=include_dirs,
     ),
     Extension(
-        "_pbc",
+        "atompack._pbc",
         sources=["./extensions/pbc.c"],
         include_dirs=include_dirs,
     ),
@@ -34,7 +34,11 @@ setup(name="atompack",
       license="MIT License",
       ext_modules=extensions,
       packages=["atompack"],
-      install_requires=["numpy", "scipy"],
+      install_requires=[
+          "numpy", 
+          "scipy", 
+          "python-igraph"
+      ],
       extras_require={"dev": [
           "pytest",
           "pytest-benchmark",

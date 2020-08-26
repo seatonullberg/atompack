@@ -1,6 +1,6 @@
 import numpy as np
 
-from _pbc import pbc_nearest_neighbor
+from atompack._pbc import pbc_nearest_neighbor
 
 
 def test_pbc_nearest_neighbor_periodic():

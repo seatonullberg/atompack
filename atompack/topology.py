@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from igraph import Graph
 
-from _cell import cell_contains, cell_enforce
+from atompack._cell import cell_contains, cell_enforce
 from atompack.atom import Atom
 from atompack.bond import Bond
 

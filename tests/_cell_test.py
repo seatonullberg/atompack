@@ -1,6 +1,6 @@
 import numpy as np
 
-from _cell import cell_contains, cell_enforce
+from atompack._cell import cell_contains, cell_enforce
 
 
 def test_cell_contains_inside():
