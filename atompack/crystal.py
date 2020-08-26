@@ -17,16 +17,34 @@ def metric_tensor(a: float, b: float, c: float, alpha: float, beta: float, gamma
 
 
 class UnitCell(Topology):
-    """Representation of a paralellpiped tileable unit cell."""
+    """Representation of a paralellpiped tileable unit cell.
+    
+    Args:
+        atoms: The atoms in the cell.
+        a: Length of the x lattice vector.
+        b: Length of the y lattice vector.
+        c: Length of the z lattice vector.
+        alpha: Angle between y and z directions in radians.
+        beta: Angle between x and z directions in radians.
+        gamma: Angle between x and y directions in radians.
+        fractional: (default True) Flag indicating the `position` attribute of incoming atoms 
+            is in fractional coordinates. Fractional coordinates will be overwritten with 
+            cartesian coordinates during initialization.
+    """
 
     def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
-                 gamma: float) -> None:
+                 gamma: float, fractional: bool = True) -> None:
         self.a, self.b, self.c = a, b, c
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
         self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
         super().__init__()
-        for atom in atoms:
-            self.insert(atom)
+        if fractional:
+            for atom in atoms:
+                atom.position = np.matmul(atom.position, self._lattice_vectors)
+                self.insert(atom)
+        else:
+            for atom in atoms:
+                self.insert(atom)
 
     @property
     def lattice_vectors(self):
@@ -49,48 +67,6 @@ class UnitCell(Topology):
         \\[a \\ne b \\ne c\\]
 
         \\[\\alpha \\ne \\beta \\ne \\gamma\\]
-
-        Example:
-            >>> from atompack import Atom, Crystal
-            >>> import numpy as np
-            >>> 
-            >>> # Ag2F5: https://materialsproject.org/materials/mp-542298/#
-            >>> # angstroms
-            >>> a, b, c = 5.197, 7.589, 11.446
-            >>> # radians
-            >>> alpha, beta, gamma = 1.536, 1.557, 1.271
-            >>> # fractional coordinates
-            >>> atoms = [
-            ...     Atom(np.array([0.0428, 0.2779, 0.7534]), symbol="Ag"),
-            ...     Atom(np.array([0.046, 0.7848, 0.7656]),  symbol="Ag"),
-            ...     Atom(np.array([0.5, 0.5, 0.0]),          symbol="Ag"),
-            ...     Atom(np.array([0.5, 0.0, 0.5]),          symbol="Ag"),
-            ...     Atom(np.array([0.5, 0.0, 0.0]),          symbol="Ag"),
-            ...     Atom(np.array([0.5, 0.5, 0.5]),          symbol="Ag"),
-            ...     Atom(np.array([0.954, 0.2152, 0.2344]),  symbol="Ag"),
-            ...     Atom(np.array([0.9572, 0.7221, 0.2466]), symbol="Ag"),
-            ...     Atom(np.array([0.0487, 0.0776, 0.3825]), symbol="F"),
-            ...     Atom(np.array([0.056, 0.9765, 0.1535]),  symbol="F"),
-            ...     Atom(np.array([0.1279, 0.6441, 0.9187]), symbol="F"),
-            ...     Atom(np.array([0.1539, 0.5451, 0.6861]), symbol="F"),
-            ...     Atom(np.array([0.2065, 0.6609, 0.399]),  symbol="F"),
-            ...     Atom(np.array([0.2783, 0.5616, 0.1509]), symbol="F"),
-            ...     Atom(np.array([0.3273, 0.2291, 0.9045]), symbol="F"),
-            ...     Atom(np.array([0.3611, 0.122, 0.6541]),  symbol="F"),
-            ...     Atom(np.array([0.4498, 0.2667, 0.4277]), symbol="F"),
-            ...     Atom(np.array([0.4799, 0.1616, 0.1324]), symbol="F"),
-            ...     Atom(np.array([0.5201, 0.8384, 0.8676]), symbol="F"),
-            ...     Atom(np.array([0.5502, 0.7333, 0.5723]), symbol="F"),
-            ...     Atom(np.array([0.6389, 0.878, 0.3459]),  symbol="F"),
-            ...     Atom(np.array([0.6727, 0.7709, 0.0955]), symbol="F"),
-            ...     Atom(np.array([0.7217, 0.4384, 0.8491]), symbol="F"),
-            ...     Atom(np.array([0.7935, 0.3391, 0.601]),  symbol="F"),
-            ...     Atom(np.array([0.8461, 0.4549, 0.3139]), symbol="F"),
-            ...     Atom(np.array([0.8721, 0.3559, 0.0813]), symbol="F"),
-            ...     Atom(np.array([0.944, 0.0235, 0.8465]),  symbol="F"),
-            ...     Atom(np.array([0.9513, 0.9224, 0.6175]), symbol="F"),
-            ... ]
-            >>> unit_cell = UnitCell.triclinic(atoms, a, b, c, alpha, beta, gamma)
         """
         return cls(atoms, a, b, c, alpha, beta, gamma)
 
@@ -271,7 +247,7 @@ class Crystal(Topology):
                     for atom in self._unit_cell.atoms:
 
                         # calculate the cartesian position
-                        position = np.matmul(atom.position, self._unit_cell.lattice_vectors) + offset
+                        position = atom.position + offset
                         position = rotation.apply(position)
 
                         # transform the position into the lattice
