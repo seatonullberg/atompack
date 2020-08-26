@@ -286,7 +286,7 @@ class Crystal(Topology):
                                 break
                         if not is_occupied:
                             atom = copy.deepcopy(atom)
-                            atom._position = position
+                            atom.position = position
                             atoms.append(atom)
 
         # TODO: apply a rotation matrix
@@ -301,7 +301,7 @@ class Crystal(Topology):
                         continue
                     for atom in current_atoms:
                         atom = copy.deepcopy(atom)
-                        atom._position += offset
+                        atom.position += offset
                         atoms.append(atom)
 
         # multiply the oriented lattice vectors by the scale

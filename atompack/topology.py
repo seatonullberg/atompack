@@ -5,6 +5,7 @@ from igraph import Graph, Vertex
 
 from _cell import cell_contains, cell_enforce
 from atompack.atom import Atom
+from atompack.bond import Bond
 
 
 class Topology(object):
@@ -14,14 +15,17 @@ class Topology(object):
         self._graph = Graph()
 
     def insert(self, atom: Atom) -> int:
-        """Insert an atom into the topology and return its index."""
+        """Inserts an atom into the topology and returns its index."""
         self._graph.add_vertices(1)
         self._graph.vs[-1]["atom"] = atom
         return len(self._graph.vs) - 1
 
-    def connect(self, a: int, b: int) -> None:
+    def connect(self, a: int, b: int, bond: Optional[Bond] = None) -> None:
         """Creates an edge between indices `a` and `b`."""
+        if bond is None:
+            bond = Bond()
         self._graph.add_edges([(a, b)])
+        self._graph.es[-1]["bond"] = bond
 
     def disconnect(self, a: int, b: int) -> None:
         """Destroys the edge between indices `a` and `b`."""
@@ -51,28 +55,20 @@ class Topology(object):
         n_atoms = len(self._graph.vs)
         if shape == (3,):
             for vertex in self._graph.vs:
-                vertex["atom"]._position += translation
+                vertex["atom"].position += translation
         elif shape == (n_atoms, 3):
             for i, vertex in enumerate(self._graph.vs):
-                vertex["atom"]._position += translation[i]
+                vertex["atom"].position += translation[i]
         else:
             raise ValueError
 
-    def merge(self, other: 'Topology', edges: Optional[List[Tuple[int, int]]] = None) -> List[int]:
+    def merge(self, other: 'Topology') -> List[int]:
         """Combines two topologies and returns the indices of the merged atoms.
         
         Args:
             other: The topology to merge in.
-            edges: List of edges to create upon merge.
-                In each tuple, the first index should be from `self` 
-                and the second index should be from `other`.
         """
-        if edges is None:
-            edges = []
-        indices = [self.insert(vertex["atom"]) for vertex in other._graph.vs]
-        for edge in edges:
-            self.connect(edge[0], indices[edge[1]])
-        return indices
+        return [self.insert(vertex["atom"]) for vertex in other._graph.vs]
 
     def remove(self, index: int) -> None:
         """Removes an atom from the topology by index.
@@ -89,6 +85,11 @@ class Topology(object):
     def atoms(self) -> List[Atom]:
         """Returns a list of all atoms in the topology."""
         return [vertex["atom"] for vertex in self._graph.vs]
+
+    @property
+    def bonds(self) -> List[Tuple[Tuple[int, int], Bond]]:
+        """Returns a list of tuples of bond edge ids and bond objects."""
+        return [((edge.source, edge.target), edge["bond"]) for edge in self._graph.es]
 
 
 class BoundedTopology(Topology):
@@ -121,4 +122,4 @@ class BoundedTopology(Topology):
         """
         for vertex in self._graph.vs:
             atom = vertex["atom"]
-            cell_enforce(self.cell, atom._position, tolerance)
+            cell_enforce(self.cell, atom.position, tolerance)

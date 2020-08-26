@@ -1,10 +1,11 @@
 from typing import Optional
 
+import copy
 import numpy as np
 
 
 class Atom(object):
-    """Representation of a single atom.
+    """Container to store metadata about a single atom.
     
     Notes:
         Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
@@ -29,8 +30,4 @@ class Atom(object):
         # process position
         if position is None:
             position = np.zeros(3)
-        self._position = position
-
-    @property
-    def position(self) -> np.ndarray:
-        return self._position
+        self.position = position

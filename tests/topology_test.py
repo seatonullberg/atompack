@@ -1,6 +1,7 @@
 import numpy as np
 
 from atompack.atom import Atom
+from atompack.bond import Bond
 from atompack.topology import Topology, BoundedTopology
 
 
@@ -57,13 +58,6 @@ def test_topology_merge():
     t.merge(new_t)
     assert len(t._graph.vs) == 2
     assert len(new_t._graph.vs) == 1
-    assert len(t._graph.es) == 0
-    edges = [(0, 0)]
-    t.merge(new_t, edges=edges)
-    assert len(t._graph.vs) == 3
-    assert len(t._graph.es) == 1
-    assert t._graph.es[0].source == 0
-    assert t._graph.es[0].target == 2
 
 
 def test_topology_remove():
@@ -78,6 +72,15 @@ def test_topology_atoms():
     atom = Atom(symbol="H")
     t.insert(atom)
     assert t.atoms[0].symbol == "H"
+
+
+def test_topology_bonds():
+    t = Topology()
+    t.insert(Atom(symbol="C"))
+    t.insert(Atom(symbol="C"))
+    t.connect(0, 1, Bond(kind="sigma"))
+    assert t.bonds[0][0] == (0, 1)
+    assert t.bonds[0][1].kind == "sigma"
 
 
 def test_bounded_topology_contains():

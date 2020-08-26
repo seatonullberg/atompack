@@ -47,13 +47,29 @@ class Molecule(Topology):
 
     @classmethod
     def linear2(cls, atoms: List[Atom], bond_length: float) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a pair/linear configuration.&#34;&#34;&#34;
-        pass
+        &#34;&#34;&#34;Initializes a molecule with an idealized pair/linear configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
+        # atoms[0]._position = np.zeros(3)
+        # atoms[1]._position = np.array([bond_length, 0, 0])
+        # bonds = [(0, 1)]
+        # return cls(atoms, bonds)
 
     @classmethod
     def linear3(cls, core_atom: Atom, bonded_atoms: List[Atom], bond_lengths: List[float]) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a triplet/linear configuration.&#34;&#34;&#34;
-        pass
+        &#34;&#34;&#34;Initializes a molecule with an idealized triplet/linear configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
+        # bonded_atoms[0]._position = np.zeros(3)
+        # core_atom._position = np.array([bond_lengths[0], 0, 0])
+        # bonded_atoms[1]._position = np.array([bond_lengths[0] + bond_lengths[1], 0, 0])
+        # atoms = bonded_atoms + core_atom
+        # bonds = [(0, 2), (1, 2)]
+        # return cls(atoms, bonds)
 
     @classmethod
     def trigonal_planar(
@@ -62,8 +78,13 @@ class Molecule(Topology):
         bonded_atoms: List[Atom],
         bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal planar configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized trigonal planar configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
+        
 
     @classmethod
     def bent(
@@ -73,7 +94,11 @@ class Molecule(Topology):
         bond_lengths: List[float],
         theta: float,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a bent/angular configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized bent/angular configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -81,9 +106,13 @@ class Molecule(Topology):
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_lengths: List[Atom],
+        bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a tetrahedral configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized tetrahedral configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -94,7 +123,11 @@ class Molecule(Topology):
         bond_lengths: List[float],
         theta: float,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal pyramidal configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized trigonal pyramidal configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -106,7 +139,11 @@ class Molecule(Topology):
         axial_bond_lengths: List[float],
         lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal bipyramidal configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized trigonal bipyramidal configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -118,7 +155,11 @@ class Molecule(Topology):
         axial_bond_lengths: List[float],
         lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with an octahedral configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized octahedral configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass</code></pre>
 </details>
 </section>
@@ -153,13 +194,29 @@ class Molecule(Topology):
 
     @classmethod
     def linear2(cls, atoms: List[Atom], bond_length: float) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a pair/linear configuration.&#34;&#34;&#34;
-        pass
+        &#34;&#34;&#34;Initializes a molecule with an idealized pair/linear configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
+        # atoms[0]._position = np.zeros(3)
+        # atoms[1]._position = np.array([bond_length, 0, 0])
+        # bonds = [(0, 1)]
+        # return cls(atoms, bonds)
 
     @classmethod
     def linear3(cls, core_atom: Atom, bonded_atoms: List[Atom], bond_lengths: List[float]) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a triplet/linear configuration.&#34;&#34;&#34;
-        pass
+        &#34;&#34;&#34;Initializes a molecule with an idealized triplet/linear configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
+        # bonded_atoms[0]._position = np.zeros(3)
+        # core_atom._position = np.array([bond_lengths[0], 0, 0])
+        # bonded_atoms[1]._position = np.array([bond_lengths[0] + bond_lengths[1], 0, 0])
+        # atoms = bonded_atoms + core_atom
+        # bonds = [(0, 2), (1, 2)]
+        # return cls(atoms, bonds)
 
     @classmethod
     def trigonal_planar(
@@ -168,8 +225,13 @@ class Molecule(Topology):
         bonded_atoms: List[Atom],
         bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal planar configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized trigonal planar configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
+        
 
     @classmethod
     def bent(
@@ -179,7 +241,11 @@ class Molecule(Topology):
         bond_lengths: List[float],
         theta: float,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a bent/angular configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized bent/angular configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -187,9 +253,13 @@ class Molecule(Topology):
         cls,
         core_atom: Atom,
         bonded_atoms: List[Atom],
-        bond_lengths: List[Atom],
+        bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a tetrahedral configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized tetrahedral configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -200,7 +270,11 @@ class Molecule(Topology):
         bond_lengths: List[float],
         theta: float,
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal pyramidal configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized trigonal pyramidal configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -212,7 +286,11 @@ class Molecule(Topology):
         axial_bond_lengths: List[float],
         lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with a trigonal bipyramidal configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized trigonal bipyramidal configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass
 
     @classmethod
@@ -224,7 +302,11 @@ class Molecule(Topology):
         axial_bond_lengths: List[float],
         lateral_bond_lengths: List[float],
     ) -&gt; &#39;Molecule&#39;:
-        &#34;&#34;&#34;Initializes a molecule with an octahedral configuration.&#34;&#34;&#34;
+        &#34;&#34;&#34;Initializes a molecule with an idealized octahedral configuration.
+        
+        Note:
+            The `position` attribute of each atom is ignored and overwritten.
+        &#34;&#34;&#34;
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -237,7 +319,9 @@ class Molecule(Topology):
 <span>def <span class="ident">bent</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float], theta: float) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a bent/angular configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized bent/angular configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -250,7 +334,11 @@ def bent(
     bond_lengths: List[float],
     theta: float,
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a bent/angular configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with an idealized bent/angular configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
@@ -258,37 +346,49 @@ def bent(
 <span>def <span class="ident">linear2</span></span>(<span>atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_length: float) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a pair/linear configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized pair/linear configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def linear2(cls, atoms: List[Atom], bond_length: float) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a pair/linear configuration.&#34;&#34;&#34;
-    pass</code></pre>
+    &#34;&#34;&#34;Initializes a molecule with an idealized pair/linear configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.linear3"><code class="name flex">
 <span>def <span class="ident">linear3</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a triplet/linear configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized triplet/linear configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def linear3(cls, core_atom: Atom, bonded_atoms: List[Atom], bond_lengths: List[float]) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a triplet/linear configuration.&#34;&#34;&#34;
-    pass</code></pre>
+    &#34;&#34;&#34;Initializes a molecule with an idealized triplet/linear configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.octahedral"><code class="name flex">
 <span>def <span class="ident">octahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, axial_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lateral_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], axial_bond_lengths: List[float], lateral_bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with an octahedral configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized octahedral configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -302,15 +402,21 @@ def octahedral(
     axial_bond_lengths: List[float],
     lateral_bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with an octahedral configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with an idealized octahedral configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
 <dt id="atompack.molecule.Molecule.tetrahedral"><code class="name flex">
-<span>def <span class="ident">tetrahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
+<span>def <span class="ident">tetrahedral</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a tetrahedral configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized tetrahedral configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -320,9 +426,13 @@ def tetrahedral(
     cls,
     core_atom: Atom,
     bonded_atoms: List[Atom],
-    bond_lengths: List[Atom],
+    bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a tetrahedral configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with an idealized tetrahedral configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
@@ -330,7 +440,9 @@ def tetrahedral(
 <span>def <span class="ident">trigonal_bipyramidal</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, axial_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], lateral_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], axial_bond_lengths: List[float], lateral_bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a trigonal bipyramidal configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized trigonal bipyramidal configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -344,7 +456,11 @@ def trigonal_bipyramidal(
     axial_bond_lengths: List[float],
     lateral_bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a trigonal bipyramidal configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with an idealized trigonal bipyramidal configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
@@ -352,7 +468,9 @@ def trigonal_bipyramidal(
 <span>def <span class="ident">trigonal_planar</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float]) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a trigonal planar configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized trigonal planar configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -364,7 +482,11 @@ def trigonal_planar(
     bonded_atoms: List[Atom],
     bond_lengths: List[float],
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a trigonal planar configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with an idealized trigonal planar configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
@@ -372,7 +494,9 @@ def trigonal_planar(
 <span>def <span class="ident">trigonal_pyramidal</span></span>(<span>core_atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, bonded_atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], bond_lengths: List[float], theta: float) ‑> <a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializes a molecule with a trigonal pyramidal configuration.</p></div>
+<div class="desc"><p>Initializes a molecule with an idealized trigonal pyramidal configuration.</p>
+<h2 id="note">Note</h2>
+<p>The <code>position</code> attribute of each atom is ignored and overwritten.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -385,7 +509,11 @@ def trigonal_pyramidal(
     bond_lengths: List[float],
     theta: float,
 ) -&gt; &#39;Molecule&#39;:
-    &#34;&#34;&#34;Initializes a molecule with a trigonal pyramidal configuration.&#34;&#34;&#34;
+    &#34;&#34;&#34;Initializes a molecule with an idealized trigonal pyramidal configuration.
+    
+    Note:
+        The `position` attribute of each atom is ignored and overwritten.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
@@ -395,6 +523,7 @@ def trigonal_pyramidal(
 <li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
 <ul class="hlist">
 <li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.bonds" href="topology.html#atompack.topology.Topology.bonds">bonds</a></code></li>
 <li><code><a title="atompack.topology.Topology.connect" href="topology.html#atompack.topology.Topology.connect">connect</a></code></li>
 <li><code><a title="atompack.topology.Topology.disconnect" href="topology.html#atompack.topology.Topology.disconnect">disconnect</a></code></li>
 <li><code><a title="atompack.topology.Topology.insert" href="topology.html#atompack.topology.Topology.insert">insert</a></code></li>

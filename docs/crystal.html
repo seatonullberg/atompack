@@ -315,7 +315,7 @@ class Crystal(Topology):
                                 break
                         if not is_occupied:
                             atom = copy.deepcopy(atom)
-                            atom._position = position
+                            atom.position = position
                             atoms.append(atom)
 
         # TODO: apply a rotation matrix
@@ -330,7 +330,7 @@ class Crystal(Topology):
                         continue
                     for atom in current_atoms:
                         atom = copy.deepcopy(atom)
-                        atom._position += offset
+                        atom.position += offset
                         atoms.append(atom)
 
         # multiply the oriented lattice vectors by the scale
@@ -461,7 +461,7 @@ class Crystal(Topology):
                                 break
                         if not is_occupied:
                             atom = copy.deepcopy(atom)
-                            atom._position = position
+                            atom.position = position
                             atoms.append(atom)
 
         # TODO: apply a rotation matrix
@@ -476,7 +476,7 @@ class Crystal(Topology):
                         continue
                     for atom in current_atoms:
                         atom = copy.deepcopy(atom)
-                        atom._position += offset
+                        atom.position += offset
                         atoms.append(atom)
 
         # multiply the oriented lattice vectors by the scale
@@ -509,6 +509,7 @@ def lattice_vectors(self) -&gt; np.ndarray:
 <li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
 <ul class="hlist">
 <li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.bonds" href="topology.html#atompack.topology.Topology.bonds">bonds</a></code></li>
 <li><code><a title="atompack.topology.Topology.connect" href="topology.html#atompack.topology.Topology.connect">connect</a></code></li>
 <li><code><a title="atompack.topology.Topology.disconnect" href="topology.html#atompack.topology.Topology.disconnect">disconnect</a></code></li>
 <li><code><a title="atompack.topology.Topology.insert" href="topology.html#atompack.topology.Topology.insert">insert</a></code></li>
@@ -1039,6 +1040,7 @@ def lattice_vectors(self):
 <li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
 <ul class="hlist">
 <li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.bonds" href="topology.html#atompack.topology.Topology.bonds">bonds</a></code></li>
 <li><code><a title="atompack.topology.Topology.connect" href="topology.html#atompack.topology.Topology.connect">connect</a></code></li>
 <li><code><a title="atompack.topology.Topology.disconnect" href="topology.html#atompack.topology.Topology.disconnect">disconnect</a></code></li>
 <li><code><a title="atompack.topology.Topology.insert" href="topology.html#atompack.topology.Topology.insert">insert</a></code></li>
