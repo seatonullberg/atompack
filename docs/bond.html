@@ -27,7 +27,12 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from atompack.util import AttributeMap
+<pre><code class="python">from typing import Optional
+
+import numpy as np
+
+from atompack.atom import Atom
+from atompack.util import AttributeMap
 
 
 class Bond(AttributeMap):
@@ -38,14 +43,29 @@ class Bond(AttributeMap):
     
     Example:
         &gt;&gt;&gt; from atompack import Bond
+        &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt; 
-        &gt;&gt;&gt; bond = Bond(kind=&#34;sigma&#34;)
+        &gt;&gt;&gt; a = Atom(np.array([0.5, 0.5, 0.5]))
+        &gt;&gt;&gt; b = Atom(np.array([1.0, 2.0, 3.0]))
+        &gt;&gt;&gt; bond = Bond(a, b, kind=&#34;sigma&#34;)
         &gt;&gt;&gt; assert bond.kind == &#34;sigma&#34;
         &gt;&gt;&gt; assert bond[&#34;kind&#34;] == &#34;sigma&#34;
+        &gt;&gt;&gt; assert np.array_equal(bond.vector, np.array([0.5, 1.5, 2.5]))
     &#34;&#34;&#34;
 
-    def __init__(self, **kwargs) -&gt; None:
-        super().__init__(**kwargs)</code></pre>
+    def __init__(self, a: Optional[Atom] = None, b: Optional[Atom] = None, **kwargs) -&gt; None:
+        super().__init__(**kwargs)
+        if a is None:
+            a = Atom()
+        if b is None:
+            b = Atom()
+        self._a = a
+        self._b = b
+
+    @property
+    def vector(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the vector between the bond&#39;s endpoints.&#34;&#34;&#34;
+        return self._b.position - self._a.position</code></pre>
 </details>
 </section>
 <section>
@@ -59,7 +79,7 @@ class Bond(AttributeMap):
 <dl>
 <dt id="atompack.bond.Bond"><code class="flex name class">
 <span>class <span class="ident">Bond</span></span>
-<span>(</span><span>**kwargs)</span>
+<span>(</span><span>a: Union[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, NoneType] = None, b: Union[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Container to store metadata about a bond between atoms.</p>
@@ -67,10 +87,14 @@ class Bond(AttributeMap):
 <p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.</p>
 <h2 id="example">Example</h2>
 <pre><code class="python">&gt;&gt;&gt; from atompack import Bond
+&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; 
-&gt;&gt;&gt; bond = Bond(kind=&quot;sigma&quot;)
+&gt;&gt;&gt; a = Atom(np.array([0.5, 0.5, 0.5]))
+&gt;&gt;&gt; b = Atom(np.array([1.0, 2.0, 3.0]))
+&gt;&gt;&gt; bond = Bond(a, b, kind=&quot;sigma&quot;)
 &gt;&gt;&gt; assert bond.kind == &quot;sigma&quot;
 &gt;&gt;&gt; assert bond[&quot;kind&quot;] == &quot;sigma&quot;
+&gt;&gt;&gt; assert np.array_equal(bond.vector, np.array([0.5, 1.5, 2.5]))
 </code></pre></div>
 <details class="source">
 <summary>
@@ -84,14 +108,29 @@ class Bond(AttributeMap):
     
     Example:
         &gt;&gt;&gt; from atompack import Bond
+        &gt;&gt;&gt; import numpy as np
         &gt;&gt;&gt; 
-        &gt;&gt;&gt; bond = Bond(kind=&#34;sigma&#34;)
+        &gt;&gt;&gt; a = Atom(np.array([0.5, 0.5, 0.5]))
+        &gt;&gt;&gt; b = Atom(np.array([1.0, 2.0, 3.0]))
+        &gt;&gt;&gt; bond = Bond(a, b, kind=&#34;sigma&#34;)
         &gt;&gt;&gt; assert bond.kind == &#34;sigma&#34;
         &gt;&gt;&gt; assert bond[&#34;kind&#34;] == &#34;sigma&#34;
+        &gt;&gt;&gt; assert np.array_equal(bond.vector, np.array([0.5, 1.5, 2.5]))
     &#34;&#34;&#34;
 
-    def __init__(self, **kwargs) -&gt; None:
-        super().__init__(**kwargs)</code></pre>
+    def __init__(self, a: Optional[Atom] = None, b: Optional[Atom] = None, **kwargs) -&gt; None:
+        super().__init__(**kwargs)
+        if a is None:
+            a = Atom()
+        if b is None:
+            b = Atom()
+        self._a = a
+        self._b = b
+
+    @property
+    def vector(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the vector between the bond&#39;s endpoints.&#34;&#34;&#34;
+        return self._b.position - self._a.position</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -103,6 +142,22 @@ class Bond(AttributeMap):
 <li>collections.abc.Iterable</li>
 <li>collections.abc.Container</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.bond.Bond.vector"><code class="name">var <span class="ident">vector</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"><p>Returns the vector between the bond's endpoints.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def vector(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the vector between the bond&#39;s endpoints.&#34;&#34;&#34;
+    return self._b.position - self._a.position</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -122,6 +177,9 @@ class Bond(AttributeMap):
 <ul>
 <li>
 <h4><code><a title="atompack.bond.Bond" href="#atompack.bond.Bond">Bond</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.bond.Bond.vector" href="#atompack.bond.Bond.vector">vector</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

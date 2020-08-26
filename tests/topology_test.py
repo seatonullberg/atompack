@@ -15,8 +15,14 @@ def test_topology_connect():
     t = Topology()
     a = t.insert(Atom())
     b = t.insert(Atom())
-    t.connect(a, b)
+    bond = Bond(kind="sigma")
+    assert np.array_equal(bond.vector, np.zeros(3))
+    t.connect(a, b, bond=bond)
     assert len(t._graph.es) == 1
+    t.atoms[b].position = np.array([1.0, 1.0, 1.0])
+    assert np.array_equal(bond.vector, np.array([1.0, 1.0, 1.0]))
+    assert t.bonds[0][0] == (0, 1)
+    assert t.bonds[0][1].kind == "sigma"
 
 
 def test_topology_disconnect():

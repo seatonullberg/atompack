@@ -21,11 +21,17 @@ class Topology(object):
         return len(self._graph.vs) - 1
 
     def connect(self, a: int, b: int, bond: Optional[Bond] = None) -> None:
-        """Creates an edge between indices `a` and `b`."""
+        """Creates an edge between indices `a` and `b`.
+        
+        Note:
+            Any atoms which `bond` has a reference to are overwritten with references to the atoms at indices `a` and `b`.
+        """
         if bond is None:
             bond = Bond()
         self._graph.add_edges([(a, b)])
         self._graph.es[-1]["bond"] = bond
+        bond._a = self._graph.vs[a]["atom"]
+        bond._b = self._graph.vs[b]["atom"]
 
     def disconnect(self, a: int, b: int) -> None:
         """Destroys the edge between indices `a` and `b`."""
@@ -70,6 +76,7 @@ class Topology(object):
         """
         return [self.insert(vertex["atom"]) for vertex in other._graph.vs]
 
+    # TODO: do i need to delete attached edges here ???
     def remove(self, index: int) -> None:
         """Removes an atom from the topology by index.
         

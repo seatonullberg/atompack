@@ -23,8 +23,8 @@ class Molecule(Topology):
         Note:
             The `position` attribute of each atom is ignored and overwritten.
         """
-        # atoms[0]._position = np.zeros(3)
-        # atoms[1]._position = np.array([bond_length, 0, 0])
+        # atoms[0].position = np.zeros(3)
+        # atoms[1].position = np.array([bond_length, 0, 0])
         # bonds = [(0, 1)]
         # return cls(atoms, bonds)
 
