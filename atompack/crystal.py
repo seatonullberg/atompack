@@ -32,8 +32,15 @@ class UnitCell(Topology):
             cartesian coordinates during initialization.
     """
 
-    def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
-                 gamma: float, fractional: bool = True) -> None:
+    def __init__(self,
+                 atoms: List[Atom],
+                 a: float,
+                 b: float,
+                 c: float,
+                 alpha: float,
+                 beta: float,
+                 gamma: float,
+                 fractional: bool = True) -> None:
         self.a, self.b, self.c = a, b, c
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
         self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))

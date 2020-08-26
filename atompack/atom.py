@@ -2,8 +2,10 @@ from typing import Optional
 
 import numpy as np
 
+from atompack.util import AttributeMap
 
-class Atom(object):
+
+class Atom(AttributeMap):
     """Container to store metadata about a single atom.
     
     Notes:
@@ -20,13 +22,11 @@ class Atom(object):
         >>>
         >>> assert np.array_equal(atom.position, np.zeros(3))
         >>> assert atom.charge == -2
+        >>> assert atom["charge"] == -2
     """
 
     def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -> None:
-        # set attributes dynamically
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-        # process position
+        super().__init__(**kwargs)
         if position is None:
             position = np.zeros(3)
         self.position = position

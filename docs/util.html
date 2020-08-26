@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.4" />
-<title>atompack.atom API documentation</title>
+<title>atompack.util API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -20,45 +20,48 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>atompack.atom</code></h1>
+<h1 class="title">Module <code>atompack.util</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Optional
-
-import numpy as np
-
-from atompack.util import AttributeMap
+<pre><code class="python">from collections.abc import MutableMapping
 
 
-class Atom(AttributeMap):
-    &#34;&#34;&#34;Container to store metadata about a single atom.
+class AttributeMap(MutableMapping):
+    &#34;&#34;&#34;A dict like container which converts all keys into attributes.
     
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-
-    Args:
-        position: Position vector in 3D cartesian space.
-
     Example:
-        &gt;&gt;&gt; from atompack import Atom
-        &gt;&gt;&gt; import numpy as np
-        &gt;&gt;&gt; 
-        &gt;&gt;&gt; atom = Atom(charge=-2)
+        &gt;&gt;&gt; from atompack.util import AttributeMap
         &gt;&gt;&gt;
-        &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
-        &gt;&gt;&gt; assert atom.charge == -2
-        &gt;&gt;&gt; assert atom[&#34;charge&#34;] == -2
+        &gt;&gt;&gt; attmap = AttributeMap(name=&#34;test&#34;)
+        &gt;&gt;&gt; assert attmap.name == &#34;test&#34;
+        &gt;&gt;&gt; assert attmap[&#34;name&#34;] == &#34;test&#34;
     &#34;&#34;&#34;
 
-    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
-        super().__init__(**kwargs)
-        if position is None:
-            position = np.zeros(3)
-        self.position = position</code></pre>
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def __getitem__(self, key):
+        return vars(self)[key]
+
+    def __delitem__(self, key):
+        delattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
+    def __iter__(self):
+        return iter(vars(self))
+
+    def __len__(self):
+        return len(vars(self))
+
+    def __repr__(self):
+        return repr(vars(self))</code></pre>
 </details>
 </section>
 <section>
@@ -70,68 +73,69 @@ class Atom(AttributeMap):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="atompack.atom.Atom"><code class="flex name class">
-<span>class <span class="ident">Atom</span></span>
-<span>(</span><span>position: Union[numpy.ndarray, NoneType] = None, **kwargs)</span>
+<dt id="atompack.util.AttributeMap"><code class="flex name class">
+<span>class <span class="ident">AttributeMap</span></span>
+<span>(</span><span>**kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Container to store metadata about a single atom.</p>
-<h2 id="notes">Notes</h2>
-<p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>position</code></strong></dt>
-<dd>Position vector in 3D cartesian space.</dd>
-</dl>
+<div class="desc"><p>A dict like container which converts all keys into attributes.</p>
 <h2 id="example">Example</h2>
-<pre><code class="python">&gt;&gt;&gt; from atompack import Atom
-&gt;&gt;&gt; import numpy as np
-&gt;&gt;&gt; 
-&gt;&gt;&gt; atom = Atom(charge=-2)
+<pre><code class="python">&gt;&gt;&gt; from atompack.util import AttributeMap
 &gt;&gt;&gt;
-&gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
-&gt;&gt;&gt; assert atom.charge == -2
-&gt;&gt;&gt; assert atom[&quot;charge&quot;] == -2
+&gt;&gt;&gt; attmap = AttributeMap(name=&quot;test&quot;)
+&gt;&gt;&gt; assert attmap.name == &quot;test&quot;
+&gt;&gt;&gt; assert attmap[&quot;name&quot;] == &quot;test&quot;
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Atom(AttributeMap):
-    &#34;&#34;&#34;Container to store metadata about a single atom.
+<pre><code class="python">class AttributeMap(MutableMapping):
+    &#34;&#34;&#34;A dict like container which converts all keys into attributes.
     
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-
-    Args:
-        position: Position vector in 3D cartesian space.
-
     Example:
-        &gt;&gt;&gt; from atompack import Atom
-        &gt;&gt;&gt; import numpy as np
-        &gt;&gt;&gt; 
-        &gt;&gt;&gt; atom = Atom(charge=-2)
+        &gt;&gt;&gt; from atompack.util import AttributeMap
         &gt;&gt;&gt;
-        &gt;&gt;&gt; assert np.array_equal(atom.position, np.zeros(3))
-        &gt;&gt;&gt; assert atom.charge == -2
-        &gt;&gt;&gt; assert atom[&#34;charge&#34;] == -2
+        &gt;&gt;&gt; attmap = AttributeMap(name=&#34;test&#34;)
+        &gt;&gt;&gt; assert attmap.name == &#34;test&#34;
+        &gt;&gt;&gt; assert attmap[&#34;name&#34;] == &#34;test&#34;
     &#34;&#34;&#34;
 
-    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -&gt; None:
-        super().__init__(**kwargs)
-        if position is None:
-            position = np.zeros(3)
-        self.position = position</code></pre>
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def __getitem__(self, key):
+        return vars(self)[key]
+
+    def __delitem__(self, key):
+        delattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
+    def __iter__(self):
+        return iter(vars(self))
+
+    def __len__(self):
+        return len(vars(self))
+
+    def __repr__(self):
+        return repr(vars(self))</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="atompack.util.AttributeMap" href="util.html#atompack.util.AttributeMap">AttributeMap</a></li>
 <li>collections.abc.MutableMapping</li>
 <li>collections.abc.Mapping</li>
 <li>collections.abc.Collection</li>
 <li>collections.abc.Sized</li>
 <li>collections.abc.Iterable</li>
 <li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a></li>
+<li><a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a></li>
 </ul>
 </dd>
 </dl>
@@ -151,7 +155,7 @@ class Atom(AttributeMap):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="atompack.atom.Atom" href="#atompack.atom.Atom">Atom</a></code></h4>
+<h4><code><a title="atompack.util.AttributeMap" href="#atompack.util.AttributeMap">AttributeMap</a></code></h4>
 </li>
 </ul>
 </li>

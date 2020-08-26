@@ -34,11 +34,7 @@ setup(name="atompack",
       license="MIT License",
       ext_modules=extensions,
       packages=["atompack"],
-      install_requires=[
-          "numpy", 
-          "scipy", 
-          "python-igraph"
-      ],
+      install_requires=["numpy", "scipy", "python-igraph"],
       extras_require={"dev": [
           "pytest",
           "pytest-benchmark",

@@ -20,15 +20,9 @@ def test_unit_cell_fractional_flag():
     a, b, c = 2.0, 2.0, 2.0
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
     unit_cell_cartesian = UnitCell(atoms, a, b, c, alpha, beta, gamma, fractional=False)
-    assert_array_almost_equal(
-        unit_cell_cartesian.atoms[0].position,
-        np.array([0.25, 0.5, 0.75])
-    )
+    assert_array_almost_equal(unit_cell_cartesian.atoms[0].position, np.array([0.25, 0.5, 0.75]))
     unit_cell_fractional = UnitCell(atoms, a, b, c, alpha, beta, gamma, fractional=True)
-    assert_array_almost_equal(
-        unit_cell_fractional.atoms[0].position,
-        np.array([0.5, 1.0, 1.5])
-    )
+    assert_array_almost_equal(unit_cell_fractional.atoms[0].position, np.array([0.5, 1.0, 1.5]))
 
 
 def test_crystal_metric_tensor():

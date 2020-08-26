@@ -27,7 +27,10 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Bond(object):
+<pre><code class="python">from atompack.util import AttributeMap
+
+
+class Bond(AttributeMap):
     &#34;&#34;&#34;Container to store metadata about a bond between atoms.
     
     Notes:
@@ -38,12 +41,11 @@
         &gt;&gt;&gt; 
         &gt;&gt;&gt; bond = Bond(kind=&#34;sigma&#34;)
         &gt;&gt;&gt; assert bond.kind == &#34;sigma&#34;
+        &gt;&gt;&gt; assert bond[&#34;kind&#34;] == &#34;sigma&#34;
     &#34;&#34;&#34;
 
     def __init__(self, **kwargs) -&gt; None:
-        # set attributes dynamically
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+        super().__init__(**kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -68,12 +70,13 @@
 &gt;&gt;&gt; 
 &gt;&gt;&gt; bond = Bond(kind=&quot;sigma&quot;)
 &gt;&gt;&gt; assert bond.kind == &quot;sigma&quot;
+&gt;&gt;&gt; assert bond[&quot;kind&quot;] == &quot;sigma&quot;
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Bond(object):
+<pre><code class="python">class Bond(AttributeMap):
     &#34;&#34;&#34;Container to store metadata about a bond between atoms.
     
     Notes:
@@ -84,13 +87,22 @@
         &gt;&gt;&gt; 
         &gt;&gt;&gt; bond = Bond(kind=&#34;sigma&#34;)
         &gt;&gt;&gt; assert bond.kind == &#34;sigma&#34;
+        &gt;&gt;&gt; assert bond[&#34;kind&#34;] == &#34;sigma&#34;
     &#34;&#34;&#34;
 
     def __init__(self, **kwargs) -&gt; None:
-        # set attributes dynamically
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+        super().__init__(**kwargs)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.util.AttributeMap" href="util.html#atompack.util.AttributeMap">AttributeMap</a></li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
 </dd>
 </dl>
 </section>

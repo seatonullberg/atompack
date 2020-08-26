@@ -61,8 +61,15 @@ class UnitCell(Topology):
             cartesian coordinates during initialization.
     &#34;&#34;&#34;
 
-    def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
-                 gamma: float, fractional: bool = True) -&gt; None:
+    def __init__(self,
+                 atoms: List[Atom],
+                 a: float,
+                 b: float,
+                 c: float,
+                 alpha: float,
+                 beta: float,
+                 gamma: float,
+                 fractional: bool = True) -&gt; None:
         self.a, self.b, self.c = a, b, c
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
         self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
@@ -544,8 +551,15 @@ cartesian coordinates during initialization.</dd>
             cartesian coordinates during initialization.
     &#34;&#34;&#34;
 
-    def __init__(self, atoms: List[Atom], a: float, b: float, c: float, alpha: float, beta: float,
-                 gamma: float, fractional: bool = True) -&gt; None:
+    def __init__(self,
+                 atoms: List[Atom],
+                 a: float,
+                 b: float,
+                 c: float,
+                 alpha: float,
+                 beta: float,
+                 gamma: float,
+                 fractional: bool = True) -&gt; None:
         self.a, self.b, self.c = a, b, c
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
         self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))

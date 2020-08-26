@@ -1,4 +1,7 @@
-class Bond(object):
+from atompack.util import AttributeMap
+
+
+class Bond(AttributeMap):
     """Container to store metadata about a bond between atoms.
     
     Notes:
@@ -9,9 +12,8 @@ class Bond(object):
         >>> 
         >>> bond = Bond(kind="sigma")
         >>> assert bond.kind == "sigma"
+        >>> assert bond["kind"] == "sigma"
     """
 
     def __init__(self, **kwargs) -> None:
-        # set attributes dynamically
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        super().__init__(**kwargs)
