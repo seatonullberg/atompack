@@ -13,7 +13,7 @@ class Atom(object):
         position: Position vector in 3D cartesian space.
 
     Example:
-        >>> from atompack import Atom
+        >>> from atompack.atom import Atom
         >>> import numpy as np
         >>> 
         >>> atom = Atom(np.zeros(3), charge=-2)

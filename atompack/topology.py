@@ -1,3 +1,8 @@
+"""
+Module `topology` provides the fundamental abstraction which is used internally to represent any atomic structure.
+In the context of this package, a topology is an undirected graph of atoms (nodes) which may be connected by 0 or more bonds (edges).
+Each atom has a guaranteed position and optional metadata provided by the end user. Bonds are just optional metadata.
+"""
 from typing import List, Optional, Tuple
 
 import numpy as np
