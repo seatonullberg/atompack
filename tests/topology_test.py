@@ -7,28 +7,27 @@ from atompack.topology import Topology, BoundedTopology
 
 def test_topology_insert():
     t = Topology()
-    t.insert(Atom())
+    t.insert(Atom(np.zeros(3)))
     assert len(t._graph.vs) == 1
 
 
 def test_topology_connect():
     t = Topology()
-    a = t.insert(Atom())
-    b = t.insert(Atom())
+    a = Atom(np.zeros(3))
+    b = Atom(np.zeros(3))
+    ai = t.insert(a)
+    bi = t.insert(b)
     bond = Bond(kind="sigma")
-    assert np.array_equal(bond.vector, np.zeros(3))
-    t.connect(a, b, bond=bond)
+    t.connect(ai, bi, bond=bond)
     assert len(t._graph.es) == 1
-    t.atoms[b].position = np.array([1.0, 1.0, 1.0])
-    assert np.array_equal(bond.vector, np.array([1.0, 1.0, 1.0]))
     assert t.bonds[0][0] == (0, 1)
     assert t.bonds[0][1].kind == "sigma"
 
 
 def test_topology_disconnect():
     t = Topology()
-    a = t.insert(Atom())
-    b = t.insert(Atom())
+    a = t.insert(Atom(np.zeros(3)))
+    b = t.insert(Atom(np.zeros(3)))
     t.connect(a, b)
     t.disconnect(a, b)
     assert len(t._graph.es) == 0
@@ -58,9 +57,9 @@ def test_topology_translate():
 
 def test_topology_merge():
     t = Topology()
-    t.insert(Atom())
+    t.insert(Atom(np.zeros(3)))
     new_t = Topology()
-    new_t.insert(Atom())
+    new_t.insert(Atom(np.zeros(3)))
     t.merge(new_t)
     assert len(t._graph.vs) == 2
     assert len(new_t._graph.vs) == 1
@@ -68,22 +67,24 @@ def test_topology_merge():
 
 def test_topology_remove():
     t = Topology()
-    t.insert(Atom())
+    t.insert(Atom(np.zeros(3)))
     t.remove(0)
     assert len(t._graph.vs) == 0
 
 
 def test_topology_atoms():
     t = Topology()
-    atom = Atom(symbol="H")
+    atom = Atom(np.zeros(3), symbol="H")
     t.insert(atom)
     assert t.atoms[0].symbol == "H"
 
 
 def test_topology_bonds():
     t = Topology()
-    t.insert(Atom(symbol="C"))
-    t.insert(Atom(symbol="C"))
+    a = Atom(np.zeros(3))
+    b = Atom(np.zeros(3))
+    t.insert(a)
+    t.insert(b)
     t.connect(0, 1, Bond(kind="sigma"))
     assert t.bonds[0][0] == (0, 1)
     assert t.bonds[0][1].kind == "sigma"

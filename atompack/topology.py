@@ -30,8 +30,6 @@ class Topology(object):
             bond = Bond()
         self._graph.add_edges([(a, b)])
         self._graph.es[-1]["bond"] = bond
-        bond._a = self._graph.vs[a]["atom"]
-        bond._b = self._graph.vs[b]["atom"]
 
     def disconnect(self, a: int, b: int) -> None:
         """Destroys the edge between indices `a` and `b`."""
@@ -61,10 +59,10 @@ class Topology(object):
         n_atoms = len(self._graph.vs)
         if shape == (3,):
             for vertex in self._graph.vs:
-                vertex["atom"].position += translation
+                vertex["atom"]._position += translation
         elif shape == (n_atoms, 3):
             for i, vertex in enumerate(self._graph.vs):
-                vertex["atom"].position += translation[i]
+                vertex["atom"]._position += translation[i]
         else:
             raise ValueError
 
@@ -114,6 +112,7 @@ class BoundedTopology(Topology):
         """Returns True if position is within the bounds of the topology."""
         return cell_contains(self.cell, position, tolerance)
 
+    # TODO: rename to check_bounds
     def check(self, tolerance: float = 1.0e-6) -> List[int]:
         """Returns the indices of atoms which are out of bounds."""
         indices = []
@@ -123,10 +122,11 @@ class BoundedTopology(Topology):
                 indices.append(vertex.index)
         return indices
 
+    # TODO: rename to enforce_bounds
     def enforce(self, tolerance: float = 1.0e-6) -> None:
         """Enforces that all atoms in the topology are within the bounds.
             Any atoms found to be out of bounds will have their positions mutated to bring them back in.
         """
         for vertex in self._graph.vs:
             atom = vertex["atom"]
-            cell_enforce(self.cell, atom.position, tolerance)
+            cell_enforce(self.cell, atom._position, tolerance)

@@ -6,183 +6,325 @@ from scipy.spatial.transform import Rotation
 
 from atompack._cell import cell_enforce
 from atompack.atom import Atom
+from atompack.elements import Element
 from atompack.topology import Topology
 
 
 def metric_tensor(a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> np.ndarray:
-    """Returns the metric tensor given a set of lattice parameters."""
+    """Returns the metric tensor for a set of lattice parameters."""
     return np.array([[a * a, a * b * np.cos(gamma), a * c * np.cos(beta)],
                      [a * b * np.cos(gamma), b * b, b * c * np.cos(alpha)],
                      [a * c * np.cos(beta), b * c * np.cos(alpha), c * c]])
+
+
+def is_triclinic(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy triclinic constraints."
+    if abs(a - b) < tol or abs(b - c) < tol or abs(a - c) < tol:
+        return False
+    if abs(alpha - beta) < tol or abs(beta - gamma) < tol or abs(alpha - gamma) < tol:
+        return False
+    return True
+
+
+def is_monoclinic(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy monoclinic constraints."
+    if abs(a - b) < tol or abs(b - c) < tol or abs(a - c) < tol:
+        return False
+    if abs(alpha - np.pi / 2) > tol or abs(gamma - np.pi / 2) > tol:
+        return False
+    if abs(beta - np.pi / 2) < tol:
+        return False
+    return True
+
+
+def is_orthorhombic(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy orthorhombic constraints."
+    if abs(a - b) < tol or abs(b - c) < tol or abs(a - c) < tol:
+        return False
+    if abs(alpha - np.pi / 2) > tol or abs(beta - np.pi / 2) > tol or abs(gamma - np.pi / 2) > tol:
+        return False
+    return True
+
+
+def is_tetragonal(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy tetragonal constraints."
+    if abs(a - b) > tol or abs(a - c) < tol or abs(b - c) < tol:
+        return False
+    if abs(alpha - np.pi / 2) > tol or abs(beta - np.pi / 2) > tol or abs(gamma - np.pi / 2) > tol:
+        return False
+    return True
+
+
+def is_rhombohedral(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy rhombohedral constraints."
+    if abs(a - b) > tol or abs(b - c) > tol or abs(a - c) > tol:
+        return False
+    if abs(alpha - beta) > tol or abs(beta - gamma) > tol or abs(alpha - gamma) > tol or abs(alpha - np.pi / 2) < tol:
+        return False
+    return True
+
+
+def is_hexagonal(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy hexagonal constraints."
+    if abs(a - b) > tol or abs(a - c) < tol or abs(b - c) < tol:
+        return False
+    if abs(alpha - beta) > tol or abs(alpha - np.pi / 2) > tol:
+        return False
+    if abs(gamma - 2 * np.pi / 3) > tol:
+        return False
+    return True
+
+
+def is_cubic(a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1.0e-6) -> bool:
+    "Returns True if the lattice parameters satisfy cubic constraints."
+    if abs(a - b) > tol or abs(b - c) > tol or abs(a - c) > tol:
+        return False
+    if abs(alpha - beta) > tol or abs(beta - gamma) > tol or abs(alpha - gamma) > tol or abs(alpha - np.pi / 2) > tol:
+        return False
+    return True
 
 
 class UnitCell(Topology):
     """Representation of a paralellpiped tileable unit cell.
     
     Args:
-        atoms: The atoms in the cell.
         a: Length of the x lattice vector.
         b: Length of the y lattice vector.
         c: Length of the z lattice vector.
-        alpha: Angle between y and z directions in radians.
-        beta: Angle between x and z directions in radians.
-        gamma: Angle between x and y directions in radians.
-        fractional: (default True) Flag indicating the `position` attribute of incoming atoms 
-            is in fractional coordinates. Fractional coordinates will be overwritten with 
-            cartesian coordinates during initialization.
+        alpha: Angle between the y and z directions in radians.
+        beta: Angle between the x and z directions in radians.
+        gamma: Angle between the x and y directions in radians.
+        sites: List of fractional lattice sites.
+        elements: Elemental data to associate with each site.
+    """
+
+    def __init__(self, a: float, b: float, c: float, alpha: float, beta: float, gamma: float, sites: np.ndarray,
+                 elements: List[Optional[Element]]) -> None:
+        self._a, self._b, self._c = a, b, c
+        self._alpha, self._beta, self._gamma = alpha, beta, gamma
+        self._sites = sites
+        super().__init__()
+        for site, element in zip(self.sites, elements):
+            position = np.matmul(site, self.lattice_vectors)
+            if element is None:
+                atom = Atom(position)
+            else:
+                atom = Atom(position, **vars(element))
+            self.insert(atom)
+
+    @property
+    def a(self) -> float:
+        """Returns the length of the x lattice vector."""
+        return self._a
+
+    @property
+    def b(self) -> float:
+        """Returns the langth of the y lattice vector."""
+        return self._b
+
+    @property
+    def c(self) -> float:
+        """Returns the length of the z lattice vector."""
+        return self._c
+
+    @property
+    def alpha(self) -> float:
+        """Returns the angle between the y and z directions in radians."""
+        return self._alpha
+
+    @property
+    def beta(self) -> float:
+        """Returns the angle between the x and z directions in radians."""
+        return self._beta
+
+    @property
+    def gamma(self) -> float:
+        """Returns the angle between the x and y directions in radians."""
+        return self._gamma
+
+    @property
+    def sites(self) -> np.ndarray:
+        """Returns a copy of the fractional coordinates of each lattice site."""
+        return copy.deepcopy(self._sites)
+
+    @property
+    def lattice_vectors(self) -> np.ndarray:
+        """Returns the lattice vectors of the unit cell."""
+        return np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
+
+
+class Triclinic(UnitCell):
+    """Unit cell with triclinic constraints.
+    
+    \\[a \\ne b \\ne c\\]
+
+    \\[\\alpha \\ne \\beta \\ne \\gamma\\]
     """
 
     def __init__(self,
-                 atoms: List[Atom],
                  a: float,
                  b: float,
                  c: float,
                  alpha: float,
                  beta: float,
                  gamma: float,
-                 fractional: bool = True) -> None:
-        self.a, self.b, self.c = a, b, c
-        self.alpha, self.beta, self.gamma = alpha, beta, gamma
-        self._lattice_vectors = np.sqrt(metric_tensor(self.a, self.b, self.c, self.alpha, self.beta, self.gamma))
-        super().__init__()
-        if fractional:
-            for atom in atoms:
-                atom.position = np.matmul(atom.position, self._lattice_vectors)
-                self.insert(atom)
-        else:
-            for atom in atoms:
-                self.insert(atom)
+                 sites: np.ndarray,
+                 elements: List[Optional[Element]],
+                 tol: float = 1.0e-6) -> None:
+        if not is_triclinic(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
-    @property
-    def lattice_vectors(self):
-        """Returns the lattice vectors of the unit cell."""
-        return self._lattice_vectors
 
-    @classmethod
-    def triclinic(
-        cls,
-        atoms: List[Atom],
-        a: float,
-        b: float,
-        c: float,
-        alpha: float,
-        beta: float,
-        gamma: float,
-    ) -> 'UnitCell':
-        """Initializes a unit cell with triclinic constraints.
+class Monoclinic(UnitCell):
+    """Unit cell with monoclinic constraints.
+    
+    \\[a \\ne b \\ne c\\]
         
-        \\[a \\ne b \\ne c\\]
+    \\[\\alpha \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
+        
+    \\[\\beta \\ne \\frac{\\pi}{2}\\]
+    """
 
-        \\[\\alpha \\ne \\beta \\ne \\gamma\\]
-        """
-        return cls(atoms, a, b, c, alpha, beta, gamma)
-
-    @classmethod
-    def monoclinic(
-        cls,
-        atoms: List[Atom],
-        a: float,
-        b: float,
-        c: float,
-        beta: float,
-    ) -> 'UnitCell':
-        """Initializes a crystal with monoclinic constraints.
-        
-        \\[a \\ne b \\ne c\\]
-        
-        \\[\\alpha \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
-        
-        \\[\\beta \\ne \\frac{\\pi}{2}\\]
-        """
+    def __init__(self,
+                 a: float,
+                 b: float,
+                 c: float,
+                 beta: float,
+                 sites: np.ndarray,
+                 elements: List[Optional[Element]],
+                 tol: float = 1.0e-6) -> None:
         alpha = gamma = np.pi / 2
-        return cls(atoms, a, b, c, alpha, beta, gamma)
+        if not is_monoclinic(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
-    @classmethod
-    def orthorhombic(
-        cls,
-        atoms: List[Atom],
-        a: float,
-        b: float,
-        c: float,
-    ) -> 'UnitCell':
-        """Initializes a crystal with orthorhombic constraints.
+
+class Orthorhombic(UnitCell):
+    """Unit cell with orthorhombic constraints.
+    
+    \\[a \\ne b \\ne c\\]
         
-        \\[a \\ne b \\ne c\\]
-        
-        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
-        """
+    \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
+    """
+
+    def __init__(self,
+                 a: float,
+                 b: float,
+                 c: float,
+                 sites: np.ndarray,
+                 elements: List[Optional[Element]],
+                 tol: float = 1.0e-6) -> None:
         alpha = beta = gamma = np.pi / 2
-        return cls(atoms, a, b, c, alpha, beta, gamma)
+        if not is_orthorhombic(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
-    @classmethod
-    def tetragonal(
-        cls,
-        atoms: List[Atom],
-        a: float,
-        c: float,
-    ) -> 'UnitCell':
-        """Initializes a crystal with tetragonal constraints.
+
+class Tetragonal(UnitCell):
+    """Unit cell with tetragonal constraints.
+    
+    \\[a \\equiv b \\ne c\\]
         
-        \\[a \\equiv b \\ne c\\]
-        
-        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
-        """
+    \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
+    """
+
+    def __init__(self,
+                 a: float,
+                 c: float,
+                 sites: np.ndarray,
+                 elements: List[Optional[Element]],
+                 tol: float = 1.0e-6) -> None:
         b = a
         alpha = beta = gamma = np.pi / 2
-        return cls(atoms, a, b, c, alpha, beta, gamma)
+        if not is_tetragonal(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
-    @classmethod
-    def rhombohedral(
-        cls,
-        atoms: List[Atom],
-        a: float,
-        alpha: float,
-    ) -> 'UnitCell':
-        """Initializes a crystal with rhombohedral constraints.
+
+class Rhombohedral(UnitCell):
+    """Unit cell with rhombohedral constraints.
+    
+    \\[a \\equiv b \\equiv c\\]
         
-        \\[a \\equiv b \\equiv c\\]
-        
-        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\ne \\frac{\\pi}{2}\\]
-        """
+    \\[\\alpha \\equiv \\beta \\equiv \\gamma \\ne \\frac{\\pi}{2}\\]
+    """
+
+    def __init__(self,
+                 a: float,
+                 alpha: float,
+                 sites: np.ndarray,
+                 elements: List[Optional[Element]],
+                 tol: float = 1.0e-6) -> None:
         b = c = a
         beta = gamma = alpha
-        return cls(atoms, a, b, c, alpha, beta, gamma)
+        if not is_rhombohedral(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
-    @classmethod
-    def hexagonal(
-        cls,
-        atoms: List[Atom],
-        a: float,
-        c: float,
-    ) -> 'UnitCell':
-        """Initializes a crystal with hexagonal constraints.
+
+class Hexagonal(UnitCell):
+    """Unit cell with hexagonal constraints.
+    
+    \\[a \\equiv b \\ne c\\]
         
-        \\[a \\equiv b \\ne c\\]
+    \\[\\alpha \\equiv \\beta \\equiv \\frac{\\pi}{2}\\]
         
-        \\[\\alpha \\equiv \\beta \\equiv \\frac{\\pi}{2}\\]
-        
-        \\[\\gamma \\equiv \\frac{2\\pi}{3}\\]
-        """
+    \\[\\gamma \\equiv \\frac{2\\pi}{3}\\]
+    """
+
+    def __init__(self,
+                 a: float,
+                 c: float,
+                 sites: np.ndarray,
+                 elements: List[Optional[Element]],
+                 tol: float = 1.0e-6) -> None:
         b = a
         alpha = beta = np.pi / 2
         gamma = 2 * np.pi / 3
-        return cls(atoms, a, b, c, alpha, beta, gamma)
+        if not is_hexagonal(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
-    @classmethod
-    def cubic(
-        cls,
-        atoms: List[Atom],
-        a: float,
-    ) -> 'UnitCell':
-        """Initializes a crystal with cubic constraints.
+
+class Cubic(UnitCell):
+    """Unit cell with cubic constraints.
+    
+    \\[a \\equiv b \\equiv c\\]
         
-        \\[a \\equiv b \\equiv c\\]
-        
-        \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
-        """
+    \\[\\alpha \\equiv \\beta \\equiv \\gamma \\equiv \\frac{\\pi}{2}\\]
+    """
+
+    def __init__(self, a: float, sites: np.ndarray, elements: List[Optional[Element]], tol: float = 1.0e-6) -> None:
         b = c = a
         alpha = beta = gamma = np.pi / 2
-        return cls(atoms, a, b, c, alpha, beta, gamma)
+        if not is_cubic(a, b, c, alpha, beta, gamma, tol):
+            raise ValueError()  # TODO
+        super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
+
+
+class Bcc(Cubic):
+    """Body-centered cubic unit cell."""
+
+    def __init__(self, a: float, element: Optional[Element] = None) -> None:
+        sites = np.array([
+            [0.0, 0.0, 0.0],
+            [0.5, 0.5, 0.5],
+        ])
+        super().__init__(a, sites, [element, element])
+
+
+class Fcc(Cubic):
+    """Face-centered cubic unit cell."""
+
+    def __init__(self, a: float, element: Optional[Element] = None) -> None:
+        sites = np.array([
+            [0.0, 0.0, 0.0],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.0, 0.5],
+            [0.0, 0.5, 0.5],
+        ])
+        super().__init__(a, sites, [element, element, element, element])
 
 
 class Crystal(Topology):
@@ -193,7 +335,7 @@ class Crystal(Topology):
                  scale: Optional[Tuple[int, int, int]] = None,
                  orientation: Optional[np.ndarray] = None,
                  rotation: Optional[np.ndarray] = None,
-                 tolerance: float = 1.0e-6) -> None:
+                 tol: float = 1.0e-6) -> None:
         self._unit_cell = unit_cell
         if scale is None:
             scale = (1, 1, 1)
@@ -204,16 +346,36 @@ class Crystal(Topology):
         if rotation is None:
             rotation = np.identity(3)
         self._rotation = rotation
-        self._tolerance = tolerance
+        self._tol = tol
         atoms, self._lattice_vectors = self._build()
         super().__init__()
         for atom in atoms:
             self.insert(atom)
 
     @property
+    def unit_cell(self) -> UnitCell:
+        """Returns a copy of the crystal's unit cell."""
+        return copy.deepcopy(self._unit_cell)
+
+    @property
+    def scale(self) -> Tuple[int, int, int]:
+        """Returns a copy of the crystal's 3D scale factor."""
+        return copy.deepcopy(self._scale)
+
+    @property
+    def orientation(self) -> np.ndarray:
+        """Returns a copy of the crystal's orientation matrix."""
+        return copy.deepcopy(self._orientation)
+
+    @property
+    def rotation(self) -> np.ndarray:
+        """Returns a copy of the crystal's rotation matrix."""
+        return copy.deepcopy(self._rotation)
+
+    @property
     def lattice_vectors(self) -> np.ndarray:
-        """Returns the lattice vectors of the crystal."""
-        return self._lattice_vectors
+        """Returns a copy of the crystal's lattice vectors."""
+        return copy.deepcopy(self._lattice_vectors)
 
     def _build(self) -> Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
@@ -258,18 +420,18 @@ class Crystal(Topology):
                         position = rotation.apply(position)
 
                         # transform the position into the lattice
-                        cell_enforce(oriented_lattice_vectors, position, self._tolerance)
+                        cell_enforce(oriented_lattice_vectors, position, self._tol)
 
                         # accept the atom if the position is not yet occupied
                         positions = np.array([atom.position for atom in atoms])
                         is_occupied = False
                         for _position in positions:
-                            if np.linalg.norm(position - _position) < self._tolerance:
+                            if np.linalg.norm(position - _position) < self._tol:
                                 is_occupied = True
                                 break
                         if not is_occupied:
                             atom = copy.deepcopy(atom)
-                            atom.position = position
+                            atom._position = position
                             atoms.append(atom)
 
         # TODO: apply a rotation matrix
@@ -280,11 +442,11 @@ class Crystal(Topology):
             for ysize in range(self._scale[1]):
                 for zsize in range(self._scale[2]):
                     offset = np.matmul(np.array([xsize, ysize, zsize]), oriented_lattice_vectors)
-                    if np.linalg.norm(offset) < self._tolerance:
+                    if np.linalg.norm(offset) < self._tol:
                         continue
                     for atom in current_atoms:
                         atom = copy.deepcopy(atom)
-                        atom.position += offset
+                        atom._position += offset
                         atoms.append(atom)
 
         # multiply the oriented lattice vectors by the scale

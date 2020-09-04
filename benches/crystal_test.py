@@ -7,11 +7,12 @@ from atompack.crystal import Crystal, UnitCell
 def get_cubic_unit_cell():
     a, b, c = 2.85, 2.85, 2.85
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    atoms = [
-        Atom(np.array([0, 0, 0])),
-        Atom(np.array([1.425, 1.425, 1.425])),
-    ]
-    return UnitCell(atoms, a, b, c, alpha, beta, gamma)
+    sites = np.array([
+        [0.0, 0.0, 0.0],
+        [0.5, 0.5, 0.5],
+    ])
+    elements = [None, None]
+    return UnitCell(a, b, c, alpha, beta, gamma, sites, elements)
 
 
 def bench_crystal(unit_cell, scale, orientation, rotation, tolerance):

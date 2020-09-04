@@ -1,11 +1,9 @@
-from typing import Optional
+import copy
 
 import numpy as np
 
-from atompack.util import AttributeMap
 
-
-class Atom(AttributeMap):
+class Atom(object):
     """Container to store metadata about a single atom.
     
     Notes:
@@ -18,15 +16,16 @@ class Atom(AttributeMap):
         >>> from atompack import Atom
         >>> import numpy as np
         >>> 
-        >>> atom = Atom(charge=-2)
-        >>>
-        >>> assert np.array_equal(atom.position, np.zeros(3))
+        >>> atom = Atom(np.zeros(3), charge=-2)
         >>> assert atom.charge == -2
-        >>> assert atom["charge"] == -2
     """
 
-    def __init__(self, position: Optional[np.ndarray] = None, **kwargs) -> None:
-        super().__init__(**kwargs)
-        if position is None:
-            position = np.zeros(3)
-        self.position = position
+    def __init__(self, position: np.ndarray, **kwargs) -> None:
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        self._position = position
+
+    @property
+    def position(self) -> np.ndarray:
+        """Returns a copy of the atom's position vector."""
+        return copy.deepcopy(self._position)

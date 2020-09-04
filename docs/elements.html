@@ -1,0 +1,2932 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.0" />
+<title>atompack.elements API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>atompack.elements</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># this file was programatically generated by scripts/generate-elements.py
+# DO NOT EDIT MANUALLY
+
+
+class Element(object):
+
+    def __init__(self, name: str, symbol: str, number: int, **kwargs) -&gt; None:
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        self._name = name
+        self._symbol = symbol
+        self._number = number
+
+    @property
+    def name(self) -&gt; str:
+        return self._name
+
+    @property
+    def symbol(self) -&gt; str:
+        return self._symbol
+
+    @property
+    def number(self) -&gt; int:
+        return self._number
+
+
+class H(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Hydrogen&#39;, &#39;H&#39;, 1, **kwargs)
+
+
+class He(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Helium&#39;, &#39;He&#39;, 2, **kwargs)
+
+
+class Li(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lithium&#39;, &#39;Li&#39;, 3, **kwargs)
+
+
+class Be(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Beryllium&#39;, &#39;Be&#39;, 4, **kwargs)
+
+
+class B(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Boron&#39;, &#39;B&#39;, 5, **kwargs)
+
+
+class C(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Carbon&#39;, &#39;C&#39;, 6, **kwargs)
+
+
+class N(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Nitrogen&#39;, &#39;N&#39;, 7, **kwargs)
+
+
+class O(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Oxygen&#39;, &#39;O&#39;, 8, **kwargs)
+
+
+class F(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Fluorine&#39;, &#39;F&#39;, 9, **kwargs)
+
+
+class Ne(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Neon&#39;, &#39;Ne&#39;, 10, **kwargs)
+
+
+class Na(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Sodium&#39;, &#39;Na&#39;, 11, **kwargs)
+
+
+class Mg(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Magnesium&#39;, &#39;Mg&#39;, 12, **kwargs)
+
+
+class Al(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Aluminum&#39;, &#39;Al&#39;, 13, **kwargs)
+
+
+class Si(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Silicon&#39;, &#39;Si&#39;, 14, **kwargs)
+
+
+class P(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Phosphorus&#39;, &#39;P&#39;, 15, **kwargs)
+
+
+class S(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Sulfur&#39;, &#39;S&#39;, 16, **kwargs)
+
+
+class Cl(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Chlorine&#39;, &#39;Cl&#39;, 17, **kwargs)
+
+
+class Ar(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Argon&#39;, &#39;Ar&#39;, 18, **kwargs)
+
+
+class K(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Potassium&#39;, &#39;K&#39;, 19, **kwargs)
+
+
+class Ca(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Calcium&#39;, &#39;Ca&#39;, 20, **kwargs)
+
+
+class Sc(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Scanadium&#39;, &#39;Sc&#39;, 21, **kwargs)
+
+
+class Ti(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Titanium&#39;, &#39;Ti&#39;, 22, **kwargs)
+
+
+class V(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Vanadium&#39;, &#39;V&#39;, 23, **kwargs)
+
+
+class Cr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Chromium&#39;, &#39;Cr&#39;, 24, **kwargs)
+
+
+class Mn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Manganese&#39;, &#39;Mn&#39;, 25, **kwargs)
+
+
+class Fe(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Iron&#39;, &#39;Fe&#39;, 26, **kwargs)
+
+
+class Co(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Cobalt&#39;, &#39;Co&#39;, 27, **kwargs)
+
+
+class Ni(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Nickel&#39;, &#39;Ni&#39;, 28, **kwargs)
+
+
+class Cu(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Copper&#39;, &#39;Cu&#39;, 29, **kwargs)
+
+
+class Zn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Zinc&#39;, &#39;Zn&#39;, 30, **kwargs)
+
+
+class Ga(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Gallium&#39;, &#39;Ga&#39;, 31, **kwargs)
+
+
+class Ge(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Germanium&#39;, &#39;Ge&#39;, 32, **kwargs)
+
+
+class As(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Arsenic&#39;, &#39;As&#39;, 33, **kwargs)
+
+
+class Se(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Selenium&#39;, &#39;Se&#39;, 34, **kwargs)
+
+
+class Br(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Bromine&#39;, &#39;Br&#39;, 35, **kwargs)
+
+
+class Kr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Krypton&#39;, &#39;Kr&#39;, 36, **kwargs)
+
+
+class Rb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Rubidium&#39;, &#39;Rb&#39;, 37, **kwargs)
+
+
+class Sr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Strontium&#39;, &#39;Sr&#39;, 38, **kwargs)
+
+
+class Y(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Yttrium&#39;, &#39;Y&#39;, 39, **kwargs)
+
+
+class Zr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Zirconium&#39;, &#39;Zr&#39;, 40, **kwargs)
+
+
+class Nb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Niobium&#39;, &#39;Nb&#39;, 41, **kwargs)
+
+
+class Mo(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Molybdenum&#39;, &#39;Mo&#39;, 42, **kwargs)
+
+
+class Tc(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Technetium&#39;, &#39;Tc&#39;, 43, **kwargs)
+
+
+class Ru(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Ruthenium&#39;, &#39;Ru&#39;, 44, **kwargs)
+
+
+class Rh(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Rhodium&#39;, &#39;Rh&#39;, 45, **kwargs)
+
+
+class Pd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Palladium&#39;, &#39;Pd&#39;, 46, **kwargs)
+
+
+class Ag(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Silver&#39;, &#39;Ag&#39;, 47, **kwargs)
+
+
+class Cd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Cadmium&#39;, &#39;Cd&#39;, 48, **kwargs)
+
+
+class In(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Indium&#39;, &#39;In&#39;, 49, **kwargs)
+
+
+class Sn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tin&#39;, &#39;Sn&#39;, 50, **kwargs)
+
+
+class Sb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Antimony&#39;, &#39;Sb&#39;, 51, **kwargs)
+
+
+class Te(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tellurium&#39;, &#39;Te&#39;, 52, **kwargs)
+
+
+class I(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Iodine&#39;, &#39;I&#39;, 53, **kwargs)
+
+
+class Xe(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Xenon&#39;, &#39;Xe&#39;, 54, **kwargs)
+
+
+class Cs(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Caesium&#39;, &#39;Cs&#39;, 55, **kwargs)
+
+
+class Ba(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Barium&#39;, &#39;Ba&#39;, 56, **kwargs)
+
+
+class La(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lanthanum&#39;, &#39;La&#39;, 57, **kwargs)
+
+
+class Ce(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Cerium&#39;, &#39;Ce&#39;, 58, **kwargs)
+
+
+class Pr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Praseodymium&#39;, &#39;Pr&#39;, 59, **kwargs)
+
+
+class Nd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Neodymium&#39;, &#39;Nd&#39;, 60, **kwargs)
+
+
+class Pm(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Promethium&#39;, &#39;Pm&#39;, 61, **kwargs)
+
+
+class Sm(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Samarium&#39;, &#39;Sm&#39;, 62, **kwargs)
+
+
+class Eu(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Europium&#39;, &#39;Eu&#39;, 63, **kwargs)
+
+
+class Gd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Gadolinium&#39;, &#39;Gd&#39;, 64, **kwargs)
+
+
+class Tb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Terbium&#39;, &#39;Tb&#39;, 65, **kwargs)
+
+
+class Dy(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Dysprosium&#39;, &#39;Dy&#39;, 66, **kwargs)
+
+
+class Ho(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Holmium&#39;, &#39;Ho&#39;, 67, **kwargs)
+
+
+class Er(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Erbium&#39;, &#39;Er&#39;, 68, **kwargs)
+
+
+class Tm(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Thulium&#39;, &#39;Tm&#39;, 69, **kwargs)
+
+
+class Yb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Ytterbium&#39;, &#39;Yb&#39;, 70, **kwargs)
+
+
+class Lu(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lutetium&#39;, &#39;Lu&#39;, 71, **kwargs)
+
+
+class Hf(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Hafnium&#39;, &#39;Hf&#39;, 72, **kwargs)
+
+
+class Ta(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tantalum&#39;, &#39;Ta&#39;, 73, **kwargs)
+
+
+class W(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tungsten&#39;, &#39;W&#39;, 74, **kwargs)
+
+
+class Re(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Rhenium&#39;, &#39;Re&#39;, 75, **kwargs)
+
+
+class Os(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Osmium&#39;, &#39;Os&#39;, 76, **kwargs)
+
+
+class Ir(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Iridium&#39;, &#39;Ir&#39;, 77, **kwargs)
+
+
+class Pt(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Platinum&#39;, &#39;Pt&#39;, 78, **kwargs)
+
+
+class Au(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Gold&#39;, &#39;Au&#39;, 79, **kwargs)
+
+
+class Hg(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Mercury&#39;, &#39;Hg&#39;, 80, **kwargs)
+
+
+class Tl(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Thallium&#39;, &#39;Tl&#39;, 81, **kwargs)
+
+
+class Pb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lead&#39;, &#39;Pb&#39;, 82, **kwargs)
+
+
+class Bi(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Bismuth&#39;, &#39;Bi&#39;, 83, **kwargs)
+
+
+class Po(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Polonium&#39;, &#39;Po&#39;, 84, **kwargs)
+
+
+class At(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Astatine&#39;, &#39;At&#39;, 85, **kwargs)
+
+
+class Rn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Radon&#39;, &#39;Rn&#39;, 86, **kwargs)
+
+
+class Fr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Francium&#39;, &#39;Fr&#39;, 87, **kwargs)
+
+
+class Ra(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Radium&#39;, &#39;Ra&#39;, 88, **kwargs)
+
+
+class Ac(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Actinium&#39;, &#39;Ac&#39;, 89, **kwargs)
+
+
+class Th(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Thorium&#39;, &#39;Th&#39;, 90, **kwargs)
+
+
+class Pa(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Protactinium&#39;, &#39;Pa&#39;, 91, **kwargs)
+
+
+class U(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Uranium&#39;, &#39;U&#39;, 92, **kwargs)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="atompack.elements.Ac"><code class="flex name class">
+<span>class <span class="ident">Ac</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ac(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Actinium&#39;, &#39;Ac&#39;, 89, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ag"><code class="flex name class">
+<span>class <span class="ident">Ag</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ag(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Silver&#39;, &#39;Ag&#39;, 47, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Al"><code class="flex name class">
+<span>class <span class="ident">Al</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Al(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Aluminum&#39;, &#39;Al&#39;, 13, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ar"><code class="flex name class">
+<span>class <span class="ident">Ar</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ar(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Argon&#39;, &#39;Ar&#39;, 18, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.As"><code class="flex name class">
+<span>class <span class="ident">As</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class As(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Arsenic&#39;, &#39;As&#39;, 33, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.At"><code class="flex name class">
+<span>class <span class="ident">At</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class At(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Astatine&#39;, &#39;At&#39;, 85, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Au"><code class="flex name class">
+<span>class <span class="ident">Au</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Au(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Gold&#39;, &#39;Au&#39;, 79, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.B"><code class="flex name class">
+<span>class <span class="ident">B</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class B(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Boron&#39;, &#39;B&#39;, 5, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ba"><code class="flex name class">
+<span>class <span class="ident">Ba</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ba(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Barium&#39;, &#39;Ba&#39;, 56, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Be"><code class="flex name class">
+<span>class <span class="ident">Be</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Be(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Beryllium&#39;, &#39;Be&#39;, 4, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Bi"><code class="flex name class">
+<span>class <span class="ident">Bi</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Bi(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Bismuth&#39;, &#39;Bi&#39;, 83, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Br"><code class="flex name class">
+<span>class <span class="ident">Br</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Br(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Bromine&#39;, &#39;Br&#39;, 35, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.C"><code class="flex name class">
+<span>class <span class="ident">C</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class C(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Carbon&#39;, &#39;C&#39;, 6, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ca"><code class="flex name class">
+<span>class <span class="ident">Ca</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ca(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Calcium&#39;, &#39;Ca&#39;, 20, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Cd"><code class="flex name class">
+<span>class <span class="ident">Cd</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Cd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Cadmium&#39;, &#39;Cd&#39;, 48, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ce"><code class="flex name class">
+<span>class <span class="ident">Ce</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ce(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Cerium&#39;, &#39;Ce&#39;, 58, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Cl"><code class="flex name class">
+<span>class <span class="ident">Cl</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Cl(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Chlorine&#39;, &#39;Cl&#39;, 17, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Co"><code class="flex name class">
+<span>class <span class="ident">Co</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Co(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Cobalt&#39;, &#39;Co&#39;, 27, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Cr"><code class="flex name class">
+<span>class <span class="ident">Cr</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Cr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Chromium&#39;, &#39;Cr&#39;, 24, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Cs"><code class="flex name class">
+<span>class <span class="ident">Cs</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Cs(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Caesium&#39;, &#39;Cs&#39;, 55, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Cu"><code class="flex name class">
+<span>class <span class="ident">Cu</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Cu(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Copper&#39;, &#39;Cu&#39;, 29, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Dy"><code class="flex name class">
+<span>class <span class="ident">Dy</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Dy(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Dysprosium&#39;, &#39;Dy&#39;, 66, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Element"><code class="flex name class">
+<span>class <span class="ident">Element</span></span>
+<span>(</span><span>name: str, symbol: str, number: int, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Element(object):
+
+    def __init__(self, name: str, symbol: str, number: int, **kwargs) -&gt; None:
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        self._name = name
+        self._symbol = symbol
+        self._number = number
+
+    @property
+    def name(self) -&gt; str:
+        return self._name
+
+    @property
+    def symbol(self) -&gt; str:
+        return self._symbol
+
+    @property
+    def number(self) -&gt; int:
+        return self._number</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Ac" href="#atompack.elements.Ac">Ac</a></li>
+<li><a title="atompack.elements.Ag" href="#atompack.elements.Ag">Ag</a></li>
+<li><a title="atompack.elements.Al" href="#atompack.elements.Al">Al</a></li>
+<li><a title="atompack.elements.Ar" href="#atompack.elements.Ar">Ar</a></li>
+<li><a title="atompack.elements.As" href="#atompack.elements.As">As</a></li>
+<li><a title="atompack.elements.At" href="#atompack.elements.At">At</a></li>
+<li><a title="atompack.elements.Au" href="#atompack.elements.Au">Au</a></li>
+<li><a title="atompack.elements.B" href="#atompack.elements.B">B</a></li>
+<li><a title="atompack.elements.Ba" href="#atompack.elements.Ba">Ba</a></li>
+<li><a title="atompack.elements.Be" href="#atompack.elements.Be">Be</a></li>
+<li><a title="atompack.elements.Bi" href="#atompack.elements.Bi">Bi</a></li>
+<li><a title="atompack.elements.Br" href="#atompack.elements.Br">Br</a></li>
+<li><a title="atompack.elements.C" href="#atompack.elements.C">C</a></li>
+<li><a title="atompack.elements.Ca" href="#atompack.elements.Ca">Ca</a></li>
+<li><a title="atompack.elements.Cd" href="#atompack.elements.Cd">Cd</a></li>
+<li><a title="atompack.elements.Ce" href="#atompack.elements.Ce">Ce</a></li>
+<li><a title="atompack.elements.Cl" href="#atompack.elements.Cl">Cl</a></li>
+<li><a title="atompack.elements.Co" href="#atompack.elements.Co">Co</a></li>
+<li><a title="atompack.elements.Cr" href="#atompack.elements.Cr">Cr</a></li>
+<li><a title="atompack.elements.Cs" href="#atompack.elements.Cs">Cs</a></li>
+<li><a title="atompack.elements.Cu" href="#atompack.elements.Cu">Cu</a></li>
+<li><a title="atompack.elements.Dy" href="#atompack.elements.Dy">Dy</a></li>
+<li><a title="atompack.elements.Er" href="#atompack.elements.Er">Er</a></li>
+<li><a title="atompack.elements.Eu" href="#atompack.elements.Eu">Eu</a></li>
+<li><a title="atompack.elements.F" href="#atompack.elements.F">F</a></li>
+<li><a title="atompack.elements.Fe" href="#atompack.elements.Fe">Fe</a></li>
+<li><a title="atompack.elements.Fr" href="#atompack.elements.Fr">Fr</a></li>
+<li><a title="atompack.elements.Ga" href="#atompack.elements.Ga">Ga</a></li>
+<li><a title="atompack.elements.Gd" href="#atompack.elements.Gd">Gd</a></li>
+<li><a title="atompack.elements.Ge" href="#atompack.elements.Ge">Ge</a></li>
+<li><a title="atompack.elements.H" href="#atompack.elements.H">H</a></li>
+<li><a title="atompack.elements.He" href="#atompack.elements.He">He</a></li>
+<li><a title="atompack.elements.Hf" href="#atompack.elements.Hf">Hf</a></li>
+<li><a title="atompack.elements.Hg" href="#atompack.elements.Hg">Hg</a></li>
+<li><a title="atompack.elements.Ho" href="#atompack.elements.Ho">Ho</a></li>
+<li><a title="atompack.elements.I" href="#atompack.elements.I">I</a></li>
+<li><a title="atompack.elements.In" href="#atompack.elements.In">In</a></li>
+<li><a title="atompack.elements.Ir" href="#atompack.elements.Ir">Ir</a></li>
+<li><a title="atompack.elements.K" href="#atompack.elements.K">K</a></li>
+<li><a title="atompack.elements.Kr" href="#atompack.elements.Kr">Kr</a></li>
+<li><a title="atompack.elements.La" href="#atompack.elements.La">La</a></li>
+<li><a title="atompack.elements.Li" href="#atompack.elements.Li">Li</a></li>
+<li><a title="atompack.elements.Lu" href="#atompack.elements.Lu">Lu</a></li>
+<li><a title="atompack.elements.Mg" href="#atompack.elements.Mg">Mg</a></li>
+<li><a title="atompack.elements.Mn" href="#atompack.elements.Mn">Mn</a></li>
+<li><a title="atompack.elements.Mo" href="#atompack.elements.Mo">Mo</a></li>
+<li><a title="atompack.elements.N" href="#atompack.elements.N">N</a></li>
+<li><a title="atompack.elements.Na" href="#atompack.elements.Na">Na</a></li>
+<li><a title="atompack.elements.Nb" href="#atompack.elements.Nb">Nb</a></li>
+<li><a title="atompack.elements.Nd" href="#atompack.elements.Nd">Nd</a></li>
+<li><a title="atompack.elements.Ne" href="#atompack.elements.Ne">Ne</a></li>
+<li><a title="atompack.elements.Ni" href="#atompack.elements.Ni">Ni</a></li>
+<li><a title="atompack.elements.O" href="#atompack.elements.O">O</a></li>
+<li><a title="atompack.elements.Os" href="#atompack.elements.Os">Os</a></li>
+<li><a title="atompack.elements.P" href="#atompack.elements.P">P</a></li>
+<li><a title="atompack.elements.Pa" href="#atompack.elements.Pa">Pa</a></li>
+<li><a title="atompack.elements.Pb" href="#atompack.elements.Pb">Pb</a></li>
+<li><a title="atompack.elements.Pd" href="#atompack.elements.Pd">Pd</a></li>
+<li><a title="atompack.elements.Pm" href="#atompack.elements.Pm">Pm</a></li>
+<li><a title="atompack.elements.Po" href="#atompack.elements.Po">Po</a></li>
+<li><a title="atompack.elements.Pr" href="#atompack.elements.Pr">Pr</a></li>
+<li><a title="atompack.elements.Pt" href="#atompack.elements.Pt">Pt</a></li>
+<li><a title="atompack.elements.Ra" href="#atompack.elements.Ra">Ra</a></li>
+<li><a title="atompack.elements.Rb" href="#atompack.elements.Rb">Rb</a></li>
+<li><a title="atompack.elements.Re" href="#atompack.elements.Re">Re</a></li>
+<li><a title="atompack.elements.Rh" href="#atompack.elements.Rh">Rh</a></li>
+<li><a title="atompack.elements.Rn" href="#atompack.elements.Rn">Rn</a></li>
+<li><a title="atompack.elements.Ru" href="#atompack.elements.Ru">Ru</a></li>
+<li><a title="atompack.elements.S" href="#atompack.elements.S">S</a></li>
+<li><a title="atompack.elements.Sb" href="#atompack.elements.Sb">Sb</a></li>
+<li><a title="atompack.elements.Sc" href="#atompack.elements.Sc">Sc</a></li>
+<li><a title="atompack.elements.Se" href="#atompack.elements.Se">Se</a></li>
+<li><a title="atompack.elements.Si" href="#atompack.elements.Si">Si</a></li>
+<li><a title="atompack.elements.Sm" href="#atompack.elements.Sm">Sm</a></li>
+<li><a title="atompack.elements.Sn" href="#atompack.elements.Sn">Sn</a></li>
+<li><a title="atompack.elements.Sr" href="#atompack.elements.Sr">Sr</a></li>
+<li><a title="atompack.elements.Ta" href="#atompack.elements.Ta">Ta</a></li>
+<li><a title="atompack.elements.Tb" href="#atompack.elements.Tb">Tb</a></li>
+<li><a title="atompack.elements.Tc" href="#atompack.elements.Tc">Tc</a></li>
+<li><a title="atompack.elements.Te" href="#atompack.elements.Te">Te</a></li>
+<li><a title="atompack.elements.Th" href="#atompack.elements.Th">Th</a></li>
+<li><a title="atompack.elements.Ti" href="#atompack.elements.Ti">Ti</a></li>
+<li><a title="atompack.elements.Tl" href="#atompack.elements.Tl">Tl</a></li>
+<li><a title="atompack.elements.Tm" href="#atompack.elements.Tm">Tm</a></li>
+<li><a title="atompack.elements.U" href="#atompack.elements.U">U</a></li>
+<li><a title="atompack.elements.V" href="#atompack.elements.V">V</a></li>
+<li><a title="atompack.elements.W" href="#atompack.elements.W">W</a></li>
+<li><a title="atompack.elements.Xe" href="#atompack.elements.Xe">Xe</a></li>
+<li><a title="atompack.elements.Y" href="#atompack.elements.Y">Y</a></li>
+<li><a title="atompack.elements.Yb" href="#atompack.elements.Yb">Yb</a></li>
+<li><a title="atompack.elements.Zn" href="#atompack.elements.Zn">Zn</a></li>
+<li><a title="atompack.elements.Zr" href="#atompack.elements.Zr">Zr</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.elements.Element.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self) -&gt; str:
+    return self._name</code></pre>
+</details>
+</dd>
+<dt id="atompack.elements.Element.number"><code class="name">var <span class="ident">number</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def number(self) -&gt; int:
+    return self._number</code></pre>
+</details>
+</dd>
+<dt id="atompack.elements.Element.symbol"><code class="name">var <span class="ident">symbol</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def symbol(self) -&gt; str:
+    return self._symbol</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="atompack.elements.Er"><code class="flex name class">
+<span>class <span class="ident">Er</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Er(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Erbium&#39;, &#39;Er&#39;, 68, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Eu"><code class="flex name class">
+<span>class <span class="ident">Eu</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Eu(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Europium&#39;, &#39;Eu&#39;, 63, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.F"><code class="flex name class">
+<span>class <span class="ident">F</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class F(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Fluorine&#39;, &#39;F&#39;, 9, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Fe"><code class="flex name class">
+<span>class <span class="ident">Fe</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Fe(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Iron&#39;, &#39;Fe&#39;, 26, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Fr"><code class="flex name class">
+<span>class <span class="ident">Fr</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Fr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Francium&#39;, &#39;Fr&#39;, 87, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ga"><code class="flex name class">
+<span>class <span class="ident">Ga</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ga(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Gallium&#39;, &#39;Ga&#39;, 31, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Gd"><code class="flex name class">
+<span>class <span class="ident">Gd</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Gd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Gadolinium&#39;, &#39;Gd&#39;, 64, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ge"><code class="flex name class">
+<span>class <span class="ident">Ge</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ge(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Germanium&#39;, &#39;Ge&#39;, 32, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.H"><code class="flex name class">
+<span>class <span class="ident">H</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class H(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Hydrogen&#39;, &#39;H&#39;, 1, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.He"><code class="flex name class">
+<span>class <span class="ident">He</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class He(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Helium&#39;, &#39;He&#39;, 2, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Hf"><code class="flex name class">
+<span>class <span class="ident">Hf</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Hf(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Hafnium&#39;, &#39;Hf&#39;, 72, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Hg"><code class="flex name class">
+<span>class <span class="ident">Hg</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Hg(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Mercury&#39;, &#39;Hg&#39;, 80, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ho"><code class="flex name class">
+<span>class <span class="ident">Ho</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ho(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Holmium&#39;, &#39;Ho&#39;, 67, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.I"><code class="flex name class">
+<span>class <span class="ident">I</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class I(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Iodine&#39;, &#39;I&#39;, 53, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.In"><code class="flex name class">
+<span>class <span class="ident">In</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class In(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Indium&#39;, &#39;In&#39;, 49, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ir"><code class="flex name class">
+<span>class <span class="ident">Ir</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ir(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Iridium&#39;, &#39;Ir&#39;, 77, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.K"><code class="flex name class">
+<span>class <span class="ident">K</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class K(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Potassium&#39;, &#39;K&#39;, 19, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Kr"><code class="flex name class">
+<span>class <span class="ident">Kr</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Kr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Krypton&#39;, &#39;Kr&#39;, 36, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.La"><code class="flex name class">
+<span>class <span class="ident">La</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class La(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lanthanum&#39;, &#39;La&#39;, 57, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Li"><code class="flex name class">
+<span>class <span class="ident">Li</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Li(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lithium&#39;, &#39;Li&#39;, 3, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Lu"><code class="flex name class">
+<span>class <span class="ident">Lu</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Lu(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lutetium&#39;, &#39;Lu&#39;, 71, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Mg"><code class="flex name class">
+<span>class <span class="ident">Mg</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Mg(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Magnesium&#39;, &#39;Mg&#39;, 12, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Mn"><code class="flex name class">
+<span>class <span class="ident">Mn</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Mn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Manganese&#39;, &#39;Mn&#39;, 25, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Mo"><code class="flex name class">
+<span>class <span class="ident">Mo</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Mo(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Molybdenum&#39;, &#39;Mo&#39;, 42, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.N"><code class="flex name class">
+<span>class <span class="ident">N</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class N(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Nitrogen&#39;, &#39;N&#39;, 7, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Na"><code class="flex name class">
+<span>class <span class="ident">Na</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Na(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Sodium&#39;, &#39;Na&#39;, 11, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Nb"><code class="flex name class">
+<span>class <span class="ident">Nb</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Nb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Niobium&#39;, &#39;Nb&#39;, 41, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Nd"><code class="flex name class">
+<span>class <span class="ident">Nd</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Nd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Neodymium&#39;, &#39;Nd&#39;, 60, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ne"><code class="flex name class">
+<span>class <span class="ident">Ne</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ne(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Neon&#39;, &#39;Ne&#39;, 10, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ni"><code class="flex name class">
+<span>class <span class="ident">Ni</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ni(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Nickel&#39;, &#39;Ni&#39;, 28, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.O"><code class="flex name class">
+<span>class <span class="ident">O</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class O(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Oxygen&#39;, &#39;O&#39;, 8, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Os"><code class="flex name class">
+<span>class <span class="ident">Os</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Os(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Osmium&#39;, &#39;Os&#39;, 76, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.P"><code class="flex name class">
+<span>class <span class="ident">P</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class P(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Phosphorus&#39;, &#39;P&#39;, 15, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Pa"><code class="flex name class">
+<span>class <span class="ident">Pa</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pa(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Protactinium&#39;, &#39;Pa&#39;, 91, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Pb"><code class="flex name class">
+<span>class <span class="ident">Pb</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Lead&#39;, &#39;Pb&#39;, 82, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Pd"><code class="flex name class">
+<span>class <span class="ident">Pd</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pd(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Palladium&#39;, &#39;Pd&#39;, 46, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Pm"><code class="flex name class">
+<span>class <span class="ident">Pm</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pm(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Promethium&#39;, &#39;Pm&#39;, 61, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Po"><code class="flex name class">
+<span>class <span class="ident">Po</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Po(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Polonium&#39;, &#39;Po&#39;, 84, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Pr"><code class="flex name class">
+<span>class <span class="ident">Pr</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Praseodymium&#39;, &#39;Pr&#39;, 59, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Pt"><code class="flex name class">
+<span>class <span class="ident">Pt</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pt(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Platinum&#39;, &#39;Pt&#39;, 78, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ra"><code class="flex name class">
+<span>class <span class="ident">Ra</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ra(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Radium&#39;, &#39;Ra&#39;, 88, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Rb"><code class="flex name class">
+<span>class <span class="ident">Rb</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Rb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Rubidium&#39;, &#39;Rb&#39;, 37, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Re"><code class="flex name class">
+<span>class <span class="ident">Re</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Re(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Rhenium&#39;, &#39;Re&#39;, 75, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Rh"><code class="flex name class">
+<span>class <span class="ident">Rh</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Rh(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Rhodium&#39;, &#39;Rh&#39;, 45, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Rn"><code class="flex name class">
+<span>class <span class="ident">Rn</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Rn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Radon&#39;, &#39;Rn&#39;, 86, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ru"><code class="flex name class">
+<span>class <span class="ident">Ru</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ru(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Ruthenium&#39;, &#39;Ru&#39;, 44, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.S"><code class="flex name class">
+<span>class <span class="ident">S</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class S(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Sulfur&#39;, &#39;S&#39;, 16, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Sb"><code class="flex name class">
+<span>class <span class="ident">Sb</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Antimony&#39;, &#39;Sb&#39;, 51, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Sc"><code class="flex name class">
+<span>class <span class="ident">Sc</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sc(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Scanadium&#39;, &#39;Sc&#39;, 21, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Se"><code class="flex name class">
+<span>class <span class="ident">Se</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Se(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Selenium&#39;, &#39;Se&#39;, 34, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Si"><code class="flex name class">
+<span>class <span class="ident">Si</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Si(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Silicon&#39;, &#39;Si&#39;, 14, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Sm"><code class="flex name class">
+<span>class <span class="ident">Sm</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sm(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Samarium&#39;, &#39;Sm&#39;, 62, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Sn"><code class="flex name class">
+<span>class <span class="ident">Sn</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tin&#39;, &#39;Sn&#39;, 50, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Sr"><code class="flex name class">
+<span>class <span class="ident">Sr</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Strontium&#39;, &#39;Sr&#39;, 38, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ta"><code class="flex name class">
+<span>class <span class="ident">Ta</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ta(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tantalum&#39;, &#39;Ta&#39;, 73, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Tb"><code class="flex name class">
+<span>class <span class="ident">Tb</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Tb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Terbium&#39;, &#39;Tb&#39;, 65, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Tc"><code class="flex name class">
+<span>class <span class="ident">Tc</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Tc(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Technetium&#39;, &#39;Tc&#39;, 43, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Te"><code class="flex name class">
+<span>class <span class="ident">Te</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Te(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tellurium&#39;, &#39;Te&#39;, 52, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Th"><code class="flex name class">
+<span>class <span class="ident">Th</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Th(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Thorium&#39;, &#39;Th&#39;, 90, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Ti"><code class="flex name class">
+<span>class <span class="ident">Ti</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Ti(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Titanium&#39;, &#39;Ti&#39;, 22, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Tl"><code class="flex name class">
+<span>class <span class="ident">Tl</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Tl(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Thallium&#39;, &#39;Tl&#39;, 81, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Tm"><code class="flex name class">
+<span>class <span class="ident">Tm</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Tm(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Thulium&#39;, &#39;Tm&#39;, 69, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.U"><code class="flex name class">
+<span>class <span class="ident">U</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class U(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Uranium&#39;, &#39;U&#39;, 92, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.V"><code class="flex name class">
+<span>class <span class="ident">V</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class V(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Vanadium&#39;, &#39;V&#39;, 23, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.W"><code class="flex name class">
+<span>class <span class="ident">W</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class W(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Tungsten&#39;, &#39;W&#39;, 74, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Xe"><code class="flex name class">
+<span>class <span class="ident">Xe</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Xe(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Xenon&#39;, &#39;Xe&#39;, 54, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Y"><code class="flex name class">
+<span>class <span class="ident">Y</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Y(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Yttrium&#39;, &#39;Y&#39;, 39, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Yb"><code class="flex name class">
+<span>class <span class="ident">Yb</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Yb(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Ytterbium&#39;, &#39;Yb&#39;, 70, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Zn"><code class="flex name class">
+<span>class <span class="ident">Zn</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Zn(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Zinc&#39;, &#39;Zn&#39;, 30, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+<dt id="atompack.elements.Zr"><code class="flex name class">
+<span>class <span class="ident">Zr</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Zr(Element):
+
+    def __init__(self, **kwargs) -&gt; None:
+        super().__init__(&#39;Zirconium&#39;, &#39;Zr&#39;, 40, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="atompack" href="index.html">atompack</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="atompack.elements.Ac" href="#atompack.elements.Ac">Ac</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ag" href="#atompack.elements.Ag">Ag</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Al" href="#atompack.elements.Al">Al</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ar" href="#atompack.elements.Ar">Ar</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.As" href="#atompack.elements.As">As</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.At" href="#atompack.elements.At">At</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Au" href="#atompack.elements.Au">Au</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.B" href="#atompack.elements.B">B</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ba" href="#atompack.elements.Ba">Ba</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Be" href="#atompack.elements.Be">Be</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Bi" href="#atompack.elements.Bi">Bi</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Br" href="#atompack.elements.Br">Br</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.C" href="#atompack.elements.C">C</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ca" href="#atompack.elements.Ca">Ca</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Cd" href="#atompack.elements.Cd">Cd</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ce" href="#atompack.elements.Ce">Ce</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Cl" href="#atompack.elements.Cl">Cl</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Co" href="#atompack.elements.Co">Co</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Cr" href="#atompack.elements.Cr">Cr</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Cs" href="#atompack.elements.Cs">Cs</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Cu" href="#atompack.elements.Cu">Cu</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Dy" href="#atompack.elements.Dy">Dy</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Element" href="#atompack.elements.Element">Element</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.elements.Element.name" href="#atompack.elements.Element.name">name</a></code></li>
+<li><code><a title="atompack.elements.Element.number" href="#atompack.elements.Element.number">number</a></code></li>
+<li><code><a title="atompack.elements.Element.symbol" href="#atompack.elements.Element.symbol">symbol</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Er" href="#atompack.elements.Er">Er</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Eu" href="#atompack.elements.Eu">Eu</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.F" href="#atompack.elements.F">F</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Fe" href="#atompack.elements.Fe">Fe</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Fr" href="#atompack.elements.Fr">Fr</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ga" href="#atompack.elements.Ga">Ga</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Gd" href="#atompack.elements.Gd">Gd</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ge" href="#atompack.elements.Ge">Ge</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.H" href="#atompack.elements.H">H</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.He" href="#atompack.elements.He">He</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Hf" href="#atompack.elements.Hf">Hf</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Hg" href="#atompack.elements.Hg">Hg</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ho" href="#atompack.elements.Ho">Ho</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.I" href="#atompack.elements.I">I</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.In" href="#atompack.elements.In">In</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ir" href="#atompack.elements.Ir">Ir</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.K" href="#atompack.elements.K">K</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Kr" href="#atompack.elements.Kr">Kr</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.La" href="#atompack.elements.La">La</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Li" href="#atompack.elements.Li">Li</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Lu" href="#atompack.elements.Lu">Lu</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Mg" href="#atompack.elements.Mg">Mg</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Mn" href="#atompack.elements.Mn">Mn</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Mo" href="#atompack.elements.Mo">Mo</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.N" href="#atompack.elements.N">N</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Na" href="#atompack.elements.Na">Na</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Nb" href="#atompack.elements.Nb">Nb</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Nd" href="#atompack.elements.Nd">Nd</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ne" href="#atompack.elements.Ne">Ne</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ni" href="#atompack.elements.Ni">Ni</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.O" href="#atompack.elements.O">O</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Os" href="#atompack.elements.Os">Os</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.P" href="#atompack.elements.P">P</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Pa" href="#atompack.elements.Pa">Pa</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Pb" href="#atompack.elements.Pb">Pb</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Pd" href="#atompack.elements.Pd">Pd</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Pm" href="#atompack.elements.Pm">Pm</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Po" href="#atompack.elements.Po">Po</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Pr" href="#atompack.elements.Pr">Pr</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Pt" href="#atompack.elements.Pt">Pt</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ra" href="#atompack.elements.Ra">Ra</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Rb" href="#atompack.elements.Rb">Rb</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Re" href="#atompack.elements.Re">Re</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Rh" href="#atompack.elements.Rh">Rh</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Rn" href="#atompack.elements.Rn">Rn</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ru" href="#atompack.elements.Ru">Ru</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.S" href="#atompack.elements.S">S</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Sb" href="#atompack.elements.Sb">Sb</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Sc" href="#atompack.elements.Sc">Sc</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Se" href="#atompack.elements.Se">Se</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Si" href="#atompack.elements.Si">Si</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Sm" href="#atompack.elements.Sm">Sm</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Sn" href="#atompack.elements.Sn">Sn</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Sr" href="#atompack.elements.Sr">Sr</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ta" href="#atompack.elements.Ta">Ta</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Tb" href="#atompack.elements.Tb">Tb</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Tc" href="#atompack.elements.Tc">Tc</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Te" href="#atompack.elements.Te">Te</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Th" href="#atompack.elements.Th">Th</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Ti" href="#atompack.elements.Ti">Ti</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Tl" href="#atompack.elements.Tl">Tl</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Tm" href="#atompack.elements.Tm">Tm</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.U" href="#atompack.elements.U">U</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.V" href="#atompack.elements.V">V</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.W" href="#atompack.elements.W">W</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Xe" href="#atompack.elements.Xe">Xe</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Y" href="#atompack.elements.Y">Y</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Yb" href="#atompack.elements.Yb">Yb</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Zn" href="#atompack.elements.Zn">Zn</a></code></h4>
+</li>
+<li>
+<h4><code><a title="atompack.elements.Zr" href="#atompack.elements.Zr">Zr</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.0</a>.</p>
+</footer>
+</body>
+</html>

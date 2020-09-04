@@ -8,21 +8,11 @@ from atompack.crystal import Crystal, UnitCell, metric_tensor
 def get_cubic_unit_cell():
     a, b, c = 2.85, 2.85, 2.85
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    atoms = [
-        Atom(np.array([0, 0, 0])),
-        Atom(np.array([0.5, 0.5, 0.5])),
-    ]
-    return UnitCell(atoms, a, b, c, alpha, beta, gamma)
-
-
-def test_unit_cell_fractional_flag():
-    atoms = [Atom(np.array([0.25, 0.5, 0.75]))]
-    a, b, c = 2.0, 2.0, 2.0
-    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    unit_cell_cartesian = UnitCell(atoms, a, b, c, alpha, beta, gamma, fractional=False)
-    assert_array_almost_equal(unit_cell_cartesian.atoms[0].position, np.array([0.25, 0.5, 0.75]))
-    unit_cell_fractional = UnitCell(atoms, a, b, c, alpha, beta, gamma, fractional=True)
-    assert_array_almost_equal(unit_cell_fractional.atoms[0].position, np.array([0.5, 1.0, 1.5]))
+    sites = np.array([
+        [0.0, 0.0, 0.0],
+        [0.5, 0.5, 0.5],
+    ])
+    return UnitCell(a, b, c, alpha, beta, gamma, sites, [None, None])
 
 
 def test_crystal_metric_tensor():
