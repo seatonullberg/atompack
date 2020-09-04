@@ -27,42 +27,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PositionError(Exception):
-    &#34;&#34;&#34;Base class for position errors.&#34;&#34;&#34;
-
-    def __init__(self, position):
-        self.position = position
-
-
-class PositionOccupiedError(PositionError):
-    &#34;&#34;&#34;Error raised when a position is unexpectedly occupied.&#34;&#34;&#34;
-
-    def __init__(self, position):
-        super().__init__(position)
-
-    def __str__(self):
-        return &#34;Position &#39;{}&#39; is occupied.&#34;.format(self.position)
-
-
-class PositionUnoccupiedError(PositionError):
-    &#34;&#34;&#34;Error raised when a position is unexpectedly unoccupied.&#34;&#34;&#34;
-
-    def __init__(self, position):
-        super().__init__(position)
-
-    def __str__(self):
-        return &#34;Position &#39;{}&#39; is unoccupied.&#34;.format(self.position)
-
-
-class PositionOutsideError(PositionError):
-    &#34;&#34;&#34;Error raised when a position is unexpectedly outside of the bounding box.&#34;&#34;&#34;
-
-    def __init__(self, position, basis):
-        self.basis = basis
-        super().__init__(position)
-
-    def __str__(self):
-        return &#34;Position &#39;{}&#39; is outside of the allowable bounding area &#39;{}&#39;.&#34;.format(self.position, self.basis)</code></pre>
+<pre><code class="python">class CrystallographyError(Exception):
+    pass</code></pre>
 </details>
 </section>
 <section>
@@ -74,109 +40,21 @@ class PositionOutsideError(PositionError):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="atompack.errors.PositionError"><code class="flex name class">
-<span>class <span class="ident">PositionError</span></span>
-<span>(</span><span>position)</span>
+<dt id="atompack.errors.CrystallographyError"><code class="flex name class">
+<span>class <span class="ident">CrystallographyError</span></span>
+<span>(</span><span>...)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class for position errors.</p></div>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PositionError(Exception):
-    &#34;&#34;&#34;Base class for position errors.&#34;&#34;&#34;
-
-    def __init__(self, position):
-        self.position = position</code></pre>
+<pre><code class="python">class CrystallographyError(Exception):
+    pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>builtins.Exception</li>
-<li>builtins.BaseException</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="atompack.errors.PositionOccupiedError" href="#atompack.errors.PositionOccupiedError">PositionOccupiedError</a></li>
-<li><a title="atompack.errors.PositionOutsideError" href="#atompack.errors.PositionOutsideError">PositionOutsideError</a></li>
-<li><a title="atompack.errors.PositionUnoccupiedError" href="#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></li>
-</ul>
-</dd>
-<dt id="atompack.errors.PositionOccupiedError"><code class="flex name class">
-<span>class <span class="ident">PositionOccupiedError</span></span>
-<span>(</span><span>position)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Error raised when a position is unexpectedly occupied.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class PositionOccupiedError(PositionError):
-    &#34;&#34;&#34;Error raised when a position is unexpectedly occupied.&#34;&#34;&#34;
-
-    def __init__(self, position):
-        super().__init__(position)
-
-    def __str__(self):
-        return &#34;Position &#39;{}&#39; is occupied.&#34;.format(self.position)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="atompack.errors.PositionError" href="#atompack.errors.PositionError">PositionError</a></li>
-<li>builtins.Exception</li>
-<li>builtins.BaseException</li>
-</ul>
-</dd>
-<dt id="atompack.errors.PositionOutsideError"><code class="flex name class">
-<span>class <span class="ident">PositionOutsideError</span></span>
-<span>(</span><span>position, basis)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Error raised when a position is unexpectedly outside of the bounding box.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class PositionOutsideError(PositionError):
-    &#34;&#34;&#34;Error raised when a position is unexpectedly outside of the bounding box.&#34;&#34;&#34;
-
-    def __init__(self, position, basis):
-        self.basis = basis
-        super().__init__(position)
-
-    def __str__(self):
-        return &#34;Position &#39;{}&#39; is outside of the allowable bounding area &#39;{}&#39;.&#34;.format(self.position, self.basis)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="atompack.errors.PositionError" href="#atompack.errors.PositionError">PositionError</a></li>
-<li>builtins.Exception</li>
-<li>builtins.BaseException</li>
-</ul>
-</dd>
-<dt id="atompack.errors.PositionUnoccupiedError"><code class="flex name class">
-<span>class <span class="ident">PositionUnoccupiedError</span></span>
-<span>(</span><span>position)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Error raised when a position is unexpectedly unoccupied.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class PositionUnoccupiedError(PositionError):
-    &#34;&#34;&#34;Error raised when a position is unexpectedly unoccupied.&#34;&#34;&#34;
-
-    def __init__(self, position):
-        super().__init__(position)
-
-    def __str__(self):
-        return &#34;Position &#39;{}&#39; is unoccupied.&#34;.format(self.position)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="atompack.errors.PositionError" href="#atompack.errors.PositionError">PositionError</a></li>
 <li>builtins.Exception</li>
 <li>builtins.BaseException</li>
 </ul>
@@ -198,16 +76,7 @@ class PositionOutsideError(PositionError):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="atompack.errors.PositionError" href="#atompack.errors.PositionError">PositionError</a></code></h4>
-</li>
-<li>
-<h4><code><a title="atompack.errors.PositionOccupiedError" href="#atompack.errors.PositionOccupiedError">PositionOccupiedError</a></code></h4>
-</li>
-<li>
-<h4><code><a title="atompack.errors.PositionOutsideError" href="#atompack.errors.PositionOutsideError">PositionOutsideError</a></code></h4>
-</li>
-<li>
-<h4><code><a title="atompack.errors.PositionUnoccupiedError" href="#atompack.errors.PositionUnoccupiedError">PositionUnoccupiedError</a></code></h4>
+<h4><code><a title="atompack.errors.CrystallographyError" href="#atompack.errors.CrystallographyError">CrystallographyError</a></code></h4>
 </li>
 </ul>
 </li>

@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `bond` module.
 * `molecule` module.
 * `topology` module.
-* `crystal.UnitCell` class.
+* `crystal.UnitCell` class with many subclasses.
 * Support for `pipenv` installation.
 * Additional benchmark tests.
 
@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-* `errors` module.
 * `structure` module.
 
 ## [0.2.1] - 2020-08-02

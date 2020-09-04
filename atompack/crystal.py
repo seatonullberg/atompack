@@ -7,6 +7,7 @@ from scipy.spatial.transform import Rotation
 from atompack._cell import cell_enforce
 from atompack.atom import Atom
 from atompack.elements import Element
+from atompack.errors import CrystallographyError
 from atompack.topology import Topology
 
 
@@ -172,7 +173,7 @@ class Triclinic(UnitCell):
                  elements: List[Optional[Element]],
                  tol: float = 1.0e-6) -> None:
         if not is_triclinic(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for a triclinic unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
 
@@ -196,7 +197,7 @@ class Monoclinic(UnitCell):
                  tol: float = 1.0e-6) -> None:
         alpha = gamma = np.pi / 2
         if not is_monoclinic(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for a monoclinic unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
 
@@ -217,7 +218,7 @@ class Orthorhombic(UnitCell):
                  tol: float = 1.0e-6) -> None:
         alpha = beta = gamma = np.pi / 2
         if not is_orthorhombic(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for an orthorhombic unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
 
@@ -238,8 +239,23 @@ class Tetragonal(UnitCell):
         b = a
         alpha = beta = gamma = np.pi / 2
         if not is_tetragonal(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for a Tetragonal unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
+
+
+class Rutile(Tetragonal):
+    """Rutile (TiO2) unit cell."""
+
+    def __init__(self, a: float, c: float, ti: Optional[Element] = None, o: Optional[Element] = None) -> None:
+        sites = np.array([
+            [0.5, 0.5, 0.5],
+            [0.0, 0.0, 0.0],
+            [0.1954, 0.8046, 0.5],
+            [0.8046, 0.1954, 0.50],
+            [0.3046, 0.3046, 0.0],
+            [0.6954, 0.6954, 0.0], 
+        ])
+        super(a, c, sites, [ti, ti, o, o, o, o])
 
 
 class Rhombohedral(UnitCell):
@@ -259,7 +275,7 @@ class Rhombohedral(UnitCell):
         b = c = a
         beta = gamma = alpha
         if not is_rhombohedral(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for a rhombohedral unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
 
@@ -283,9 +299,32 @@ class Hexagonal(UnitCell):
         alpha = beta = np.pi / 2
         gamma = 2 * np.pi / 3
         if not is_hexagonal(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for a hexagonal unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
 
+
+class Hcp(Hexagonal):
+    """Hexagonal close-packed unit cell."""
+
+    def __init__(self, a, c, element: Optional[Element] = None) -> None:
+        sites = np.ndarray([
+            [2.0/3.0, 1.0/3.0, 0.75],
+            [1.0/3.0, 2.0/3.0, 0.25],
+        ])
+        super().__init__(a, c, sites, [element, element])
+
+
+class Wurtzite(Hexagonal):
+    """Wurtzite (ZnS) unit cell."""
+
+    def __init__(self, a, c, zn: Optional[Element] = None, s: Optional[Element] = None) -> None:
+        sites = np.ndarray([
+            [2.0/3.0, 1.0/3.0, 0.0],
+            [1.0/3.0, 2.0/3.0, 0.5],
+            [2.0/3.0, 1.0/3.0, 0.6259],
+            [1.0/3.0, 2.0/3.0, 0.1259],
+        ])
+        super().__init__(a, c, sites, [zn, zn, s, s])
 
 class Cubic(UnitCell):
     """Unit cell with cubic constraints.
@@ -299,8 +338,16 @@ class Cubic(UnitCell):
         b = c = a
         alpha = beta = gamma = np.pi / 2
         if not is_cubic(a, b, c, alpha, beta, gamma, tol):
-            raise ValueError()  # TODO
+            raise CrystallographyError("Invalid lattice parameters for a cubic unit cell.")
         super().__init__(a, b, c, alpha, beta, gamma, sites, elements)
+
+
+class Sc(Cubic):
+    """Simple cubic unit cell."""
+
+    def __init__(self, a: float, element: Optional[Element] = None) -> None:
+        sites = np.zeros(3)
+        super().__init__(a, sites, [element])
 
 
 class Bcc(Cubic):
@@ -314,6 +361,17 @@ class Bcc(Cubic):
         super().__init__(a, sites, [element, element])
 
 
+class CsCl(Cubic):
+    """Cesium Chloride unit cell."""
+
+    def __init__(self, a: float, cs: Optional[Element] = None, cl: Optional[Element] = None):
+        sites = np.array([
+            [0.0, 0.0, 0.0],
+            [0.5, 0.5, 0.5],
+        ])
+        super().__init__(a, sites, [cs, cl])
+
+
 class Fcc(Cubic):
     """Face-centered cubic unit cell."""
 
@@ -325,6 +383,57 @@ class Fcc(Cubic):
             [0.0, 0.5, 0.5],
         ])
         super().__init__(a, sites, [element, element, element, element])
+
+
+class NaCl(Cubic):
+    """Rock salt unit cell."""
+
+    def __init__(self, a: float, na: Optional[Element] = None, cl: Optional[Element] = None) -> None:
+        sites = np.array([
+            [0.0, 0.0, 0.0],
+            [0.0, 0.5, 0.5],
+            [0.5, 0.0, 0.5],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.0, 0.0],
+            [0.5, 0.5, 0.5],
+            [0.0, 0.0, 0.5],
+            [0.0, 0.5, 0.0],
+        ])
+        super().__init__(a, sites, [na, na, na, na, cl, cl, cl, cl])
+
+
+class Diamond(Cubic):
+    """Diamond unit cell."""
+
+    def __init__(self, a: float, element: Optional[Element] = None) -> None:
+        sites = np.array([
+            [0.25, 0.75, 0.25],
+            [0.0, 0.0, 0.5],
+            [0.25, 0.25, 0.75],
+            [0.0, 0.5, 0.0],
+            [0.75, 0.75, 0.75],
+            [0.5, 0.0, 0.0],
+            [0.75, 0.25, 0.25],
+            [0.5, 0.5, 0.5],
+        ])
+        super().__init__(a, sites, [element]*len(sites))
+
+
+class ZincBlend(Cubic):
+    """Zinc blend (ZnS) unit cell."""
+
+    def __init__(self, a, zn: Optional[Element] = None, s: Optional[Element] = None) -> None:
+        sites = np.array([
+            [0.0, 0.0, 0.0],
+            [0.0, 0.5, 0.5],
+            [0.5, 0.0, 0.5],
+            [0.5, 0.5, 0.0],
+            [0.25, 0.25, 0.75],
+            [0.25, 0.75, 0.25],
+            [0.75, 0.25, 0.25],
+            [0.75, 0.75, 0.75],
+        ])
+        super().__init__(a, sites, [zn, zn, zn, zn, s, s, s, s])
 
 
 class Crystal(Topology):
