@@ -2,7 +2,9 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 from atompack.atom import Atom
-from atompack.crystal import Crystal, UnitCell, metric_tensor
+from atompack.crystal import Crystal, UnitCell, metric_tensor, vacancy_defect, substitution_defect
+from atompack.elements import H
+from atompack.select import Random
 
 
 def get_cubic_unit_cell():
@@ -103,3 +105,21 @@ def test_crystal_cubic_2x2x2_super_cell():
         [4.27500000, 4.27500000, 4.27500000],
     ])
     assert_array_almost_equal(res_positions, target_positions)
+
+
+def test_vacancy_defect():
+    unit_cell = get_cubic_unit_cell()
+    crystal = Crystal(unit_cell)
+    selection = Random.from_number(1, lambda x: np.linalg.norm(x.position) > 0)
+    new_crystal = vacancy_defect(crystal, selection)
+    res = new_crystal.atoms[0].position
+    target = np.zeros(3)
+    assert_array_almost_equal(res, target)
+
+
+def test_substitution_defect():
+    unit_cell = get_cubic_unit_cell()
+    crystal = Crystal(unit_cell)
+    selection = Random.from_number(1, lambda x: np.linalg.norm(x.position) > 0)
+    new_crystal = substitution_defect(crystal, selection, H())
+    assert new_crystal.atoms[1].symbol == "H"
