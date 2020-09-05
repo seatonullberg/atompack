@@ -36,7 +36,7 @@ class UnitCell(Topology):
             if element is None:
                 atom = Atom(position)
             else:
-                atom = Atom(position, **vars(element))
+                atom = Atom(position, **element.as_dict())
             self.insert(atom)
 
     @property

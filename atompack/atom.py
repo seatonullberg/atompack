@@ -2,8 +2,10 @@ import copy
 
 import numpy as np
 
+from atompack.util import AsDict
 
-class Atom(object):
+
+class Atom(AsDict):
     """Container to store metadata about a single atom.
     
     Notes:
