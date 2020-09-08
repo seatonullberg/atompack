@@ -23,15 +23,9 @@ $ git clone https://github.com/seatonullberg/atompack.git
 $ cd atompack
 ```
 
-#### 2. Compile the C extensions:
-
-```bash
-$ python3 setup.py build_ext --inplace
-```
-
 The following steps can be done with either `pipenv` or `pip`. I recommend using `pipenv`. If you're not familiar with the benefits of using `pipenv`, educate yourself here: https://pipenv-fork.readthedocs.io/en/latest/.
 
-#### 3. Download the dependencies and install as editable:
+#### 2. Download the dependencies and install as editable:
 
 For `pipenv` users:
 
@@ -45,7 +39,7 @@ For `pip` users:
 $ python3 -m pip install -e . [dev]
 ```
 
-#### 4. Verify that all tests pass:
+#### 3. Verify that all tests pass:
 
 For `pipenv` users:
 
