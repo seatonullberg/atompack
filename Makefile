@@ -1,11 +1,7 @@
 MYPYPATH=./mypy
 
-_build_ext:
-	@pipenv run python setup.py build_ext --inplace
-
 bench:
-	@make _build_ext
-	@pipenv run pytest -v ./benches 
+	@pipenv run pytest --benchmark-columns="min, median, max, stddev, rounds, iterations" -v ./benches 
 
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf
@@ -18,12 +14,11 @@ clean:
 	@find . | grep -E "(\.pyc|\.so|\.egg-info)" | xargs rm -rf
 
 document:
-	@make _build_ext
 	@pipenv run pdoc --html --force\
 		--template-dir ./docs\
 		--output-dir ./docs\
 		./atompack
-	@mv ./docs/atompack/* ./docs
+	@cp -r ./docs/atompack/* ./docs
 	@rm -rf ./docs/atompack
 
 format:
@@ -36,5 +31,4 @@ lint:
 	@pipenv run pyflakes ./atompack
 
 test:
-	@make _build_ext
 	@pipenv run pytest --doctest-modules -v ./atompack ./tests

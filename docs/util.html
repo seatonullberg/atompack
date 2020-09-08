@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.0" />
-<title>atompack API documentation</title>
+<title>atompack.util API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -20,54 +20,69 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>atompack</code></h1>
+<h1 class="title">Module <code>atompack.util</code></h1>
 </header>
 <section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from typing import Any, Dict
+
+
+class AsDict(object):
+
+    def as_dict(self) -&gt; Dict[str, Any]:
+        return {k: getattr(self, k) for k in dir(self) if not k.startswith(&#34;_&#34;)}</code></pre>
+</details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="atompack.atom" href="atom.html">atompack.atom</a></code></dt>
+<dt id="atompack.util.AsDict"><code class="flex name class">
+<span>class <span class="ident">AsDict</span></span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="atompack.bond" href="bond.html">atompack.bond</a></code></dt>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AsDict(object):
+
+    def as_dict(self) -&gt; Dict[str, Any]:
+        return {k: getattr(self, k) for k in dir(self) if not k.startswith(&#34;_&#34;)}</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a></li>
+<li><a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a></li>
+<li><a title="atompack.elements.Element" href="elements.html#atompack.elements.Element">Element</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.util.AsDict.as_dict"><code class="name flex">
+<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="atompack.crystal" href="crystal/index.html">atompack.crystal</a></code></dt>
-<dd>
-<div class="desc"><p>Module <code><a title="atompack.crystal" href="crystal/index.html">atompack.crystal</a></code> provides abstractions to construct crystals. At the lowest level, a generic lattice and atomic
-basis with no crystallographic …</p></div>
-</dd>
-<dt><code class="name"><a title="atompack.elements" href="elements.html">atompack.elements</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="atompack.errors" href="errors.html">atompack.errors</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="atompack.molecule" href="molecule.html">atompack.molecule</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="atompack.topology" href="topology.html">atompack.topology</a></code></dt>
-<dd>
-<div class="desc"><p>Module <code><a title="atompack.topology" href="topology.html">atompack.topology</a></code> provides the fundamental abstraction which is used internally to represent any atomic structure.
-In the context of this package, a …</p></div>
-</dd>
-<dt><code class="name"><a title="atompack.util" href="util.html">atompack.util</a></code></dt>
-<dd>
-<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+    return {k: getattr(self, k) for k in dir(self) if not k.startswith(&#34;_&#34;)}</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -76,16 +91,19 @@ In the context of this package, a …</p></div>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="atompack.atom" href="atom.html">atompack.atom</a></code></li>
-<li><code><a title="atompack.bond" href="bond.html">atompack.bond</a></code></li>
-<li><code><a title="atompack.crystal" href="crystal/index.html">atompack.crystal</a></code></li>
-<li><code><a title="atompack.elements" href="elements.html">atompack.elements</a></code></li>
-<li><code><a title="atompack.errors" href="errors.html">atompack.errors</a></code></li>
-<li><code><a title="atompack.molecule" href="molecule.html">atompack.molecule</a></code></li>
-<li><code><a title="atompack.topology" href="topology.html">atompack.topology</a></code></li>
-<li><code><a title="atompack.util" href="util.html">atompack.util</a></code></li>
+<li><code><a title="atompack" href="index.html">atompack</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="atompack.util.AsDict" href="#atompack.util.AsDict">AsDict</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.util.AsDict.as_dict" href="#atompack.util.AsDict.as_dict">as_dict</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

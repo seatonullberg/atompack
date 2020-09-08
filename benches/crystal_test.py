@@ -1,61 +1,52 @@
 import numpy as np
 
 from atompack.atom import Atom
-from atompack.crystal import Crystal
+from atompack.crystal import Crystal, UnitCell
 
 
-def bench_crystal(lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance):
-    return Crystal(lattice_atoms,
-                   lattice_sites,
-                   a,
-                   b,
-                   c,
-                   alpha,
-                   beta,
-                   gamma,
-                   duplicates=duplicates,
-                   orientation=orientation,
-                   pbc=pbc,
-                   tolerance=tolerance)
-
-
-def test_bench_crystal_Fe_BCC_100_1x1x1(benchmark):
-    lattice_atoms = [Atom(symbol="Fe"), Atom(symbol="Fe")]
-    lattice_sites = np.array([[0, 0, 0], [0.5, 0.5, 0.5]])
-    a, b, c, = 2.85, 2.85, 2.85
+def get_cubic_unit_cell():
+    a, b, c = 2.85, 2.85, 2.85
     alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    duplicates = (1, 1, 1)
+    sites = np.array([
+        [0.0, 0.0, 0.0],
+        [0.5, 0.5, 0.5],
+    ])
+    elements = [None, None]
+    return UnitCell(a, b, c, alpha, beta, gamma, sites, elements)
+
+
+def bench_crystal(unit_cell, scale, orientation, rotation, tolerance):
+    return Crystal(unit_cell, scale, orientation, rotation, tolerance)
+
+
+def test_bench_crystal_cubic_1x1x1(benchmark):
+    unit_cell = get_cubic_unit_cell()
+    scale = (1, 1, 1)
     orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    pbc = (False, False, False)
-    tolerance = 1e-6
-    args = (lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
-    res = benchmark.pedantic(bench_crystal, args=args, iterations=10, rounds=25)
-    assert len(res) == 2
+    rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    tolerance = 1.0e-6
+    args = (unit_cell, scale, orientation, rotation, tolerance)
+    res = benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    assert len(res.atoms) == 2
 
 
-def test_bench_crystal_Fe_BCC_110_1x1x1(benchmark):
-    lattice_atoms = [Atom(symbol="Fe"), Atom(symbol="Fe")]
-    lattice_sites = np.array([[0, 0, 0], [0.5, 0.5, 0.5]])
-    a, b, c, = 2.85, 2.85, 2.85
-    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    duplicates = (1, 1, 1)
-    orientation = np.array([[-1, 1, 0], [0, 0, 1], [1, 1, 0]])
-    pbc = (False, False, False)
-    tolerance = 1e-6
-    args = (lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
-    res = benchmark.pedantic(bench_crystal, args=args, iterations=10, rounds=25)
-    assert len(res) == 4
+def test_bench_crystal_cubic_2x2x2(benchmark):
+    unit_cell = get_cubic_unit_cell()
+    scale = (2, 2, 2)
+    orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    tolerance = 1.0e-6
+    args = (unit_cell, scale, orientation, rotation, tolerance)
+    res = benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    assert len(res.atoms) == 16
 
 
-def test_bench_crystal_Fe_BCC_111_1x1x1(benchmark):
-    lattice_atoms = [Atom(symbol="Fe"), Atom(symbol="Fe")]
-    lattice_sites = np.array([[0, 0, 0], [0.5, 0.5, 0.5]])
-    a, b, c, = 2.85, 2.85, 2.85
-    alpha, beta, gamma = np.pi / 2, np.pi / 2, np.pi / 2
-    duplicates = (1, 1, 1)
-    orientation = np.array([[1, -1, 0], [1, 1, -2], [1, 1, 1]])
-    pbc = (False, False, False)
-    tolerance = 1e-6
-    args = (lattice_atoms, lattice_sites, a, b, c, alpha, beta, gamma, duplicates, orientation, pbc, tolerance)
-    res = benchmark.pedantic(bench_crystal, args=args, iterations=10, rounds=25)
-    assert len(res) == 12
+def test_bench_crystal_cubic_3x3x3(benchmark):
+    unit_cell = get_cubic_unit_cell()
+    scale = (3, 3, 3)
+    orientation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    rotation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    tolerance = 1.0e-6
+    args = (unit_cell, scale, orientation, rotation, tolerance)
+    res = benchmark.pedantic(bench_crystal, args=args, rounds=10, iterations=100)
+    assert len(res.atoms) == 54
