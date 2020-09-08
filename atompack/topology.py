@@ -8,7 +8,6 @@ from typing import List, Optional, Tuple
 import numpy as np
 from igraph import Graph
 
-from atompack._cell import cell_contains, cell_enforce
 from atompack.atom import Atom
 from atompack.bond import Bond
 
@@ -100,38 +99,3 @@ class Topology(object):
     def bonds(self) -> List[Tuple[Tuple[int, int], Bond]]:
         """Returns a list of tuples of bond edge ids and bond objects."""
         return [((edge.source, edge.target), edge["bond"]) for edge in self._graph.es]
-
-
-class BoundedTopology(Topology):
-    """An undirected graph of atoms within a bounding paralellpiped cell.
-    
-    Args:
-        cell: 3x3 matrix which defines the bounding area. 
-    """
-
-    def __init__(self, cell: np.ndarray) -> None:
-        self.cell = cell
-        super().__init__()
-
-    def contains(self, position: np.ndarray, tolerance: float = 1.0e-6) -> bool:
-        """Returns True if position is within the bounds of the topology."""
-        return cell_contains(self.cell, position, tolerance)
-
-    # TODO: rename to check_bounds
-    def check(self, tolerance: float = 1.0e-6) -> List[int]:
-        """Returns the indices of atoms which are out of bounds."""
-        indices = []
-        for vertex in self._graph.vs:
-            position = vertex["atom"].position
-            if not self.contains(position, tolerance):
-                indices.append(vertex.index)
-        return indices
-
-    # TODO: rename to enforce_bounds
-    def enforce(self, tolerance: float = 1.0e-6) -> None:
-        """Enforces that all atoms in the topology are within the bounds.
-            Any atoms found to be out of bounds will have their positions mutated to bring them back in.
-        """
-        for vertex in self._graph.vs:
-            atom = vertex["atom"]
-            cell_enforce(self.cell, atom._position, tolerance)

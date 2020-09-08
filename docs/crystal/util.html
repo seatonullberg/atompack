@@ -101,7 +101,27 @@ def is_cubic(a: float, b: float, c: float, alpha: float, beta: float, gamma: flo
         return False
     if abs(alpha - beta) &gt; tol or abs(beta - gamma) &gt; tol or abs(alpha - gamma) &gt; tol or abs(alpha - np.pi / 2) &gt; tol:
         return False
-    return True</code></pre>
+    return True
+
+
+def enforce_bounds(bounds: np.ndarray, position: np.ndarray, tol: float) -&gt; None:
+    &#34;&#34;&#34;Mutates `position` such that it lies within the parallelpiped defined by `bounds`.
+
+    Args:
+        bounds: The magnitude of each vector of the parallelpiped boundary cell.
+        position: The position to translate back into the cell.
+        tol: The tolerance for float comparison.
+    &#34;&#34;&#34;
+    for i in range(3):
+        bound = bounds[i]
+        tmpval = position[i]
+        if tmpval &gt; bound - tol:
+            while tmpval &gt; bound - tol:
+                tmpval -= bound
+        if tmpval &lt; -tol:
+            while tmpval &lt; -tol:
+                tmpval += bound
+        position[i] = tmpval</code></pre>
 </details>
 </section>
 <section>
@@ -111,6 +131,44 @@ def is_cubic(a: float, b: float, c: float, alpha: float, beta: float, gamma: flo
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="atompack.crystal.util.enforce_bounds"><code class="name flex">
+<span>def <span class="ident">enforce_bounds</span></span>(<span>bounds: numpy.ndarray, position: numpy.ndarray, tol: float) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Mutates <code>position</code> such that it lies within the parallelpiped defined by <code>bounds</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>bounds</code></strong></dt>
+<dd>The magnitude of each vector of the parallelpiped boundary cell.</dd>
+<dt><strong><code>position</code></strong></dt>
+<dd>The position to translate back into the cell.</dd>
+<dt><strong><code>tol</code></strong></dt>
+<dd>The tolerance for float comparison.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enforce_bounds(bounds: np.ndarray, position: np.ndarray, tol: float) -&gt; None:
+    &#34;&#34;&#34;Mutates `position` such that it lies within the parallelpiped defined by `bounds`.
+
+    Args:
+        bounds: The magnitude of each vector of the parallelpiped boundary cell.
+        position: The position to translate back into the cell.
+        tol: The tolerance for float comparison.
+    &#34;&#34;&#34;
+    for i in range(3):
+        bound = bounds[i]
+        tmpval = position[i]
+        if tmpval &gt; bound - tol:
+            while tmpval &gt; bound - tol:
+                tmpval -= bound
+        if tmpval &lt; -tol:
+            while tmpval &lt; -tol:
+                tmpval += bound
+        position[i] = tmpval</code></pre>
+</details>
+</dd>
 <dt id="atompack.crystal.util.is_cubic"><code class="name flex">
 <span>def <span class="ident">is_cubic</span></span>(<span>a: float, b: float, c: float, alpha: float, beta: float, gamma: float, tol: float = 1e-06) ‑> bool</span>
 </code></dt>
@@ -275,6 +333,7 @@ def is_cubic(a: float, b: float, c: float, alpha: float, beta: float, gamma: flo
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
+<li><code><a title="atompack.crystal.util.enforce_bounds" href="#atompack.crystal.util.enforce_bounds">enforce_bounds</a></code></li>
 <li><code><a title="atompack.crystal.util.is_cubic" href="#atompack.crystal.util.is_cubic">is_cubic</a></code></li>
 <li><code><a title="atompack.crystal.util.is_hexagonal" href="#atompack.crystal.util.is_hexagonal">is_hexagonal</a></code></li>
 <li><code><a title="atompack.crystal.util.is_monoclinic" href="#atompack.crystal.util.is_monoclinic">is_monoclinic</a></code></li>

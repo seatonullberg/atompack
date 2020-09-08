@@ -214,7 +214,7 @@ __all__ = [
                         position = rotation.apply(position)
 
                         # transform the position into the lattice
-                        cell_enforce(oriented_lattice_vectors, position, self._tol)
+                        enforce_bounds(oriented_lattice_vector_mags, position, self._tol)
 
                         # accept the atom if the position is not yet occupied
                         positions = np.array([atom.position for atom in atoms])

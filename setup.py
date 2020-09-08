@@ -1,27 +1,9 @@
-from setuptools import setup, Extension
+from setuptools import setup
 
 import numpy as np
 
 with open("README.md", "r") as f:
     long_description = f.read()
-
-include_dirs = [
-    "./extensions/",
-    np.get_include(),
-]
-
-extensions = [
-    Extension(
-        "atompack._cell",
-        sources=["./extensions/cell.c"],
-        include_dirs=include_dirs,
-    ),
-    Extension(
-        "atompack._pbc",
-        sources=["./extensions/pbc.c"],
-        include_dirs=include_dirs,
-    ),
-]
 
 setup(name="atompack",
       version="0.3.0",
@@ -32,7 +14,6 @@ setup(name="atompack",
       author_email="seatonullberg@gmail.com",
       url="https://github.com/seatonullberg/atompack",
       license="MIT License",
-      ext_modules=extensions,
       packages=["atompack"],
       install_requires=["numpy", "scipy", "python-igraph"],
       extras_require={"dev": [

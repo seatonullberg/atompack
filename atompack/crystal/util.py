@@ -73,3 +73,23 @@ def is_cubic(a: float, b: float, c: float, alpha: float, beta: float, gamma: flo
     if abs(alpha - beta) > tol or abs(beta - gamma) > tol or abs(alpha - gamma) > tol or abs(alpha - np.pi / 2) > tol:
         return False
     return True
+
+
+def enforce_bounds(bounds: np.ndarray, position: np.ndarray, tol: float) -> None:
+    """Mutates `position` such that it lies within the parallelpiped defined by `bounds`.
+
+    Args:
+        bounds: The magnitude of each vector of the parallelpiped boundary cell.
+        position: The position to translate back into the cell.
+        tol: The tolerance for float comparison.
+    """
+    for i in range(3):
+        bound = bounds[i]
+        tmpval = position[i]
+        if tmpval > bound - tol:
+            while tmpval > bound - tol:
+                tmpval -= bound
+        if tmpval < -tol:
+            while tmpval < -tol:
+                tmpval += bound
+        position[i] = tmpval

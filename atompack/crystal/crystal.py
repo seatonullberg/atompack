@@ -4,9 +4,9 @@ from typing import List, Optional, Tuple
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from atompack._cell import cell_enforce
 from atompack.atom import Atom
 from atompack.crystal.unit_cell import UnitCell
+from atompack.crystal.util import enforce_bounds
 from atompack.topology import Topology
 
 
@@ -103,7 +103,7 @@ class Crystal(Topology):
                         position = rotation.apply(position)
 
                         # transform the position into the lattice
-                        cell_enforce(oriented_lattice_vectors, position, self._tol)
+                        enforce_bounds(oriented_lattice_vector_mags, position, self._tol)
 
                         # accept the atom if the position is not yet occupied
                         positions = np.array([atom.position for atom in atoms])

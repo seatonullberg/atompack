@@ -2,7 +2,7 @@ import numpy as np
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.topology import Topology, BoundedTopology
+from atompack.topology import Topology
 
 
 def test_topology_insert():
@@ -88,30 +88,3 @@ def test_topology_bonds():
     t.connect(0, 1, Bond(kind="sigma"))
     assert t.bonds[0][0] == (0, 1)
     assert t.bonds[0][1].kind == "sigma"
-
-
-def test_bounded_topology_contains():
-    cell = np.identity(3)
-    bt = BoundedTopology(cell)
-    assert bt.contains(np.array([0.5, 0.5, 0.5]))
-    assert not bt.contains(np.array([1.5, 1.5, 1.5]))
-
-
-def test_bounded_topology_check():
-    cell = np.identity(3)
-    bt = BoundedTopology(cell)
-    bt.insert(Atom(np.array([0.5, 0.5, 0.5])))
-    bt.insert(Atom(np.array([1.25, -1.75, 0.5])))
-    indices = bt.check()
-    assert len(indices) == 1
-    assert indices[0] == 1
-
-
-def test_bounded_topology_enforce():
-    cell = np.identity(3)
-    bt = BoundedTopology(cell)
-    bt.insert(Atom(np.array([0.5, 0.5, 0.5])))
-    bt.insert(Atom(np.array([1.25, -1.75, 0.5])))
-    bt.enforce()
-    assert np.array_equal(bt.atoms[0].position, np.array([0.5, 0.5, 0.5]))
-    assert np.array_equal(bt.atoms[1].position, np.array([0.25, 0.25, 0.5]))
