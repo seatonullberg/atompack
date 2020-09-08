@@ -27,8 +27,8 @@ At the lowest level, a generic lattice and atomic basis with no crystallographic
 <p>Module <code><a title="atompack.crystal.crystal" href="crystal.html">atompack.crystal.crystal</a></code> provides abstractions to construct crystals.
 At the lowest level, a generic lattice and atomic basis with no crystallographic constraints can be composed in a <code><a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></code> object.
 At the mid-level, bravais lattices with specific symmetry constraints can be constructed with classes such as <code><a title="atompack.crystal.Cubic" href="#atompack.crystal.Cubic">Cubic</a></code>, <code><a title="atompack.crystal.Orthorhombic" href="#atompack.crystal.Orthorhombic">Orthorhombic</a></code>, or <code><a title="atompack.crystal.Monoclinic" href="#atompack.crystal.Monoclinic">Monoclinic</a></code>.
-At the highest level, users can create a number of common configurations such as <code><a title="atompack.crystal.Fcc" href="#atompack.crystal.Fcc">Fcc</a></code>, <code><a title="atompack.crystal.Rutile" href="#atompack.crystal.Rutile">Rutile</a></code>, or <code><a title="atompack.crystal.Diamond" href="#atompack.crystal.Diamond">Diamond</a></code>.
-For transformations such as rotations, reorientations, and supercell duplication, the <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> class wraps a <code><a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></code> and modifies it with the desired transforms.</p>
+At the highest level, users can create a number of common crystal structures such as <code><a title="atompack.crystal.Fcc" href="#atompack.crystal.Fcc">Fcc</a></code>, <code><a title="atompack.crystal.Rutile" href="#atompack.crystal.Rutile">Rutile</a></code>, or <code><a title="atompack.crystal.Diamond" href="#atompack.crystal.Diamond">Diamond</a></code>.
+For transformations like rotations, reorientations, and supercell duplication, the <code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code> class wraps a <code><a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></code> and modifies it with the desired transforms.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -37,8 +37,8 @@ For transformations such as rotations, reorientations, and supercell duplication
 Module `crystal` provides abstractions to construct crystals.
 At the lowest level, a generic lattice and atomic basis with no crystallographic constraints can be composed in a `UnitCell` object.
 At the mid-level, bravais lattices with specific symmetry constraints can be constructed with classes such as `Cubic`, `Orthorhombic`, or `Monoclinic`.
-At the highest level, users can create a number of common configurations such as `Fcc`, `Rutile`, or `Diamond`.
-For transformations such as rotations, reorientations, and supercell duplication, the `Crystal` class wraps a `UnitCell` and modifies it with the desired transforms.
+At the highest level, users can create a number of common crystal structures such as `Fcc`, `Rutile`, or `Diamond`.
+For transformations like rotations, reorientations, and supercell duplication, the `Crystal` class wraps a `UnitCell` and modifies it with the desired transforms.
 &#34;&#34;&#34;
 from atompack.crystal.crystal import Crystal
 from atompack.crystal.unit_cell import (CsCl, Cubic, Diamond, Fcc, Hcp, Hexagonal, Monoclinic, NaCl, Orthorhombic,
@@ -1221,7 +1221,7 @@ def unit_cell(self) -&gt; UnitCell:
             if element is None:
                 atom = Atom(position)
             else:
-                atom = Atom(position, **vars(element))
+                atom = Atom(position, **element.as_dict())
             self.insert(atom)
 
     @property

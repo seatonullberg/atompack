@@ -23,7 +23,7 @@ document:
 		--template-dir ./docs\
 		--output-dir ./docs\
 		./atompack
-	@mv ./docs/atompack/* ./docs
+	@cp -r ./docs/atompack/* ./docs
 	@rm -rf ./docs/atompack
 
 format:

@@ -27,7 +27,10 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Bond(object):
+<pre><code class="python">from atompack.util import AsDict
+
+
+class Bond(AsDict):
     &#34;&#34;&#34;Container to store metadata about a bond between atoms.
     
     Notes:
@@ -60,7 +63,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Bond(object):
+<pre><code class="python">class Bond(AsDict):
     &#34;&#34;&#34;Container to store metadata about a bond between atoms.
     
     Notes:
@@ -71,6 +74,10 @@
         for k, v in kwargs.items():
             setattr(self, k, v)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.util.AsDict" href="util.html#atompack.util.AsDict">AsDict</a></li>
+</ul>
 </dd>
 </dl>
 </section>

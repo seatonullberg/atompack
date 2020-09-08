@@ -31,8 +31,10 @@
 
 import numpy as np
 
+from atompack.util import AsDict
 
-class Atom(object):
+
+class Atom(AsDict):
     &#34;&#34;&#34;Container to store metadata about a single atom.
     
     Notes:
@@ -93,7 +95,7 @@ class Atom(object):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Atom(object):
+<pre><code class="python">class Atom(AsDict):
     &#34;&#34;&#34;Container to store metadata about a single atom.
     
     Notes:
@@ -120,6 +122,10 @@ class Atom(object):
         &#34;&#34;&#34;Returns a copy of the atom&#39;s position vector.&#34;&#34;&#34;
         return copy.deepcopy(self._position)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.util.AsDict" href="util.html#atompack.util.AsDict">AsDict</a></li>
+</ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="atompack.atom.Atom.position"><code class="name">var <span class="ident">position</span> : numpy.ndarray</code></dt>
