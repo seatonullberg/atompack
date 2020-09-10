@@ -103,3 +103,25 @@ def test_crystal_cubic_2x2x2_super_cell():
         [4.27500000, 4.27500000, 4.27500000],
     ])
     assert_array_almost_equal(res_positions, target_positions)
+
+
+def test_unit_cell_as_dict():
+    unit_cell = get_cubic_unit_cell()
+    d = unit_cell.as_dict()
+    assert d["a"] == 2.85
+    assert d["b"] == 2.85
+    assert d["c"] == 2.85
+    assert d["alpha"] == np.pi / 2
+    assert d["beta"] == np.pi / 2
+    assert d["gamma"] == np.pi / 2
+    assert np.array_equal(d["sites"], np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]]))
+    assert_array_almost_equal(d["lattice_vectors"], np.array([[2.85, 0.0, 0.0], [0.0, 2.85, 0.0], [0.0, 0.0, 2.85]]))
+
+
+def test_crystal_as_dict():
+    unit_cell = get_cubic_unit_cell()
+    crystal = Crystal(unit_cell)
+    d = crystal.as_dict()
+    assert d["scale"] == (1, 1, 1)
+    assert np.array_equal(d["orientation"], np.identity(3))
+    assert np.array_equal(d["rotation"], np.identity(3))

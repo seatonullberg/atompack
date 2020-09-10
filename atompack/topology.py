@@ -3,16 +3,17 @@ Module `topology` provides the fundamental abstraction which is used internally 
 In the context of this package, a topology is an undirected graph of atoms (nodes) which may be connected by 0 or more bonds (edges).
 Each atom has a guaranteed position and optional metadata provided by the end user. Bonds are just optional metadata.
 """
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from igraph import Graph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
+from atompack.util import AsDict
 
 
-class Topology(object):
+class Topology(AsDict):
     """An undirected graph of atoms."""
 
     def __init__(self) -> None:
@@ -78,7 +79,6 @@ class Topology(object):
         """
         return [self.insert(vertex["atom"]) for vertex in other._graph.vs]
 
-    # TODO: do i need to delete attached edges here ???
     def remove(self, index: int) -> None:
         """Removes an atom from the topology by index.
         
@@ -90,12 +90,19 @@ class Topology(object):
         """
         self._graph.delete_vertices(index)
 
+    # override default implementation
+    def as_dict(self) -> Dict[str, Any]:
+        res = super().as_dict()
+        res["atoms"] = [atom.as_dict() for atom in self.atoms]
+        res["bonds"] = [(bond[0], bond[1], bond[2].as_dict()) for bond in self.bonds]
+        return res
+
     @property
     def atoms(self) -> List[Atom]:
         """Returns a list of all atoms in the topology."""
         return [vertex["atom"] for vertex in self._graph.vs]
 
     @property
-    def bonds(self) -> List[Tuple[Tuple[int, int], Bond]]:
+    def bonds(self) -> List[Tuple[int, int, Bond]]:
         """Returns a list of tuples of bond edge ids and bond objects."""
-        return [((edge.source, edge.target), edge["bond"]) for edge in self._graph.es]
+        return [(edge.source, edge.target, edge["bond"]) for edge in self._graph.es]
