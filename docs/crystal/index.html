@@ -173,6 +173,12 @@ __all__ = [
         &#34;&#34;&#34;Returns a copy of the crystal&#39;s lattice vectors.&#34;&#34;&#34;
         return copy.deepcopy(self._lattice_vectors)
 
+    # override defautlt implementation
+    def as_dict(self) -&gt; Dict[str, Any]:
+        res = super().as_dict()
+        res[&#34;unit_cell&#34;] = self.unit_cell.as_dict()
+        return res
+
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
         # - orientation
@@ -253,6 +259,7 @@ __all__ = [
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
@@ -322,6 +329,24 @@ def unit_cell(self) -&gt; UnitCell:
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.Crystal.as_dict"><code class="name flex">
+<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+    res = super().as_dict()
+    res[&#34;unit_cell&#34;] = self.unit_cell.as_dict()
+    return res</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></b></code>:
@@ -364,6 +389,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Cubic" href="unit_cell.html#atompack.crystal.unit_cell.Cubic">Cubic</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -421,6 +447,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -488,6 +515,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Cubic" href="unit_cell.html#atompack.crystal.unit_cell.Cubic">Cubic</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -541,6 +569,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Cubic" href="unit_cell.html#atompack.crystal.unit_cell.Cubic">Cubic</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -592,6 +621,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Hexagonal" href="unit_cell.html#atompack.crystal.unit_cell.Hexagonal">Hexagonal</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -658,6 +688,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -729,6 +760,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -786,6 +818,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Cubic" href="unit_cell.html#atompack.crystal.unit_cell.Cubic">Cubic</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -848,6 +881,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -910,6 +944,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -965,6 +1000,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Tetragonal" href="unit_cell.html#atompack.crystal.unit_cell.Tetragonal">Tetragonal</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -1013,6 +1049,7 @@ def unit_cell(self) -&gt; UnitCell:
 <li><a title="atompack.crystal.unit_cell.Cubic" href="unit_cell.html#atompack.crystal.unit_cell.Cubic">Cubic</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -1075,6 +1112,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -1143,6 +1181,7 @@ def unit_cell(self) -&gt; UnitCell:
 <ul class="hlist">
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -1269,6 +1308,7 @@ def unit_cell(self) -&gt; UnitCell:
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -1431,6 +1471,7 @@ def sites(self) -&gt; np.ndarray:
 <li><a title="atompack.crystal.unit_cell.Hexagonal" href="unit_cell.html#atompack.crystal.unit_cell.Hexagonal">Hexagonal</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -1488,6 +1529,7 @@ def sites(self) -&gt; np.ndarray:
 <li><a title="atompack.crystal.unit_cell.Cubic" href="unit_cell.html#atompack.crystal.unit_cell.Cubic">Cubic</a></li>
 <li><a title="atompack.crystal.unit_cell.UnitCell" href="unit_cell.html#atompack.crystal.unit_cell.UnitCell">UnitCell</a></li>
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -1544,7 +1586,8 @@ def sites(self) -&gt; np.ndarray:
 <ul>
 <li>
 <h4><code><a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="atompack.crystal.Crystal.as_dict" href="#atompack.crystal.Crystal.as_dict">as_dict</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.lattice_vectors" href="#atompack.crystal.Crystal.lattice_vectors">lattice_vectors</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.orientation" href="#atompack.crystal.Crystal.orientation">orientation</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.rotation" href="#atompack.crystal.Crystal.rotation">rotation</a></code></li>

@@ -28,7 +28,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import copy
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -88,6 +88,12 @@ class Crystal(Topology):
     def lattice_vectors(self) -&gt; np.ndarray:
         &#34;&#34;&#34;Returns a copy of the crystal&#39;s lattice vectors.&#34;&#34;&#34;
         return copy.deepcopy(self._lattice_vectors)
+
+    # override defautlt implementation
+    def as_dict(self) -&gt; Dict[str, Any]:
+        res = super().as_dict()
+        res[&#34;unit_cell&#34;] = self.unit_cell.as_dict()
+        return res
 
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
@@ -236,6 +242,12 @@ class Crystal(Topology):
         &#34;&#34;&#34;Returns a copy of the crystal&#39;s lattice vectors.&#34;&#34;&#34;
         return copy.deepcopy(self._lattice_vectors)
 
+    # override defautlt implementation
+    def as_dict(self) -&gt; Dict[str, Any]:
+        res = super().as_dict()
+        res[&#34;unit_cell&#34;] = self.unit_cell.as_dict()
+        return res
+
     def _build(self) -&gt; Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
         # - orientation
@@ -316,6 +328,7 @@ class Crystal(Topology):
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></li>
+<li><a title="atompack.util.AsDict" href="../util.html#atompack.util.AsDict">AsDict</a></li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
@@ -385,6 +398,24 @@ def unit_cell(self) -&gt; UnitCell:
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.crystal.Crystal.as_dict"><code class="name flex">
+<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+    res = super().as_dict()
+    res[&#34;unit_cell&#34;] = self.unit_cell.as_dict()
+    return res</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="atompack.topology.Topology" href="../topology.html#atompack.topology.Topology">Topology</a></b></code>:
@@ -420,7 +451,8 @@ def unit_cell(self) -&gt; UnitCell:
 <ul>
 <li>
 <h4><code><a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="atompack.crystal.crystal.Crystal.as_dict" href="#atompack.crystal.crystal.Crystal.as_dict">as_dict</a></code></li>
 <li><code><a title="atompack.crystal.crystal.Crystal.lattice_vectors" href="#atompack.crystal.crystal.Crystal.lattice_vectors">lattice_vectors</a></code></li>
 <li><code><a title="atompack.crystal.crystal.Crystal.orientation" href="#atompack.crystal.crystal.Crystal.orientation">orientation</a></code></li>
 <li><code><a title="atompack.crystal.crystal.Crystal.rotation" href="#atompack.crystal.crystal.Crystal.rotation">rotation</a></code></li>

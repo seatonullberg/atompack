@@ -1,5 +1,5 @@
 import copy
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from scipy.spatial.transform import Rotation
@@ -59,6 +59,12 @@ class Crystal(Topology):
     def lattice_vectors(self) -> np.ndarray:
         """Returns a copy of the crystal's lattice vectors."""
         return copy.deepcopy(self._lattice_vectors)
+
+    # override defautlt implementation
+    def as_dict(self) -> Dict[str, Any]:
+        res = super().as_dict()
+        res["unit_cell"] = self.unit_cell.as_dict()
+        return res
 
     def _build(self) -> Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:

@@ -125,3 +125,5 @@ def test_crystal_as_dict():
     assert d["scale"] == (1, 1, 1)
     assert np.array_equal(d["orientation"], np.identity(3))
     assert np.array_equal(d["rotation"], np.identity(3))
+    assert np.array_equal(d["unit_cell"]["sites"], np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5]]))
+    assert_array_almost_equal(d["unit_cell"]["lattice_vectors"], np.array([[2.85, 0.0, 0.0], [0.0, 2.85, 0.0], [0.0, 0.0, 2.85]]))
