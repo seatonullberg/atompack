@@ -9,7 +9,7 @@ https://seatonullberg.github.io/atompack/
 This is the best method for end users.
 
 ```bash
-$ python3 -m pip install atompack
+$ pip install atompack
 ```
 
 ### Build from source
@@ -36,7 +36,8 @@ $ pipenv install --dev
 For `pip` users:
 
 ```bash
-$ python3 -m pip install -e . [dev]
+$ pip install -r requirements.txt
+$ pip install -e . [dev]
 ```
 
 #### 3. Verify that all tests pass:
@@ -50,7 +51,7 @@ $ pipenv run pytest --doctest-modules -v ./atompack ./tests
 For `pip` users:
 
 ```bash
-$ python3 -m pytest --doctest-modules -v ./atompack ./tests
+$ pytest --doctest-modules -v ./atompack ./tests
 ```
 
 All done!

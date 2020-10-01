@@ -1,7 +1,4 @@
-from atompack.util import AsDict
-
-
-class Bond(AsDict):
+class Bond(object):
     """Container to store metadata about a bond between atoms.
     
     Notes:

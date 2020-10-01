@@ -10,10 +10,9 @@ from igraph import Graph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.util import AsDict
 
 
-class Topology(AsDict):
+class Topology(object):
     """An undirected graph of atoms."""
 
     def __init__(self) -> None:
@@ -89,13 +88,6 @@ class Topology(AsDict):
             afterwards to be renumbered.
         """
         self._graph.delete_vertices(index)
-
-    # override default implementation
-    def as_dict(self) -> Dict[str, Any]:
-        res = super().as_dict()
-        res["atoms"] = [atom.as_dict() for atom in self.atoms]
-        res["bonds"] = [(bond[0], bond[1], bond[2].as_dict()) for bond in self.bonds]
-        return res
 
     @property
     def atoms(self) -> List[Atom]:

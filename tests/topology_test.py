@@ -90,18 +90,3 @@ def test_topology_bonds():
     assert t.bonds[0][0] == 0
     assert t.bonds[0][1] == 1
     assert t.bonds[0][2].kind == "sigma"
-
-
-def test_topology_as_dict():
-    t = Topology()
-    a = Atom(np.zeros(3))
-    b = Atom(np.array([1.0, 1.0, 1.0]))
-    t.insert(a)
-    t.insert(b)
-    t.connect(0, 1, Bond(kind="sigma"))
-    d = t.as_dict()
-    assert np.array_equal(d["atoms"][0]["position"], a.position)
-    assert np.array_equal(d["atoms"][1]["position"], b.position)
-    assert d["bonds"][0][0] == 0
-    assert d["bonds"][0][1] == 1
-    assert d["bonds"][0][2]["kind"] == "sigma"

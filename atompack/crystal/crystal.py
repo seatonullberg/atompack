@@ -60,12 +60,6 @@ class Crystal(Topology):
         """Returns a copy of the crystal's lattice vectors."""
         return copy.deepcopy(self._lattice_vectors)
 
-    # override defautlt implementation
-    def as_dict(self) -> Dict[str, Any]:
-        res = super().as_dict()
-        res["unit_cell"] = self.unit_cell.as_dict()
-        return res
-
     def _build(self) -> Tuple[List[Atom], np.ndarray]:
         # transforms are applied in the following order:
         # - orientation

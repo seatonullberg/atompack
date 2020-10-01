@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(name="atompack",
-      version="0.3.0",
+      version="0.4.0",
       description="A flexible Python library for atomic structure generation.",
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -15,7 +15,6 @@ setup(name="atompack",
       url="https://github.com/seatonullberg/atompack",
       license="MIT License",
       packages=["atompack"],
-      install_requires=["numpy", "scipy", "python-igraph"],
       extras_require={"dev": [
           "pytest",
           "pytest-benchmark",
