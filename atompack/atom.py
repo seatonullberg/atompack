@@ -20,6 +20,10 @@ class Atom(MutableMapping):
         self._attrs["position"] = position
         self._attrs["specie"] = specie
 
+    #######################################
+    #    MutableMapping Implementation    #
+    #######################################
+
     def __getitem__(self, key: str) -> Any:
         return self._attrs[key]
 
@@ -34,6 +38,10 @@ class Atom(MutableMapping):
 
     def __len__(self) -> int:
         return len(self._attrs)
+
+    ####################
+    #    Properties    #
+    ####################
 
     @property
     def position(self) -> np.ndarray:

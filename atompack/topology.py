@@ -15,6 +15,10 @@ class Topology(object):
     def __del__(self) -> None:
         topology_free(self._obj)
 
+    ####################
+    #    Properties    #
+    ####################
+
     @property
     def atoms(self) -> List[Atom]:
         """Returns a list of all atoms in the topology."""
@@ -25,9 +29,9 @@ class Topology(object):
         """Returns a list of all bonds in the topology."""
         pass
 
-    #########################
-    #    Atom Operations    #
-    #########################
+    ########################
+    #    Public Methods    #
+    ########################
 
     def insert_atom(self, atom: Atom) -> None:
         """Inserts an atom into the topology."""
@@ -40,10 +44,6 @@ class Topology(object):
     def select_atom(self, index: int) -> Atom:
         """Returns a reference to an atom in the topology."""
         pass
-
-    #########################
-    #    Bond Operations    #
-    #########################
 
     def insert_bond(self, bond: Bond) -> None:
         """Inserts a bond into the topology."""

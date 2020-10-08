@@ -14,6 +14,10 @@ class Bond(MutableMapping):
         endpoints: Atoms at each end of the bond.
     """
 
+    #######################################
+    #    MutableMapping Implementation    #
+    #######################################
+
     def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -> None:
         self._attrs = {k: v for k, v in kwargs.items()}
         self._attrs["endpoints"] = endpoints
@@ -32,6 +36,10 @@ class Bond(MutableMapping):
 
     def __len__(self) -> int:
         return len(self._attrs)
+
+    ####################
+    #    Properties    #
+    ####################
 
     @property
     def endpoints(self) -> Tuple[Atom, Atom]:
