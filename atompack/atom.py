@@ -1,31 +1,52 @@
-import copy
+from collections.abc import Iterable, MutableMapping
+from typing import Any
 
 import numpy as np
 
 
-class Atom(object):
-    """Container to store metadata about a single atom.
+class Atom(MutableMapping):
+    """Dict like object containing arbitrary atomic properties.
+
+    Note:
+        End users should not construct atom objects directly.
     
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-
     Args:
-        position: Position vector in 3D cartesian space.
-
-    Example:
-        >>> from atompack.atom import Atom
-        >>> import numpy as np
-        >>> 
-        >>> atom = Atom(np.zeros(3), charge=-2)
-        >>> assert atom.charge == -2
+        position: 3D position in cartesian space.
+        specie: Atomic specie.
     """
 
-    def __init__(self, position: np.ndarray, **kwargs) -> None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-        self._position = position
+    def __init__(self, position: np.ndarray, specie: str, **kwargs) -> None:
+        self._attrs = {k: v for k, v in kwargs.items()}
+        self._attrs["position"] = position
+        self._attrs["specie"] = specie
+
+    def __getitem__(self, key: str) -> Any:
+        return self._attrs[key]
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self._attrs[key] = value
+
+    def __delitem__(self, key: str) -> None:
+        del self._attrs[key]
+
+    def __iter__(self) -> Iterable:
+        return iter(self._attrs)
+
+    def __len__(self) -> int:
+        return len(self._attrs)
 
     @property
     def position(self) -> np.ndarray:
-        """Returns a copy of the atom's position vector."""
-        return copy.deepcopy(self._position)
+        return self._attrs["position"]
+
+    @position.setter
+    def position(self, value: np.ndarray) -> None:
+        self._attrs["position"] = value
+
+    @property
+    def specie(self) -> str:
+        return self._attrs["specie"]
+
+    @specie.setter
+    def specie(self, value: str) -> None:
+        self._attrs["specie"] = value

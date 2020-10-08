@@ -1,2 +1,0 @@
-class CrystallographyError(Exception):
-    pass
