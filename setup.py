@@ -1,9 +1,10 @@
-from setuptools import setup
-
-import numpy as np
+from setuptools import Extension
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as f:
     long_description = f.read()
+
+extension = Extension("_atompack", sources=["extension/_atompack.c"])
 
 setup(name="atompack",
       version="0.4.0",
@@ -14,13 +15,14 @@ setup(name="atompack",
       author_email="seatonullberg@gmail.com",
       url="https://github.com/seatonullberg/atompack",
       license="MIT License",
-      packages=["atompack"],
+      packages=find_packages(),
+      ext_modules=[extension],
       extras_require={"dev": [
+          "isort",
+          "mypy",
+          "pdoc3",
+          "pyflakes",
           "pytest",
           "pytest-benchmark",
-          "pdoc3",
-          "isort",
           "yapf",
-          "mypy",
-          "pyflakes",
       ]})
