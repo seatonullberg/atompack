@@ -3,16 +3,14 @@ from typing import List, Tuple, Union
 
 import numpy as np
 
+from atompack.constants import DEG90, DEG120
 from atompack.topology import Topology
-
-DEG90 = np.pi / 2       # 90 degrees in radians
-DEG120 = 2 * np.pi / 3  # 120 degrees in radians
 
 
 class Basis(MutableSequence):
     """Crystalline basis."""
 
-    def __init__(self, sites: List[Tuple[str, np.ndarray]]):
+    def __init__(self, sites: List[Tuple[str, np.ndarray]]) -> None:
         self._sites = sites
 
     ########################################
@@ -56,11 +54,13 @@ class Crystal(Topology):
                  spacegroup: Union[int, str]) -> None:
         self._unit_cell = UnitCell(basis, lattice_parameters, spacegroup)
         self._lattice_vectors = self._unit_cell._lattice_parameters.metric_tensor
+
+        self._cut_plane: Optional[Plane] = None
         self._extent: Optional[Tuple[int, int, int]] = None
         self._orientation: Optional[Orientation] = None
-        self._projection_plane: Optional[Plane] = None
         self._orthogonalize: Optional[bool] = None
-        self._cut_plane: Optional[Plane] = None
+        self._projection_plane: Optional[Plane] = None
+        
         super().__init__()
         self._build()
 
@@ -73,33 +73,43 @@ class Crystal(Topology):
         """Returns the lattice vectors."""
         return self._lattice_vectors
 
+    @property
+    def unit_cell(self):
+        """Returns the crystal's minimal representation."""
+        return self._unit_cell
+
     ########################
     #    Public Methods    #
     ########################
 
     def duplicate(self, extent: Tuple[int, int, int]) -> 'Crystal':
-        """Duplicate a unit cell in 3 dimensions."""
-        pass
+        """Expand the crystal by duplicating it in 3 dimensions."""
+        self._extent = extent
+        # TODO
+        return self
 
     def orient(self, orientation: Orientation) -> 'Crystal':
-        """Rotate the crystal."""
-        pass
+        """Change the crystal's orientation."""
+        self._orientation = orientation
+        # TODO
+        return self
 
-    def project(self, plane: Plane) -> 'Crystal':
-        """Project the crystal onto a plane."""
-        pass
-
-    def orthogonalize(self) -> 'Crystal':
-        """Transforms the crystal into an orthogonal representation.
+    def project(self, plane: Plane, orthogonalize: bool = False) -> 'Crystal':
+        """Project the crystal onto a plane.
         
         Note:
-            This may produce very large structures for acute lattices.
+            Setting `orthogonalize` to True may result in very large structures for acute projections.
         """
-        pass
+        self._projection_plane = plane
+        self._orthogonalize = orthogonalize
+        # TODO
+        return self
 
     def cut(self, plane: Plane) -> 'Crystal':
-        """Cut the crystal in the direction normal to a plane."""
-        pass
+        """Cut the crystal along a plane."""
+        self._cut_plane = plane
+        # TODO
+        return self
 
     #########################
     #    Private Methods    #
@@ -178,11 +188,42 @@ class LatticeParameters(object):
 
 
 class Orientation(object):
-    pass
+    """Representation of a crystallographic orientation."""
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_orientation_matrix(cls, matrix: np.ndarray) -> 'Orientation':
+        pass
+
+    @classmethod
+    def from_miller_indices(cls, hkl: Tuple[int, int, int], uvw: Tuple[int, int, int]) -> 'Orientation':
+        pass
+
+    @classmethod
+    def from_euler_angles(cls, phi1: float, theta: float, phi2: float) -> 'Orientation':
+        pass
+
+    @classmethod
+    def from_axis_angle(cls, theta: float, uvw: Tuple[int, int, int]) -> 'Orientation':
+        pass
+
+    @classmethod
+    def from_quaternion(cls, x: float, y: float, z: float, w: float) -> 'Orientation':
+        pass
 
 
 class Plane(object):
-    pass
+
+    ######################
+    #    Constructors    #
+    ######################
+    
+    @classmethod
+    def from_miller_indices(cls, hkl: Tuple[int, int, int]) -> 'Plane':
+        pass
 
 
 class UnitCell(Topology):
