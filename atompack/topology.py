@@ -23,4 +23,4 @@ class Topology(object):
     @property
     def bonds(self) -> List[Bond]:
         """Returns a list of all bonds in the topology."""
-        return self._atoms
+        return self._bonds

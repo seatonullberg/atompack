@@ -8,7 +8,20 @@ from atompack.topology import Topology
 
 
 class Basis(MutableSequence):
-    """Crystalline basis."""
+    """Crystalline basis.
+    
+    Example:
+        >>> from atompack.crystal import Basis
+        >>> import numpy as np
+        >>>
+        >>> # primitive basis of iron atoms
+        >>> basis = Basis.primitive("Fe")
+        >>> assert len(basis) == 0
+        >>>
+        >>> specie, site = basis[0]
+        >>> assert specie == "Fe"
+        >>> assert np.array_equal(site, np.zeros(3))
+    """
 
     def __init__(self, sites: List[Tuple[str, np.ndarray]]) -> None:
         self._sites = sites
@@ -38,6 +51,7 @@ class Basis(MutableSequence):
 
     @classmethod
     def primitive(cls, specie: str) -> 'Basis':
+        """Returns a primitive basis."""
         return cls([(specie, np.zeros(3))])
 
 
@@ -45,7 +59,7 @@ class Crystal(Topology):
     """Atomic structure with long range order.
     
     Args:
-        basis: Asymmetric site occupancy.
+        basis: Atomic basis set.
         lattice_parameters: Lattice parameters object.
         spacegroup: Hermann Mauguin spacegroup symbol or international spacegroup number.
     """
@@ -60,7 +74,7 @@ class Crystal(Topology):
         self._orientation: Optional[Orientation] = None
         self._orthogonalize: Optional[bool] = None
         self._projection_plane: Optional[Plane] = None
-        
+
         super().__init__()
         self._build()
 
@@ -129,6 +143,15 @@ class LatticeParameters(object):
         alpha: Angle between the y and z directions (radians).
         beta: Angle between the x and z directions (radians).
         gamma: Angle between the x and y directions (radians).
+
+    Example:
+        >>> from atompack.crystal import LatticeParameters
+        >>> import numpy as np
+        >>>
+        >>> # cubic lattice parameters
+        >>> params = LatticeParameters.cubic(10)
+        >>> assert params.a == params.b == params.c == 10
+        >>> assert params.alpha == params.beta == params.gamma == np.pi / 2
     """
 
     def __init__(self, a: float, b: float, c: float, alpha: float, beta: float, gamma: float) -> None:
@@ -220,7 +243,7 @@ class Plane(object):
     ######################
     #    Constructors    #
     ######################
-    
+
     @classmethod
     def from_miller_indices(cls, hkl: Tuple[int, int, int]) -> 'Plane':
         pass
@@ -238,8 +261,7 @@ class UnitCell(Topology):
         spacegroup: Hermann Mauguin spacegroup symbol or international spacegroup number.
     """
 
-    def __init__(self, basis: Basis, lattice_parameters: LatticeParameters,
-                 spacegroup: Union[int, str]) -> None:
+    def __init__(self, basis: Basis, lattice_parameters: LatticeParameters, spacegroup: Union[int, str]) -> None:
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
@@ -265,7 +287,6 @@ class UnitCell(Topology):
     @property
     def spacegroup_symbol(self) -> str:
         pass
-
 
     #########################
     #    Private Methods    #
