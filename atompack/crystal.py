@@ -4,6 +4,7 @@ from typing import List, Tuple, Union
 import numpy as np
 
 from atompack.constants import DEG90, DEG120
+from atompack.spacegroup import Spacegroup
 from atompack.topology import Topology
 
 
@@ -258,10 +259,10 @@ class UnitCell(Topology):
     Args:
         basis: Asymmetric site occupancy.
         lattice_parameters: Lattice parameters object.
-        spacegroup: Hermann Mauguin spacegroup symbol or international spacegroup number.
+        spacegroup: Spacegroup object.
     """
 
-    def __init__(self, basis: Basis, lattice_parameters: LatticeParameters, spacegroup: Union[int, str]) -> None:
+    def __init__(self, basis: Basis, lattice_parameters: LatticeParameters, spacegroup: Spacegroup) -> None:
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
