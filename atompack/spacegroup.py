@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, List, Union
 
 import numpy as np
 
@@ -21,7 +21,7 @@ class Spacegroup(object):
         if type(spg) is int:
             if spg > 230 or spg < 1:
                 raise ValueError("`spg` must be in range 1..230")
-            group = SPACEGROUPS[spg-1]
+            group = SPACEGROUPS[spg - 1]
         elif type(spg) is str:
             for i, _group in enumerate(SPACEGROUPS):
                 if _group["hermann_mauguin"] == spg:

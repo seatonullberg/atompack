@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 
 from atompack.atom import Atom
 from atompack.bond import Bond
