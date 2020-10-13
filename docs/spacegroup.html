@@ -1,0 +1,2790 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>atompack.spacegroup API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>atompack.spacegroup</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from typing import Callable, List, Union
+
+import numpy as np
+
+
+class Spacegroup(object):
+    &#34;&#34;&#34;Representation of a spacegroup.
+
+    Args:
+        spg: Hermann Mauguin symbol or International spacegroup number.
+    &#34;&#34;&#34;
+
+    def __init__(self, spg: Union[int, str]) -&gt; None:
+        group = None
+        if type(spg) is int:
+            if spg &gt; 230 or spg &lt; 1:
+                raise ValueError(&#34;`spg` must be in range 1..230&#34;)
+            group = SPACEGROUPS[spg - 1]
+        elif type(spg) is str:
+            for i, _group in enumerate(SPACEGROUPS):
+                if _group[&#34;hermann_mauguin&#34;] == spg:
+                    group = SPACEGROUPS[i]
+                    break
+            if group is None:
+                raise ValueError(&#34;`spg` is not a valid Hermann Mauguin spacegroup symbol&#34;)
+        else:
+            raise TypeError(&#34;`spg` must be of type int or str&#34;)
+
+        self._bravais_lattice = group[&#34;bravais_lattice&#34;]
+        self._international_number = group[&#34;international_number&#34;]
+        self._hermann_mauguin = group[&#34;hermann_mauguin&#34;]
+        self._genpos = group[&#34;genpos&#34;]
+
+    ####################
+    #    Properties    #
+    ####################
+
+    @property
+    def bravais_lattice(self) -&gt; str:
+        &#34;&#34;&#34;Returns the bravais lattice name.&#34;&#34;&#34;
+        return self._bravais_lattice
+
+    @property
+    def international_number(self) -&gt; int:
+        &#34;&#34;&#34;Returns the international spacegroup number.&#34;&#34;&#34;
+        return self._international_number
+
+    @property
+    def hermann_mauguin(self) -&gt; str:
+        &#34;&#34;&#34;Returns the Hermann Mauguin spacegroup symbol.&#34;&#34;&#34;
+        return self._hermann_mauguin
+
+    @property
+    def genpos(self) -&gt; List[str]:
+        &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
+        return self._genpos
+
+
+SPACEGROUPS = [{
+    &#34;bravais_lattice&#34;: &#34;triclinic&#34;,
+    &#34;international_number&#34;: 1,
+    &#34;hermann_mauguin&#34;: &#34;P 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;triclinic&#34;,
+    &#34;international_number&#34;: 2,
+    &#34;hermann_mauguin&#34;: &#34;P -1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 3,
+    &#34;hermann_mauguin&#34;: &#34;P 1 2 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 4,
+    &#34;hermann_mauguin&#34;: &#34;P 1 21 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y+1/2,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 5,
+    &#34;hermann_mauguin&#34;: &#34;C 1 2 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y,-z&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,y+1/2,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 6,
+    &#34;hermann_mauguin&#34;: &#34;P 1 m 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 7,
+    &#34;hermann_mauguin&#34;: &#34;P 1 c 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x,-y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 8,
+    &#34;hermann_mauguin&#34;: &#34;C 1 m 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 9,
+    &#34;hermann_mauguin&#34;: &#34;C 1 c 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 10,
+    &#34;hermann_mauguin&#34;: &#34;P 1 2/m 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 11,
+    &#34;hermann_mauguin&#34;: &#34;P 1 21/m 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y+1/2,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,-y-1/2,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;monoclinic&#34;,
+    &#34;international_number&#34;:
+        12,
+    &#34;hermann_mauguin&#34;:
+        &#34;C 1 2/m 1&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,-y,z&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;,
+        &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 13,
+    &#34;hermann_mauguin&#34;: &#34;P 1 2/c 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,-y,z-1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;monoclinic&#34;,
+    &#34;international_number&#34;: 14,
+    &#34;hermann_mauguin&#34;: &#34;P 1 21/c 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,-y-1/2,z-1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;monoclinic&#34;,
+    &#34;international_number&#34;:
+        15,
+    &#34;hermann_mauguin&#34;:
+        &#34;C 1 2/c 1&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,-y,z-1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z&#34;,
+        &#34;x+1/2,-y+1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 16,
+    &#34;hermann_mauguin&#34;: &#34;P 2 2 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 17,
+    &#34;hermann_mauguin&#34;: &#34;P 2 2 21&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 18,
+    &#34;hermann_mauguin&#34;: &#34;P 21 21 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 19,
+    &#34;hermann_mauguin&#34;: &#34;P 21 21 21&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x,y+1/2,-z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        20,
+    &#34;hermann_mauguin&#34;:
+        &#34;C 2 2 21&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        21,
+    &#34;hermann_mauguin&#34;:
+        &#34;C 2 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        22,
+    &#34;hermann_mauguin&#34;:
+        &#34;F 2 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;,
+        &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        23,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 2 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        24,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 21 21 21&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y+1/2,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;-x+1/2,y+1,-z+1&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 25,
+    &#34;hermann_mauguin&#34;: &#34;P m m 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 26,
+    &#34;hermann_mauguin&#34;: &#34;P m c 21&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 27,
+    &#34;hermann_mauguin&#34;: &#34;P c c 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z+1/2&#34;, &#34;x,-y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 28,
+    &#34;hermann_mauguin&#34;: &#34;P m a 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/2,y,z&#34;, &#34;x+1/2,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 29,
+    &#34;hermann_mauguin&#34;: &#34;P c a 21&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;, &#34;x+1/2,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 30,
+    &#34;hermann_mauguin&#34;: &#34;P n c 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y+1/2,z+1/2&#34;, &#34;x,-y+1/2,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 31,
+    &#34;hermann_mauguin&#34;: &#34;P m n 21&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;-x,y,z&#34;, &#34;x+1/2,-y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 32,
+    &#34;hermann_mauguin&#34;: &#34;P b a 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 33,
+    &#34;hermann_mauguin&#34;: &#34;P n a 21&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 34,
+    &#34;hermann_mauguin&#34;: &#34;P n n 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        35,
+    &#34;hermann_mauguin&#34;:
+        &#34;C m m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        36,
+    &#34;hermann_mauguin&#34;:
+        &#34;C m c 21&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        37,
+    &#34;hermann_mauguin&#34;:
+        &#34;C c c 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z+1/2&#34;, &#34;x,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        38,
+    &#34;hermann_mauguin&#34;:
+        &#34;A m m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;-x,y+1/2,z+1/2&#34;, &#34;x,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        39,
+    &#34;hermann_mauguin&#34;:
+        &#34;A e m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y+1/2,z&#34;, &#34;x,-y+1/2,z&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;-x,y+1,z+1/2&#34;,
+        &#34;x,-y+1,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        40,
+    &#34;hermann_mauguin&#34;:
+        &#34;A m a 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/2,y,z&#34;, &#34;x+1/2,-y,z&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        41,
+    &#34;hermann_mauguin&#34;:
+        &#34;A e a 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;-x+1/2,y+1,z+1/2&#34;,
+        &#34;x+1/2,-y+1,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        42,
+    &#34;hermann_mauguin&#34;:
+        &#34;F m m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;-x,y+1/2,z+1/2&#34;, &#34;x,-y+1/2,z+1/2&#34;,
+        &#34;x+1/2,y,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;, &#34;x+1/2,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;,
+        &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        43,
+    &#34;hermann_mauguin&#34;:
+        &#34;F d d 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/4,y+1/4,z+1/4&#34;, &#34;x+3/4,-y+3/4,z+1/4&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;,
+        &#34;-x+1/4,y+3/4,z+3/4&#34;, &#34;x+3/4,-y+5/4,z+3/4&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;-x+3/4,y+1/4,z+3/4&#34;,
+        &#34;x+5/4,-y+3/4,z+3/4&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;-x+3/4,y+3/4,z+1/4&#34;, &#34;x+5/4,-y+5/4,z+1/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        44,
+    &#34;hermann_mauguin&#34;:
+        &#34;I m m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        45,
+    &#34;hermann_mauguin&#34;:
+        &#34;I b a 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x,y,z+1/2&#34;, &#34;x,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1&#34;,
+        &#34;x+1/2,-y+1/2,z+1&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        46,
+    &#34;hermann_mauguin&#34;:
+        &#34;I m a 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+1/2,y,z&#34;, &#34;x+1/2,-y,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-x+1,y+1/2,z+1/2&#34;,
+        &#34;x+1,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 47,
+    &#34;hermann_mauguin&#34;: &#34;P m m m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        48,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n n n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 49,
+    &#34;hermann_mauguin&#34;: &#34;P c c m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z-1/2&#34;, &#34;x,-y,z-1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        50,
+    &#34;hermann_mauguin&#34;:
+        &#34;P b a n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;,
+        &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;orthorhombic&#34;,
+    &#34;international_number&#34;: 51,
+    &#34;hermann_mauguin&#34;: &#34;P m m a&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x+1/2,-y,z&#34;, &#34;x+1/2,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z&#34;, &#34;-x-1/2,y,z&#34;, &#34;x,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        52,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n n a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z&#34;, &#34;-x,y-1/2,z-1/2&#34;,
+        &#34;x-1/2,-y-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        53,
+    &#34;hermann_mauguin&#34;:
+        &#34;P m n a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z-1/2&#34;, &#34;-x,y,z&#34;,
+        &#34;x-1/2,-y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        54,
+    &#34;hermann_mauguin&#34;:
+        &#34;P c c a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z&#34;, &#34;-x-1/2,y,z-1/2&#34;,
+        &#34;x,-y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        55,
+    &#34;hermann_mauguin&#34;:
+        &#34;P b a m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x-1/2,y-1/2,z&#34;,
+        &#34;x-1/2,-y-1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        56,
+    &#34;hermann_mauguin&#34;:
+        &#34;P c c n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y-1/2,-z&#34;,
+        &#34;-x-1/2,y,z-1/2&#34;, &#34;x,-y-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        57,
+    &#34;hermann_mauguin&#34;:
+        &#34;P b c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;x,-y+1/2,-z&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z-1/2&#34;, &#34;-x,y-1/2,z&#34;,
+        &#34;x,-y-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        58,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n n m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x-1/2,y-1/2,z-1/2&#34;,
+        &#34;x-1/2,-y-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        59,
+    &#34;hermann_mauguin&#34;:
+        &#34;P m m n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-x,y,z&#34;,
+        &#34;x,-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        60,
+    &#34;hermann_mauguin&#34;:
+        &#34;P b c n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y-1/2,-z-1/2&#34;,
+        &#34;-x-1/2,y-1/2,z&#34;, &#34;x,-y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        61,
+    &#34;hermann_mauguin&#34;:
+        &#34;P b c a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z-1/2&#34;,
+        &#34;-x-1/2,y-1/2,z&#34;, &#34;x,-y-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        62,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n m a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z-1/2&#34;,
+        &#34;-x-1/2,y-1/2,z-1/2&#34;, &#34;x,-y-1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        63,
+    &#34;hermann_mauguin&#34;:
+        &#34;C m c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z-1/2&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z-1/2&#34;,
+        &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z&#34;,
+        &#34;x+1/2,y+1/2,-z-1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        64,
+    &#34;hermann_mauguin&#34;:
+        &#34;C m c e&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z-1/2&#34;, &#34;-x,y,z&#34;,
+        &#34;x-1/2,-y,z-1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1,y+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x,y+1/2,-z-1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x,-y+1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        65,
+    &#34;hermann_mauguin&#34;:
+        &#34;C m m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x+1/2,y+1/2,z&#34;,
+        &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;,
+        &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        66,
+    &#34;hermann_mauguin&#34;:
+        &#34;C c c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z-1/2&#34;, &#34;x,-y,z-1/2&#34;,
+        &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z&#34;,
+        &#34;x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z-1/2&#34;, &#34;x+1/2,-y+1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        67,
+    &#34;hermann_mauguin&#34;:
+        &#34;C m m a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x+1/2,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x-1/2,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x-1/2,-y,z&#34;,
+        &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1,y+1/2,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x,y+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,z&#34;, &#34;x,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        68,
+    &#34;hermann_mauguin&#34;:
+        &#34;C c c e&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x+1/2,-y,-z+1/2&#34;, &#34;x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;,
+        &#34;x+1/2,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;-x+1,-y+1/2,-z+1/2&#34;, &#34;x+1,y+1/2,-z+1/2&#34;, &#34;-x+1,y+1/2,z+1/2&#34;, &#34;x+1,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        69,
+    &#34;hermann_mauguin&#34;:
+        &#34;F m m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x,y+1/2,z+1/2&#34;,
+        &#34;-x,-y+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-x,-y+1/2,-z+1/2&#34;, &#34;x,y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,z+1/2&#34;,
+        &#34;x,-y+1/2,z+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,-y,-z+1/2&#34;,
+        &#34;x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;, &#34;x+1/2,-y,z+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        70,
+    &#34;hermann_mauguin&#34;:
+        &#34;F d d d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x+1/4,-y+1/4,-z+1/4&#34;, &#34;x+1/4,y+1/4,-z+1/4&#34;, &#34;-x+1/4,y+1/4,z+1/4&#34;,
+        &#34;x+1/4,-y+1/4,z+1/4&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;,
+        &#34;-x+1/4,-y+3/4,-z+3/4&#34;, &#34;x+1/4,y+3/4,-z+3/4&#34;, &#34;-x+1/4,y+3/4,z+3/4&#34;, &#34;x+1/4,-y+3/4,z+3/4&#34;, &#34;x+1/2,y,z+1/2&#34;,
+        &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;-x+3/4,-y+1/4,-z+3/4&#34;, &#34;x+3/4,y+1/4,-z+3/4&#34;,
+        &#34;-x+3/4,y+1/4,z+3/4&#34;, &#34;x+3/4,-y+1/4,z+3/4&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z&#34;, &#34;-x+3/4,-y+3/4,-z+1/4&#34;, &#34;x+3/4,y+3/4,-z+1/4&#34;, &#34;-x+3/4,y+3/4,z+1/4&#34;, &#34;x+3/4,-y+3/4,z+1/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        71,
+    &#34;hermann_mauguin&#34;:
+        &#34;I m m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        72,
+    &#34;hermann_mauguin&#34;:
+        &#34;I b a m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z-1/2&#34;, &#34;x,-y,z-1/2&#34;,
+        &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;-x+1/2,y+1/2,-z+1&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        73,
+    &#34;hermann_mauguin&#34;:
+        &#34;I b c a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y+1/2,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y-1/2,-z&#34;, &#34;-x,y,z-1/2&#34;,
+        &#34;x,-y-1/2,z-1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;-x+1/2,y+1,-z+1&#34;,
+        &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;orthorhombic&#34;,
+    &#34;international_number&#34;:
+        74,
+    &#34;hermann_mauguin&#34;:
+        &#34;I m m a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y+1/2,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y+1/2,-z&#34;, &#34;-x,-y,-z&#34;, &#34;x,y-1/2,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y-1/2,z&#34;,
+        &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;x+1/2,-y,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 75,
+    &#34;hermann_mauguin&#34;: &#34;P 4&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 76,
+    &#34;hermann_mauguin&#34;: &#34;P 41&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+1/4&#34;, &#34;-x,-y,z+1/2&#34;, &#34;y,-x,z+3/4&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 77,
+    &#34;hermann_mauguin&#34;: &#34;P 42&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 78,
+    &#34;hermann_mauguin&#34;: &#34;P 43&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+3/4&#34;, &#34;-x,-y,z+1/2&#34;, &#34;y,-x,z+1/4&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        79,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;y+1/2,-x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        80,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;,
+        &#34;-x+1,-y+1,z+1&#34;, &#34;y+1,-x+1/2,z+5/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 81,
+    &#34;hermann_mauguin&#34;: &#34;P -4&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        82,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 83,
+    &#34;hermann_mauguin&#34;: &#34;P 4/m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 84,
+    &#34;hermann_mauguin&#34;: &#34;P 42/m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z-1/2&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z-1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        85,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;,
+        &#34;-y,x,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        86,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,-x,-z&#34;,
+        &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,x,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        87,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4/m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        88,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41/a&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;-x,-y+1/2,-z+1/4&#34;, &#34;y,-x,-z&#34;,
+        &#34;x-1/2,y,-z-1/4&#34;, &#34;-y-1/2,x+1/2,-z-1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;, &#34;-x+1,-y+1,z+1&#34;,
+        &#34;y+1,-x+1/2,z+5/4&#34;, &#34;-x+1/2,-y+1,-z+3/4&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x,y+1/2,-z+1/4&#34;, &#34;-y,x+1,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 89,
+    &#34;hermann_mauguin&#34;: &#34;P 4 2 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        90,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4 21 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y,x,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;-y,-x,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        91,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 41 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z+1/4&#34;, &#34;-x,-y,z+1/2&#34;, &#34;y,-x,z+3/4&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y,x,-z+3/4&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z+1/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        92,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 41 21 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/4&#34;, &#34;-x,-y,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+3/4&#34;, &#34;x+1/2,-y+1/2,-z+3/4&#34;, &#34;y,x,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/4&#34;, &#34;-y,-x,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 93,
+    &#34;hermann_mauguin&#34;: &#34;P 42 2 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        94,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42 21 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,x,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,-x,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        95,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 43 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z+3/4&#34;, &#34;-x,-y,z+1/2&#34;, &#34;y,-x,z+1/4&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y,x,-z+1/4&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z+3/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        96,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 43 21 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+3/4&#34;, &#34;-x,-y,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/4&#34;, &#34;x+1/2,-y+1/2,-z+1/4&#34;, &#34;y,x,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z+3/4&#34;, &#34;-y,-x,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        97,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-y+1/2,-x+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        98,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;x,-y+1/2,-z+1/4&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y,-z+3/4&#34;, &#34;-y,-x,-z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;, &#34;-x+1,-y+1,z+1&#34;, &#34;y+1,-x+1/2,z+5/4&#34;,
+        &#34;x+1/2,-y+1,-z+3/4&#34;, &#34;y+1,x+1,-z+1&#34;, &#34;-x+1,y+1/2,-z+5/4&#34;, &#34;-y+1/2,-x+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 99,
+    &#34;hermann_mauguin&#34;: &#34;P 4 m m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;, &#34;x,-y,z&#34;, &#34;y,x,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        100,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4 b m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;, &#34;y+1/2,x+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 101,
+    &#34;hermann_mauguin&#34;: &#34;P 42 c m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;-x,y,z+1/2&#34;, &#34;-y,-x,z&#34;, &#34;x,-y,z+1/2&#34;, &#34;y,x,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        102,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42 n m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y,-x,z&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y,x,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 103,
+    &#34;hermann_mauguin&#34;: &#34;P 4 c c&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x,y,z+1/2&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x,-y,z+1/2&#34;, &#34;y,x,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        104,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4 n c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 105,
+    &#34;hermann_mauguin&#34;: &#34;P 42 m c&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x,-y,z&#34;, &#34;y,x,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        106,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42 b c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z&#34;,
+        &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        107,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4 m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;, &#34;x,-y,z&#34;, &#34;y,x,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        108,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4 c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;-x,y,z+1/2&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x,-y,z+1/2&#34;, &#34;y,x,z+1/2&#34;,
+        &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1&#34;,
+        &#34;-y+1/2,-x+1/2,z+1&#34;, &#34;x+1/2,-y+1/2,z+1&#34;, &#34;y+1/2,x+1/2,z+1&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        109,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41 m d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;-x,y,z&#34;, &#34;-y,-x+1/2,z+1/4&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,x,z+3/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;, &#34;-x+1,-y+1,z+1&#34;,
+        &#34;y+1,-x+1/2,z+5/4&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1,z+3/4&#34;, &#34;x+1,-y+1,z+1&#34;, &#34;y+1,x+1/2,z+5/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        110,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41 c d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;-x,y,z+1/2&#34;, &#34;-y,-x+1/2,z+3/4&#34;,
+        &#34;x+1/2,-y+1/2,z&#34;, &#34;y+1/2,x,z+1/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;, &#34;-x+1,-y+1,z+1&#34;, &#34;y+1,-x+1/2,z+5/4&#34;,
+        &#34;-x+1/2,y+1/2,z+1&#34;, &#34;-y+1/2,-x+1,z+5/4&#34;, &#34;x+1,-y+1,z+1/2&#34;, &#34;y+1,x+1/2,z+3/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 111,
+    &#34;hermann_mauguin&#34;: &#34;P -4 2 m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y,-z&#34;, &#34;-y,-x,z&#34;, &#34;-x,y,-z&#34;, &#34;y,x,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 112,
+    &#34;hermann_mauguin&#34;: &#34;P -4 2 c&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-y,-x,z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;y,x,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        113,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -4 21 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;y+1/2,x+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        114,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -4 21 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 115,
+    &#34;hermann_mauguin&#34;: &#34;P -4 m 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;y,x,-z&#34;, &#34;x,-y,z&#34;, &#34;-y,-x,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;tetragonal&#34;,
+    &#34;international_number&#34;: 116,
+    &#34;hermann_mauguin&#34;: &#34;P -4 c 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z+1/2&#34;, &#34;y,x,-z+1/2&#34;, &#34;x,-y,z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        117,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -4 b 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;y+1/2,x+1/2,-z&#34;, &#34;x+1/2,-y+1/2,z&#34;,
+        &#34;-y+1/2,-x+1/2,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        118,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -4 n 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        119,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4 m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;y,x,-z&#34;, &#34;x,-y,z&#34;, &#34;-y,-x,-z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,-z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        120,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4 c 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z+1/2&#34;, &#34;y,x,-z+1/2&#34;, &#34;x,-y,z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;,
+        &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1&#34;,
+        &#34;y+1/2,x+1/2,-z+1&#34;, &#34;x+1/2,-y+1/2,z+1&#34;, &#34;-y+1/2,-x+1/2,-z+1&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        121,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4 2 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y,-z&#34;, &#34;-y,-x,z&#34;, &#34;-x,y,-z&#34;, &#34;y,x,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        122,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4 2 d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y+1/2,-z+1/4&#34;, &#34;-y+1/2,-x,z+3/4&#34;, &#34;-x,y+1/2,-z+1/4&#34;,
+        &#34;y+1/2,x,z+3/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;x+1/2,-y+1,-z+3/4&#34;, &#34;-y+1,-x+1/2,z+5/4&#34;, &#34;-x+1/2,y+1,-z+3/4&#34;, &#34;y+1,x+1/2,z+5/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        123,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/m m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;,
+        &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;, &#34;x,-y,z&#34;, &#34;y,x,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        124,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/m c c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;-x,-y,-z&#34;,
+        &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z-1/2&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x,-y,z-1/2&#34;, &#34;y,x,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        125,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/n b m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;,
+        &#34;y+1/2,-x+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-y+1/2,x+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;,
+        &#34;y+1/2,x+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        126,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/n n c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        127,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/m b m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+1/2,x+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;-y+1/2,-x+1/2,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x-1/2,y-1/2,z&#34;, &#34;-y-1/2,-x-1/2,z&#34;,
+        &#34;x-1/2,-y-1/2,z&#34;, &#34;y-1/2,x-1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        128,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/m n c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x-1/2,y-1/2,z-1/2&#34;, &#34;-y-1/2,-x-1/2,z-1/2&#34;,
+        &#34;x-1/2,-y-1/2,z-1/2&#34;, &#34;y-1/2,x-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        129,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/n m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y,x,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;-y,-x,-z&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;x,-y,z&#34;,
+        &#34;y+1/2,x+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        130,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4/n c c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,x,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z-1/2&#34;,
+        &#34;-y+1/2,-x+1/2,z-1/2&#34;, &#34;x,-y,z-1/2&#34;, &#34;y+1/2,x+1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        131,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/m m c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;-x,-y,-z&#34;,
+        &#34;y,-x,-z-1/2&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z-1/2&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x,-y,z&#34;, &#34;y,x,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        132,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/m c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-y,-x,-z&#34;, &#34;-x,-y,-z&#34;,
+        &#34;y,-x,-z-1/2&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z-1/2&#34;, &#34;-x,y,z-1/2&#34;, &#34;-y,-x,z&#34;, &#34;x,-y,z-1/2&#34;, &#34;y,x,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        133,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/n b c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z&#34;, &#34;-x,y,-z+1/2&#34;,
+        &#34;-y+1/2,-x+1/2,-z&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,x,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;,
+        &#34;-y,-x,z+1/2&#34;, &#34;x+1/2,-y+1/2,z&#34;, &#34;y,x,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        134,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/n n m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x,y,-z&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,x,-z&#34;,
+        &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y,-x,z&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y,x,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        135,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/m b c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z-1/2&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z-1/2&#34;, &#34;-x-1/2,y-1/2,z&#34;,
+        &#34;-y-1/2,-x-1/2,z-1/2&#34;, &#34;x-1/2,-y-1/2,z&#34;, &#34;y-1/2,x-1/2,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        136,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/m n m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,x,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,-x,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y-1/2,-x-1/2,-z-1/2&#34;, &#34;x,y,-z&#34;, &#34;-y-1/2,x-1/2,-z-1/2&#34;,
+        &#34;-x-1/2,y-1/2,z-1/2&#34;, &#34;-y,-x,z&#34;, &#34;x-1/2,-y-1/2,z-1/2&#34;, &#34;y,x,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        137,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/n m c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,x,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,-x,-z&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;,
+        &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x,-y,z&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        138,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42/n c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y,x,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,-z&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,x,-z&#34;,
+        &#34;-x,y,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;x,-y,z+1/2&#34;, &#34;y+1/2,x+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        139,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4/m m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;,
+        &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;, &#34;x,-y,z&#34;, &#34;y,x,z&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;,
+        &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        140,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4/m c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x,y,-z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;-x,-y,-z&#34;,
+        &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z-1/2&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x,-y,z-1/2&#34;, &#34;y,x,z-1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;y+1/2,x+1/2,-z+1&#34;,
+        &#34;-x+1/2,y+1/2,-z+1&#34;, &#34;-y+1/2,-x+1/2,-z+1&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,z&#34;, &#34;y+1/2,x+1/2,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        141,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41/a m d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;x,-y+1/2,-z+1/4&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y,-z+3/4&#34;, &#34;-y,-x,-z&#34;, &#34;-x,-y+1/2,-z+1/4&#34;, &#34;y,-x,-z&#34;, &#34;x-1/2,y,-z-1/4&#34;, &#34;-y-1/2,x+1/2,-z-1/2&#34;, &#34;-x,y,z&#34;,
+        &#34;-y-1/2,-x,z-1/4&#34;, &#34;x-1/2,-y+1/2,z-1/2&#34;, &#34;y,x+1/2,z+1/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;,
+        &#34;-x+1,-y+1,z+1&#34;, &#34;y+1,-x+1/2,z+5/4&#34;, &#34;x+1/2,-y+1,-z+3/4&#34;, &#34;y+1,x+1,-z+1&#34;, &#34;-x+1,y+1/2,-z+5/4&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1,-z+3/4&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x,y+1/2,-z+1/4&#34;, &#34;-y,x+1,-z&#34;,
+        &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y,-x+1/2,z+1/4&#34;, &#34;x,-y+1,z&#34;, &#34;y+1/2,x+1,z+3/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;tetragonal&#34;,
+    &#34;international_number&#34;:
+        142,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41/a c d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x+1/2,z+1/4&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x,z+3/4&#34;, &#34;x+1/2,-y,-z+1/4&#34;, &#34;y,x,-z+1/2&#34;,
+        &#34;-x,y+1/2,-z+3/4&#34;, &#34;-y+1/2,-x+1/2,-z&#34;, &#34;-x,-y+1/2,-z+1/4&#34;, &#34;y,-x,-z&#34;, &#34;x-1/2,y,-z-1/4&#34;, &#34;-y-1/2,x+1/2,-z-1/2&#34;,
+        &#34;-x-1/2,y+1/2,z&#34;, &#34;-y,-x+1/2,z-1/4&#34;, &#34;x,-y,z-1/2&#34;, &#34;y-1/2,x,z+1/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1,z+3/4&#34;,
+        &#34;-x+1,-y+1,z+1&#34;, &#34;y+1,-x+1/2,z+5/4&#34;, &#34;x+1,-y+1/2,-z+3/4&#34;, &#34;y+1/2,x+1/2,-z+1&#34;, &#34;-x+1/2,y+1,-z+5/4&#34;,
+        &#34;-y+1,-x+1,-z+1/2&#34;, &#34;-x+1/2,-y+1,-z+3/4&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x,y+1/2,-z+1/4&#34;, &#34;-y,x+1,-z&#34;, &#34;-x,y+1,z+1/2&#34;,
+        &#34;-y+1/2,-x+1,z+1/4&#34;, &#34;x+1/2,-y+1/2,z&#34;, &#34;y,x+1/2,z+3/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 143,
+    &#34;hermann_mauguin&#34;: &#34;P 3&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 144,
+    &#34;hermann_mauguin&#34;: &#34;P 31&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x+y,-x,z+2/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 145,
+    &#34;hermann_mauguin&#34;: &#34;P 32&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x+y,-x,z+1/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        146,
+    &#34;hermann_mauguin&#34;:
+        &#34;R 3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;, &#34;-y+2/3,x-y+1/3,z+1/3&#34;, &#34;-x+y+2/3,-x+1/3,z+1/3&#34;,
+        &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,-x+2/3,z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 147,
+    &#34;hermann_mauguin&#34;: &#34;P -3&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;, &#34;x-y,x,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        148,
+    &#34;hermann_mauguin&#34;:
+        &#34;R -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;, &#34;x-y,x,-z&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;,
+        &#34;-y+2/3,x-y+1/3,z+1/3&#34;, &#34;-x+y+2/3,-x+1/3,z+1/3&#34;, &#34;-x+2/3,-y+1/3,-z+1/3&#34;, &#34;y+2/3,-x+y+1/3,-z+1/3&#34;,
+        &#34;x-y+2/3,x+1/3,-z+1/3&#34;, &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,-x+2/3,z+2/3&#34;,
+        &#34;-x+1/3,-y+2/3,-z+2/3&#34;, &#34;y+1/3,-x+y+2/3,-z+2/3&#34;, &#34;x-y+1/3,x+2/3,-z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 149,
+    &#34;hermann_mauguin&#34;: &#34;P 3 1 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,-z&#34;, &#34;x,x-y,-z&#34;, &#34;-x+y,y,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 150,
+    &#34;hermann_mauguin&#34;: &#34;P 3 2 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,-z&#34;, &#34;-x,-x+y,-z&#34;, &#34;x-y,-y,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 151,
+    &#34;hermann_mauguin&#34;: &#34;P 31 1 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x+y,-x,z+2/3&#34;, &#34;-y,-x,-z+2/3&#34;, &#34;x,x-y,-z&#34;, &#34;-x+y,y,-z+1/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 152,
+    &#34;hermann_mauguin&#34;: &#34;P 31 2 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x+y,-x,z+2/3&#34;, &#34;y,x,-z&#34;, &#34;-x,-x+y,-z+1/3&#34;, &#34;x-y,-y,-z+2/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 153,
+    &#34;hermann_mauguin&#34;: &#34;P 32 1 2&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x+y,-x,z+1/3&#34;, &#34;-y,-x,-z+1/3&#34;, &#34;x,x-y,-z&#34;, &#34;-x+y,y,-z+2/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 154,
+    &#34;hermann_mauguin&#34;: &#34;P 32 2 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x+y,-x,z+1/3&#34;, &#34;y,x,-z&#34;, &#34;-x,-x+y,-z+2/3&#34;, &#34;x-y,-y,-z+1/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        155,
+    &#34;hermann_mauguin&#34;:
+        &#34;R 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,-z&#34;, &#34;-x,-x+y,-z&#34;, &#34;x-y,-y,-z&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;,
+        &#34;-y+2/3,x-y+1/3,z+1/3&#34;, &#34;-x+y+2/3,-x+1/3,z+1/3&#34;, &#34;y+2/3,x+1/3,-z+1/3&#34;, &#34;-x+2/3,-x+y+1/3,-z+1/3&#34;,
+        &#34;x-y+2/3,-y+1/3,-z+1/3&#34;, &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,-x+2/3,z+2/3&#34;,
+        &#34;y+1/3,x+2/3,-z+2/3&#34;, &#34;-x+1/3,-x+y+2/3,-z+2/3&#34;, &#34;x-y+1/3,-y+2/3,-z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 156,
+    &#34;hermann_mauguin&#34;: &#34;P 3 m 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,z&#34;, &#34;x,x-y,z&#34;, &#34;-x+y,y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 157,
+    &#34;hermann_mauguin&#34;: &#34;P 3 1 m&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,z&#34;, &#34;-x,-x+y,z&#34;, &#34;x-y,-y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 158,
+    &#34;hermann_mauguin&#34;: &#34;P 3 c 1&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x,x-y,z+1/2&#34;, &#34;-x+y,y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;trigonal&#34;,
+    &#34;international_number&#34;: 159,
+    &#34;hermann_mauguin&#34;: &#34;P 3 1 c&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,z+1/2&#34;, &#34;-x,-x+y,z+1/2&#34;, &#34;x-y,-y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        160,
+    &#34;hermann_mauguin&#34;:
+        &#34;R 3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,z&#34;, &#34;x,x-y,z&#34;, &#34;-x+y,y,z&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;, &#34;-y+2/3,x-y+1/3,z+1/3&#34;,
+        &#34;-x+y+2/3,-x+1/3,z+1/3&#34;, &#34;-y+2/3,-x+1/3,z+1/3&#34;, &#34;x+2/3,x-y+1/3,z+1/3&#34;, &#34;-x+y+2/3,y+1/3,z+1/3&#34;,
+        &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,-x+2/3,z+2/3&#34;, &#34;-y+1/3,-x+2/3,z+2/3&#34;,
+        &#34;x+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,y+2/3,z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        161,
+    &#34;hermann_mauguin&#34;:
+        &#34;R 3 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x,x-y,z+1/2&#34;, &#34;-x+y,y,z+1/2&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;,
+        &#34;-y+2/3,x-y+1/3,z+1/3&#34;, &#34;-x+y+2/3,-x+1/3,z+1/3&#34;, &#34;-y+2/3,-x+1/3,z+5/6&#34;, &#34;x+2/3,x-y+1/3,z+5/6&#34;,
+        &#34;-x+y+2/3,y+1/3,z+5/6&#34;, &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,-x+2/3,z+2/3&#34;,
+        &#34;-y+1/3,-x+2/3,z+7/6&#34;, &#34;x+1/3,x-y+2/3,z+7/6&#34;, &#34;-x+y+1/3,y+2/3,z+7/6&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;trigonal&#34;,
+    &#34;international_number&#34;:
+        162,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -3 1 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,-z&#34;, &#34;x,x-y,-z&#34;, &#34;-x+y,y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;, &#34;x-y,x,-z&#34;,
+        &#34;y,x,z&#34;, &#34;-x,-x+y,z&#34;, &#34;x-y,-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;trigonal&#34;,
+    &#34;international_number&#34;:
+        163,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -3 1 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;x,x-y,-z+1/2&#34;, &#34;-x+y,y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x-y,x,-z&#34;, &#34;y,x,z-1/2&#34;, &#34;-x,-x+y,z-1/2&#34;, &#34;x-y,-y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;trigonal&#34;,
+    &#34;international_number&#34;:
+        164,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -3 m 1&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,-z&#34;, &#34;-x,-x+y,-z&#34;, &#34;x-y,-y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;, &#34;x-y,x,-z&#34;,
+        &#34;-y,-x,z&#34;, &#34;x,x-y,z&#34;, &#34;-x+y,y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;trigonal&#34;,
+    &#34;international_number&#34;:
+        165,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -3 c 1&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x,-x+y,-z+1/2&#34;, &#34;x-y,-y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x-y,x,-z&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x,x-y,z-1/2&#34;, &#34;-x+y,y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        166,
+    &#34;hermann_mauguin&#34;:
+        &#34;R -3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,-z&#34;, &#34;-x,-x+y,-z&#34;, &#34;x-y,-y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;, &#34;x-y,x,-z&#34;,
+        &#34;-y,-x,z&#34;, &#34;x,x-y,z&#34;, &#34;-x+y,y,z&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;, &#34;-y+2/3,x-y+1/3,z+1/3&#34;, &#34;-x+y+2/3,-x+1/3,z+1/3&#34;,
+        &#34;y+2/3,x+1/3,-z+1/3&#34;, &#34;-x+2/3,-x+y+1/3,-z+1/3&#34;, &#34;x-y+2/3,-y+1/3,-z+1/3&#34;, &#34;-x+2/3,-y+1/3,-z+1/3&#34;,
+        &#34;y+2/3,-x+y+1/3,-z+1/3&#34;, &#34;x-y+2/3,x+1/3,-z+1/3&#34;, &#34;-y+2/3,-x+1/3,z+1/3&#34;, &#34;x+2/3,x-y+1/3,z+1/3&#34;,
+        &#34;-x+y+2/3,y+1/3,z+1/3&#34;, &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;, &#34;-x+y+1/3,-x+2/3,z+2/3&#34;,
+        &#34;y+1/3,x+2/3,-z+2/3&#34;, &#34;-x+1/3,-x+y+2/3,-z+2/3&#34;, &#34;x-y+1/3,-y+2/3,-z+2/3&#34;, &#34;-x+1/3,-y+2/3,-z+2/3&#34;,
+        &#34;y+1/3,-x+y+2/3,-z+2/3&#34;, &#34;x-y+1/3,x+2/3,-z+2/3&#34;, &#34;-y+1/3,-x+2/3,z+2/3&#34;, &#34;x+1/3,x-y+2/3,z+2/3&#34;,
+        &#34;-x+y+1/3,y+2/3,z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;rhombohedral&#34;,
+    &#34;international_number&#34;:
+        167,
+    &#34;hermann_mauguin&#34;:
+        &#34;R -3 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x,-x+y,-z+1/2&#34;, &#34;x-y,-y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x-y,x,-z&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x,x-y,z-1/2&#34;, &#34;-x+y,y,z-1/2&#34;, &#34;x+2/3,y+1/3,z+1/3&#34;, &#34;-y+2/3,x-y+1/3,z+1/3&#34;,
+        &#34;-x+y+2/3,-x+1/3,z+1/3&#34;, &#34;y+2/3,x+1/3,-z+5/6&#34;, &#34;-x+2/3,-x+y+1/3,-z+5/6&#34;, &#34;x-y+2/3,-y+1/3,-z+5/6&#34;,
+        &#34;-x+2/3,-y+1/3,-z+1/3&#34;, &#34;y+2/3,-x+y+1/3,-z+1/3&#34;, &#34;x-y+2/3,x+1/3,-z+1/3&#34;, &#34;-y+2/3,-x+1/3,z-1/6&#34;,
+        &#34;x+2/3,x-y+1/3,z-1/6&#34;, &#34;-x+y+2/3,y+1/3,z-1/6&#34;, &#34;x+1/3,y+2/3,z+2/3&#34;, &#34;-y+1/3,x-y+2/3,z+2/3&#34;,
+        &#34;-x+y+1/3,-x+2/3,z+2/3&#34;, &#34;y+1/3,x+2/3,-z+7/6&#34;, &#34;-x+1/3,-x+y+2/3,-z+7/6&#34;, &#34;x-y+1/3,-y+2/3,-z+7/6&#34;,
+        &#34;-x+1/3,-y+2/3,-z+2/3&#34;, &#34;y+1/3,-x+y+2/3,-z+2/3&#34;, &#34;x-y+1/3,x+2/3,-z+2/3&#34;, &#34;-y+1/3,-x+2/3,z+1/6&#34;,
+        &#34;x+1/3,x-y+2/3,z+1/6&#34;, &#34;-x+y+1/3,y+2/3,z+1/6&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 168,
+    &#34;hermann_mauguin&#34;: &#34;P 6&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 169,
+    &#34;hermann_mauguin&#34;: &#34;P 61&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x-y,x,z+1/6&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z+2/3&#34;, &#34;y,-x+y,z+5/6&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 170,
+    &#34;hermann_mauguin&#34;: &#34;P 65&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x-y,x,z+5/6&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z+1/3&#34;, &#34;y,-x+y,z+1/6&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 171,
+    &#34;hermann_mauguin&#34;: &#34;P 62&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x-y,x,z+1/3&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z+1/3&#34;, &#34;y,-x+y,z+2/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 172,
+    &#34;hermann_mauguin&#34;: &#34;P 64&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x-y,x,z+2/3&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z+2/3&#34;, &#34;y,-x+y,z+1/3&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 173,
+    &#34;hermann_mauguin&#34;: &#34;P 63&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;]
+}, {
+    &#34;bravais_lattice&#34;: &#34;hexagonal&#34;,
+    &#34;international_number&#34;: 174,
+    &#34;hermann_mauguin&#34;: &#34;P -6&#34;,
+    &#34;genpos&#34;: [&#34;x,y,z&#34;, &#34;-x+y,-x,-z&#34;, &#34;-y,x-y,z&#34;, &#34;x,y,-z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,x-y,-z&#34;]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        175,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 6/m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;, &#34;-x,-y,-z&#34;, &#34;-x+y,-x,-z&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x,y,-z&#34;, &#34;x-y,x,-z&#34;, &#34;-y,x-y,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        176,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 63/m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;-x+y,-x,-z-1/2&#34;,
+        &#34;y,-x+y,-z&#34;, &#34;x,y,-z-1/2&#34;, &#34;x-y,x,-z&#34;, &#34;-y,x-y,-z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        177,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 6 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;, &#34;-y,-x,-z&#34;, &#34;x-y,-y,-z&#34;, &#34;x,x-y,-z&#34;,
+        &#34;y,x,-z&#34;, &#34;-x+y,y,-z&#34;, &#34;-x,-x+y,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        178,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 61 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/6&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z+2/3&#34;, &#34;y,-x+y,z+5/6&#34;, &#34;-y,-x,-z+5/6&#34;,
+        &#34;x-y,-y,-z&#34;, &#34;x,x-y,-z+1/6&#34;, &#34;y,x,-z+1/3&#34;, &#34;-x+y,y,-z+1/2&#34;, &#34;-x,-x+y,-z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        179,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 65 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+5/6&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z+1/3&#34;, &#34;y,-x+y,z+1/6&#34;, &#34;-y,-x,-z+1/6&#34;,
+        &#34;x-y,-y,-z&#34;, &#34;x,x-y,-z+5/6&#34;, &#34;y,x,-z+2/3&#34;, &#34;-x+y,y,-z+1/2&#34;, &#34;-x,-x+y,-z+1/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        180,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 62 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/3&#34;, &#34;-y,x-y,z+2/3&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z+1/3&#34;, &#34;y,-x+y,z+2/3&#34;, &#34;-y,-x,-z+2/3&#34;, &#34;x-y,-y,-z&#34;,
+        &#34;x,x-y,-z+1/3&#34;, &#34;y,x,-z+2/3&#34;, &#34;-x+y,y,-z&#34;, &#34;-x,-x+y,-z+1/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        181,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 64 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+2/3&#34;, &#34;-y,x-y,z+1/3&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z+2/3&#34;, &#34;y,-x+y,z+1/3&#34;, &#34;-y,-x,-z+1/3&#34;, &#34;x-y,-y,-z&#34;,
+        &#34;x,x-y,-z+2/3&#34;, &#34;y,x,-z+1/3&#34;, &#34;-x+y,y,-z&#34;, &#34;-x,-x+y,-z+2/3&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        182,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 63 2 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;x-y,-y,-z&#34;,
+        &#34;x,x-y,-z+1/2&#34;, &#34;y,x,-z&#34;, &#34;-x+y,y,-z+1/2&#34;, &#34;-x,-x+y,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        183,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 6 m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;, &#34;y,x,z&#34;, &#34;-x+y,y,z&#34;, &#34;-x,-x+y,z&#34;, &#34;-y,-x,z&#34;,
+        &#34;x-y,-y,z&#34;, &#34;x,x-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        184,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 6 c c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;, &#34;y,x,z+1/2&#34;, &#34;-x+y,y,z+1/2&#34;,
+        &#34;-x,-x+y,z+1/2&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x-y,-y,z+1/2&#34;, &#34;x,x-y,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        185,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 63 c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;, &#34;y,x,z&#34;, &#34;-x+y,y,z+1/2&#34;,
+        &#34;-x,-x+y,z&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x-y,-y,z&#34;, &#34;x,x-y,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        186,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 63 m c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;, &#34;y,x,z+1/2&#34;, &#34;-x+y,y,z&#34;,
+        &#34;-x,-x+y,z+1/2&#34;, &#34;-y,-x,z&#34;, &#34;x-y,-y,z+1/2&#34;, &#34;x,x-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        187,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -6 m 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+y,-x,-z&#34;, &#34;-y,x-y,z&#34;, &#34;x,y,-z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,x-y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;-x+y,y,z&#34;, &#34;x,x-y,-z&#34;,
+        &#34;-y,-x,z&#34;, &#34;-x+y,y,-z&#34;, &#34;x,x-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        188,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -6 c 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+y,-x,-z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;x,y,-z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,x-y,-z+1/2&#34;, &#34;-y,-x,-z&#34;, &#34;-x+y,y,z+1/2&#34;,
+        &#34;x,x-y,-z&#34;, &#34;-y,-x,z+1/2&#34;, &#34;-x+y,y,-z&#34;, &#34;x,x-y,z+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        189,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -6 2 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+y,-x,-z&#34;, &#34;-y,x-y,z&#34;, &#34;x,y,-z&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,x-y,-z&#34;, &#34;y,x,z&#34;, &#34;x-y,-y,-z&#34;, &#34;-x,-x+y,z&#34;,
+        &#34;y,x,-z&#34;, &#34;x-y,-y,z&#34;, &#34;-x,-x+y,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        190,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -6 2 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+y,-x,-z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;x,y,-z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;-y,x-y,-z+1/2&#34;, &#34;y,x,z+1/2&#34;, &#34;x-y,-y,-z&#34;,
+        &#34;-x,-x+y,z+1/2&#34;, &#34;y,x,-z&#34;, &#34;x-y,-y,z+1/2&#34;, &#34;-x,-x+y,-z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        191,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 6/m m m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;, &#34;-y,-x,-z&#34;, &#34;x-y,-y,-z&#34;, &#34;x,x-y,-z&#34;,
+        &#34;y,x,-z&#34;, &#34;-x+y,y,-z&#34;, &#34;-x,-x+y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;-x+y,-x,-z&#34;, &#34;y,-x+y,-z&#34;, &#34;x,y,-z&#34;, &#34;x-y,x,-z&#34;, &#34;-y,x-y,-z&#34;,
+        &#34;y,x,z&#34;, &#34;-x+y,y,z&#34;, &#34;-x,-x+y,z&#34;, &#34;-y,-x,z&#34;, &#34;x-y,-y,z&#34;, &#34;x,x-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        192,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 6/m c c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;x-y,-y,-z+1/2&#34;,
+        &#34;x,x-y,-z+1/2&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x+y,y,-z+1/2&#34;, &#34;-x,-x+y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;-x+y,-x,-z&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x,y,-z&#34;, &#34;x-y,x,-z&#34;, &#34;-y,x-y,-z&#34;, &#34;y,x,z-1/2&#34;, &#34;-x+y,y,z-1/2&#34;, &#34;-x,-x+y,z-1/2&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x-y,-y,z-1/2&#34;,
+        &#34;x,x-y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        193,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 63/m c m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;, &#34;-y,-x,-z&#34;, &#34;x-y,-y,-z+1/2&#34;,
+        &#34;x,x-y,-z&#34;, &#34;y,x,-z+1/2&#34;, &#34;-x+y,y,-z&#34;, &#34;-x,-x+y,-z+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;-x+y,-x,-z-1/2&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x,y,-z-1/2&#34;, &#34;x-y,x,-z&#34;, &#34;-y,x-y,-z-1/2&#34;, &#34;y,x,z&#34;, &#34;-x+y,y,z-1/2&#34;, &#34;-x,-x+y,z&#34;, &#34;-y,-x,z-1/2&#34;, &#34;x-y,-y,z&#34;,
+        &#34;x,x-y,z-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;hexagonal&#34;,
+    &#34;international_number&#34;:
+        194,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 63/m m c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;x-y,x,z+1/2&#34;, &#34;-y,x-y,z&#34;, &#34;-x,-y,z+1/2&#34;, &#34;-x+y,-x,z&#34;, &#34;y,-x+y,z+1/2&#34;, &#34;-y,-x,-z+1/2&#34;, &#34;x-y,-y,-z&#34;,
+        &#34;x,x-y,-z+1/2&#34;, &#34;y,x,-z&#34;, &#34;-x+y,y,-z+1/2&#34;, &#34;-x,-x+y,-z&#34;, &#34;-x,-y,-z&#34;, &#34;-x+y,-x,-z-1/2&#34;, &#34;y,-x+y,-z&#34;,
+        &#34;x,y,-z-1/2&#34;, &#34;x-y,x,-z&#34;, &#34;-y,x-y,-z-1/2&#34;, &#34;y,x,z-1/2&#34;, &#34;-x+y,y,z&#34;, &#34;-x,-x+y,z-1/2&#34;, &#34;-y,-x,z&#34;, &#34;x-y,-y,z-1/2&#34;,
+        &#34;x,x-y,z&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        195,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 2 3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        196,
+    &#34;hermann_mauguin&#34;:
+        &#34;F 2 3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;,
+        &#34;-z,-x+1/2,y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;,
+        &#34;-y,-z+1/2,x+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;,
+        &#34;-z+1/2,-x,y+1/2&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;-z+1/2,x,-y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z,-x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;,
+        &#34;-y+1/2,-z,x+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;z+1/2,x+1/2,y&#34;,
+        &#34;-z+1/2,-x+1/2,y&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;-z+1/2,x+1/2,-y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;-y+1/2,z+1/2,-x&#34;,
+        &#34;-y+1/2,-z+1/2,x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        197,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 2 3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1/2,y+1/2&#34;, &#34;z+1/2,-x+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,-y+1/2&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;,
+        &#34;y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,-x+1/2&#34;, &#34;-y+1/2,-z+1/2,x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        198,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 21 3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;z+1/2,-x+1/2,-y&#34;,
+        &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        199,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 21 3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y+1/2,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-z,-x+1/2,y&#34;, &#34;z,-x,-y+1/2&#34;,
+        &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;-x+1/2,y+1,-z+1&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;,
+        &#34;z+1/2,-x+1/2,-y+1&#34;, &#34;-z+1/2,x+1,-y+1&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;-y+1/2,z+1,-x+1&#34;,
+        &#34;-y+1,-z+1/2,x+1&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        200,
+    &#34;hermann_mauguin&#34;:
+        &#34;P m -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;-z,-x,-y&#34;, &#34;z,x,-y&#34;, &#34;-z,x,y&#34;, &#34;z,-x,y&#34;,
+        &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;y,-z,x&#34;, &#34;y,z,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        201,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;-z+1/2,-x+1/2,-y+1/2&#34;, &#34;z+1/2,x+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,y+1/2&#34;, &#34;z+1/2,-x+1/2,y+1/2&#34;,
+        &#34;-y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,x+1/2&#34;, &#34;y+1/2,z+1/2,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        202,
+    &#34;hermann_mauguin&#34;:
+        &#34;F m -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;-z,-x,-y&#34;, &#34;z,x,-y&#34;, &#34;-z,x,y&#34;, &#34;z,-x,y&#34;,
+        &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;y,-z,x&#34;, &#34;y,z,-x&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;, &#34;-z,-x+1/2,y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;,
+        &#34;y,-z+1/2,-x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-y,-z+1/2,x+1/2&#34;, &#34;-x,-y+1/2,-z+1/2&#34;, &#34;x,y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,z+1/2&#34;,
+        &#34;x,-y+1/2,z+1/2&#34;, &#34;-z,-x+1/2,-y+1/2&#34;, &#34;z,x+1/2,-y+1/2&#34;, &#34;-z,x+1/2,y+1/2&#34;, &#34;z,-x+1/2,y+1/2&#34;, &#34;-y,-z+1/2,-x+1/2&#34;,
+        &#34;-y,z+1/2,x+1/2&#34;, &#34;y,-z+1/2,x+1/2&#34;, &#34;y,z+1/2,-x+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;,
+        &#34;-x+1/2,y,-z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;-z+1/2,x,-y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;,
+        &#34;y+1/2,-z,-x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;-x+1/2,-y,-z+1/2&#34;, &#34;x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;,
+        &#34;x+1/2,-y,z+1/2&#34;, &#34;-z+1/2,-x,-y+1/2&#34;, &#34;z+1/2,x,-y+1/2&#34;, &#34;-z+1/2,x,y+1/2&#34;, &#34;z+1/2,-x,y+1/2&#34;, &#34;-y+1/2,-z,-x+1/2&#34;,
+        &#34;-y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z,x+1/2&#34;, &#34;y+1/2,z,-x+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z&#34;, &#34;z+1/2,x+1/2,y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;-z+1/2,x+1/2,-y&#34;, &#34;y+1/2,z+1/2,x&#34;,
+        &#34;y+1/2,-z+1/2,-x&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;,
+        &#34;x+1/2,-y+1/2,z&#34;, &#34;-z+1/2,-x+1/2,-y&#34;, &#34;z+1/2,x+1/2,-y&#34;, &#34;-z+1/2,x+1/2,y&#34;, &#34;z+1/2,-x+1/2,y&#34;, &#34;-y+1/2,-z+1/2,-x&#34;,
+        &#34;-y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1/2,x&#34;, &#34;y+1/2,z+1/2,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        203,
+    &#34;hermann_mauguin&#34;:
+        &#34;F d -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;-x+1/4,-y+1/4,-z+1/4&#34;, &#34;x+1/4,y+1/4,-z+1/4&#34;, &#34;-x+1/4,y+1/4,z+1/4&#34;, &#34;x+1/4,-y+1/4,z+1/4&#34;,
+        &#34;-z+1/4,-x+1/4,-y+1/4&#34;, &#34;z+1/4,x+1/4,-y+1/4&#34;, &#34;-z+1/4,x+1/4,y+1/4&#34;, &#34;z+1/4,-x+1/4,y+1/4&#34;,
+        &#34;-y+1/4,-z+1/4,-x+1/4&#34;, &#34;-y+1/4,z+1/4,x+1/4&#34;, &#34;y+1/4,-z+1/4,x+1/4&#34;, &#34;y+1/4,z+1/4,-x+1/4&#34;, &#34;x,y+1/2,z+1/2&#34;,
+        &#34;-x,-y+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;, &#34;-z,-x+1/2,y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;,
+        &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-y,-z+1/2,x+1/2&#34;,
+        &#34;-x+1/4,-y+3/4,-z+3/4&#34;, &#34;x+1/4,y+3/4,-z+3/4&#34;, &#34;-x+1/4,y+3/4,z+3/4&#34;, &#34;x+1/4,-y+3/4,z+3/4&#34;,
+        &#34;-z+1/4,-x+3/4,-y+3/4&#34;, &#34;z+1/4,x+3/4,-y+3/4&#34;, &#34;-z+1/4,x+3/4,y+3/4&#34;, &#34;z+1/4,-x+3/4,y+3/4&#34;,
+        &#34;-y+1/4,-z+3/4,-x+3/4&#34;, &#34;-y+1/4,z+3/4,x+3/4&#34;, &#34;y+1/4,-z+3/4,x+3/4&#34;, &#34;y+1/4,z+3/4,-x+3/4&#34;, &#34;x+1/2,y,z+1/2&#34;,
+        &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;z+1/2,-x,-y+1/2&#34;,
+        &#34;-z+1/2,x,-y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z,-x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;,
+        &#34;-x+3/4,-y+1/4,-z+3/4&#34;, &#34;x+3/4,y+1/4,-z+3/4&#34;, &#34;-x+3/4,y+1/4,z+3/4&#34;, &#34;x+3/4,-y+1/4,z+3/4&#34;,
+        &#34;-z+3/4,-x+1/4,-y+3/4&#34;, &#34;z+3/4,x+1/4,-y+3/4&#34;, &#34;-z+3/4,x+1/4,y+3/4&#34;, &#34;z+3/4,-x+1/4,y+3/4&#34;,
+        &#34;-y+3/4,-z+1/4,-x+3/4&#34;, &#34;-y+3/4,z+1/4,x+3/4&#34;, &#34;y+3/4,-z+1/4,x+3/4&#34;, &#34;y+3/4,z+1/4,-x+3/4&#34;, &#34;x+1/2,y+1/2,z&#34;,
+        &#34;-x+1/2,-y+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;z+1/2,x+1/2,y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;z+1/2,-x+1/2,-y&#34;,
+        &#34;-z+1/2,x+1/2,-y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-y+1/2,-z+1/2,x&#34;,
+        &#34;-x+3/4,-y+3/4,-z+1/4&#34;, &#34;x+3/4,y+3/4,-z+1/4&#34;, &#34;-x+3/4,y+3/4,z+1/4&#34;, &#34;x+3/4,-y+3/4,z+1/4&#34;,
+        &#34;-z+3/4,-x+3/4,-y+1/4&#34;, &#34;z+3/4,x+3/4,-y+1/4&#34;, &#34;-z+3/4,x+3/4,y+1/4&#34;, &#34;z+3/4,-x+3/4,y+1/4&#34;,
+        &#34;-y+3/4,-z+3/4,-x+1/4&#34;, &#34;-y+3/4,z+3/4,x+1/4&#34;, &#34;y+3/4,-z+3/4,x+1/4&#34;, &#34;y+3/4,z+3/4,-x+1/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        204,
+    &#34;hermann_mauguin&#34;:
+        &#34;I m -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y,z&#34;, &#34;x,-y,-z&#34;, &#34;-x,y,-z&#34;, &#34;z,x,y&#34;, &#34;-z,-x,y&#34;, &#34;z,-x,-y&#34;, &#34;-z,x,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;,
+        &#34;-y,z,-x&#34;, &#34;-y,-z,x&#34;, &#34;-x,-y,-z&#34;, &#34;x,y,-z&#34;, &#34;-x,y,z&#34;, &#34;x,-y,z&#34;, &#34;-z,-x,-y&#34;, &#34;z,x,-y&#34;, &#34;-z,x,y&#34;, &#34;z,-x,y&#34;,
+        &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;y,-z,x&#34;, &#34;y,z,-x&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1/2,y+1/2&#34;, &#34;z+1/2,-x+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,-y+1/2&#34;,
+        &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,-x+1/2&#34;, &#34;-y+1/2,-z+1/2,x+1/2&#34;,
+        &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;-z+1/2,-x+1/2,-y+1/2&#34;, &#34;z+1/2,x+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,y+1/2&#34;, &#34;z+1/2,-x+1/2,y+1/2&#34;,
+        &#34;-y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,x+1/2&#34;, &#34;y+1/2,z+1/2,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        205,
+    &#34;hermann_mauguin&#34;:
+        &#34;P a -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;z+1/2,-x+1/2,-y&#34;,
+        &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;-x,-y,-z&#34;,
+        &#34;x-1/2,y,-z-1/2&#34;, &#34;-x-1/2,y-1/2,z&#34;, &#34;x,-y-1/2,z-1/2&#34;, &#34;-z,-x,-y&#34;, &#34;z-1/2,x,-y-1/2&#34;, &#34;-z-1/2,x-1/2,y&#34;,
+        &#34;z,-x-1/2,y-1/2&#34;, &#34;-y,-z,-x&#34;, &#34;-y-1/2,z-1/2,x&#34;, &#34;y,-z-1/2,x-1/2&#34;, &#34;y-1/2,z,-x-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        206,
+    &#34;hermann_mauguin&#34;:
+        &#34;I a -3&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-x,-y+1/2,z&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-z,-x+1/2,y&#34;, &#34;z,-x,-y+1/2&#34;,
+        &#34;-z,x+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;x,y-1/2,-z&#34;,
+        &#34;-x,y,z-1/2&#34;, &#34;x,-y-1/2,z-1/2&#34;, &#34;-z,-x,-y&#34;, &#34;z,x-1/2,-y&#34;, &#34;-z,x,y-1/2&#34;, &#34;z,-x-1/2,y-1/2&#34;, &#34;-y,-z,-x&#34;,
+        &#34;-y,z,x-1/2&#34;, &#34;y,-z-1/2,x-1/2&#34;, &#34;y-1/2,z,-x-1/2&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1&#34;,
+        &#34;-x+1/2,y+1,-z+1&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;, &#34;z+1/2,-x+1/2,-y+1&#34;, &#34;-z+1/2,x+1,-y+1&#34;,
+        &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;-y+1/2,z+1,-x+1&#34;, &#34;-y+1,-z+1/2,x+1&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;x+1/2,y,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;x+1/2,-y,z&#34;, &#34;-z+1/2,-x+1/2,-y+1/2&#34;, &#34;z+1/2,x,-y+1/2&#34;, &#34;-z+1/2,x+1/2,y&#34;,
+        &#34;z+1/2,-x,y&#34;, &#34;-y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z,x&#34;, &#34;y,z+1/2,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        207,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 4 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        208,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 42 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x,y,-z&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-x+1/2,z+1/2,y+1/2&#34;, &#34;-z,-x,y&#34;, &#34;x+1/2,-z+1/2,y+1/2&#34;, &#34;z,-x,-y&#34;,
+        &#34;x+1/2,z+1/2,-y+1/2&#34;, &#34;-z,x,-y&#34;, &#34;-x+1/2,-z+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z+1/2,y+1/2,-x+1/2&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z+1/2,-y+1/2,-x+1/2&#34;, &#34;-y,-z,x&#34;, &#34;z+1/2,-y+1/2,x+1/2&#34;, &#34;-z+1/2,y+1/2,x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        209,
+    &#34;hermann_mauguin&#34;:
+        &#34;F 4 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-y,x+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;,
+        &#34;y,-x+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;y,x+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;-y,-x+1/2,-z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;,
+        &#34;-x,z+1/2,y+1/2&#34;, &#34;-z,-x+1/2,y+1/2&#34;, &#34;x,-z+1/2,y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;x,z+1/2,-y+1/2&#34;, &#34;-z,x+1/2,-y+1/2&#34;,
+        &#34;-x,-z+1/2,-y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;z,y+1/2,-x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-z,-y+1/2,-x+1/2&#34;,
+        &#34;-y,-z+1/2,x+1/2&#34;, &#34;z,-y+1/2,x+1/2&#34;, &#34;-z,y+1/2,x+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-y+1/2,x,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;,
+        &#34;y+1/2,-x,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;y+1/2,x,-z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;-y+1/2,-x,-z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;,
+        &#34;-x+1/2,z,y+1/2&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;x+1/2,-z,y+1/2&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;x+1/2,z,-y+1/2&#34;, &#34;-z+1/2,x,-y+1/2&#34;,
+        &#34;-x+1/2,-z,-y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z,-x+1/2&#34;, &#34;z+1/2,y,-x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;, &#34;-z+1/2,-y,-x+1/2&#34;,
+        &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+1/2,-y,x+1/2&#34;, &#34;-z+1/2,y,x+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-y+1/2,x+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;,
+        &#34;y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+1/2,x+1/2,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;-y+1/2,-x+1/2,-z&#34;, &#34;z+1/2,x+1/2,y&#34;,
+        &#34;-x+1/2,z+1/2,y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;x+1/2,-z+1/2,y&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+1/2,z+1/2,-y&#34;, &#34;-z+1/2,x+1/2,-y&#34;,
+        &#34;-x+1/2,-z+1/2,-y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;z+1/2,y+1/2,-x&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-z+1/2,-y+1/2,-x&#34;,
+        &#34;-y+1/2,-z+1/2,x&#34;, &#34;z+1/2,-y+1/2,x&#34;, &#34;-z+1/2,y+1/2,x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        210,
+    &#34;hermann_mauguin&#34;:
+        &#34;F 41 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/4,x+1/4,z+1/4&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;y+3/4,-x+1/4,z+3/4&#34;, &#34;x,-y,-z&#34;, &#34;y+1/4,x+1/4,-z+1/4&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;-y+3/4,-x+1/4,-z+3/4&#34;, &#34;z,x,y&#34;, &#34;-x+1/4,z+1/4,y+1/4&#34;, &#34;-z,-x+1/2,y+1/2&#34;,
+        &#34;x+3/4,-z+1/4,y+3/4&#34;, &#34;z,-x,-y&#34;, &#34;x+1/4,z+1/4,-y+1/4&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;-x+3/4,-z+1/4,-y+3/4&#34;, &#34;y,z,x&#34;,
+        &#34;y+1/2,-z,-x+1/2&#34;, &#34;z+1/4,y+3/4,-x+3/4&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-z+1/4,-y+1/4,-x+1/4&#34;, &#34;-y,-z,x&#34;,
+        &#34;z+1/4,-y+3/4,x+3/4&#34;, &#34;-z+3/4,y+3/4,x+1/4&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-y+1/4,x+3/4,z+3/4&#34;, &#34;-x,-y+1,z+1&#34;,
+        &#34;y+3/4,-x+3/4,z+5/4&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;y+1/4,x+3/4,-z+3/4&#34;, &#34;-x,y+1,-z+1&#34;, &#34;-y+3/4,-x+3/4,-z+5/4&#34;,
+        &#34;z,x+1/2,y+1/2&#34;, &#34;-x+1/4,z+3/4,y+3/4&#34;, &#34;-z,-x+1,y+1&#34;, &#34;x+3/4,-z+3/4,y+5/4&#34;, &#34;z,-x+1/2,-y+1/2&#34;,
+        &#34;x+1/4,z+3/4,-y+3/4&#34;, &#34;-z,x+1,-y+1&#34;, &#34;-x+3/4,-z+3/4,-y+5/4&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1&#34;,
+        &#34;z+1/4,y+5/4,-x+5/4&#34;, &#34;-y+1/2,z+1,-x+1/2&#34;, &#34;-z+1/4,-y+3/4,-x+3/4&#34;, &#34;-y,-z+1/2,x+1/2&#34;, &#34;z+1/4,-y+5/4,x+5/4&#34;,
+        &#34;-z+3/4,y+5/4,x+3/4&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-y+3/4,x+1/4,z+3/4&#34;, &#34;-x+1/2,-y+1/2,z+1&#34;, &#34;y+5/4,-x+1/4,z+5/4&#34;,
+        &#34;x+1/2,-y,-z+1/2&#34;, &#34;y+3/4,x+1/4,-z+3/4&#34;, &#34;-x+1/2,y+1/2,-z+1&#34;, &#34;-y+5/4,-x+1/4,-z+5/4&#34;, &#34;z+1/2,x,y+1/2&#34;,
+        &#34;-x+3/4,z+1/4,y+3/4&#34;, &#34;-z+1/2,-x+1/2,y+1&#34;, &#34;x+5/4,-z+1/4,y+5/4&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;x+3/4,z+1/4,-y+3/4&#34;,
+        &#34;-z+1/2,x+1/2,-y+1&#34;, &#34;-x+5/4,-z+1/4,-y+5/4&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1,-z,-x+1&#34;, &#34;z+3/4,y+3/4,-x+5/4&#34;,
+        &#34;-y+1,z+1/2,-x+1/2&#34;, &#34;-z+3/4,-y+1/4,-x+3/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+3/4,-y+3/4,x+5/4&#34;, &#34;-z+5/4,y+3/4,x+3/4&#34;,
+        &#34;x+1/2,y+1/2,z&#34;, &#34;-y+3/4,x+3/4,z+1/4&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;y+5/4,-x+3/4,z+3/4&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;y+3/4,x+3/4,-z+1/4&#34;, &#34;-x+1/2,y+1,-z+1/2&#34;, &#34;-y+5/4,-x+3/4,-z+3/4&#34;, &#34;z+1/2,x+1/2,y&#34;, &#34;-x+3/4,z+3/4,y+1/4&#34;,
+        &#34;-z+1/2,-x+1,y+1/2&#34;, &#34;x+5/4,-z+3/4,y+3/4&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+3/4,z+3/4,-y+1/4&#34;, &#34;-z+1/2,x+1,-y+1/2&#34;,
+        &#34;-x+5/4,-z+3/4,-y+3/4&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1,-z+1/2,-x+1/2&#34;, &#34;z+3/4,y+5/4,-x+3/4&#34;, &#34;-y+1,z+1,-x&#34;,
+        &#34;-z+3/4,-y+3/4,-x+1/4&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;z+3/4,-y+5/4,x+3/4&#34;, &#34;-z+5/4,y+5/4,x+1/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        211,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 4 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-x+1/2,z+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1/2,y+1/2&#34;, &#34;x+1/2,-z+1/2,y+1/2&#34;,
+        &#34;z+1/2,-x+1/2,-y+1/2&#34;, &#34;x+1/2,z+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,-y+1/2&#34;, &#34;-x+1/2,-z+1/2,-y+1/2&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;,
+        &#34;y+1/2,-z+1/2,-x+1/2&#34;, &#34;z+1/2,y+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,-x+1/2&#34;, &#34;-z+1/2,-y+1/2,-x+1/2&#34;,
+        &#34;-y+1/2,-z+1/2,x+1/2&#34;, &#34;z+1/2,-y+1/2,x+1/2&#34;, &#34;-z+1/2,y+1/2,x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        212,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 43 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+3/4,x+1/4,z+3/4&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;y+3/4,-x+3/4,z+1/4&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+1/4,x+3/4,-z+3/4&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;-y+1/4,-x+1/4,-z+1/4&#34;, &#34;z,x,y&#34;, &#34;-x+3/4,z+1/4,y+3/4&#34;, &#34;-z+1/2,-x,y+1/2&#34;,
+        &#34;x+3/4,-z+3/4,y+1/4&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+1/4,z+3/4,-y+3/4&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;-x+1/4,-z+1/4,-y+1/4&#34;,
+        &#34;y,z,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;z+1/4,y+3/4,-x+3/4&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-z+1/4,-y+1/4,-x+1/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;,
+        &#34;z+3/4,-y+3/4,x+1/4&#34;, &#34;-z+3/4,y+1/4,x+3/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        213,
+    &#34;hermann_mauguin&#34;:
+        &#34;P 41 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/4,x+3/4,z+1/4&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;y+1/4,-x+1/4,z+3/4&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+3/4,x+1/4,-z+1/4&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;-y+3/4,-x+3/4,-z+3/4&#34;, &#34;z,x,y&#34;, &#34;-x+1/4,z+3/4,y+1/4&#34;, &#34;-z+1/2,-x,y+1/2&#34;,
+        &#34;x+1/4,-z+1/4,y+3/4&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+3/4,z+1/4,-y+1/4&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;-x+3/4,-z+3/4,-y+3/4&#34;,
+        &#34;y,z,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;z+3/4,y+1/4,-x+1/4&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-z+3/4,-y+3/4,-x+3/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;,
+        &#34;z+1/4,-y+1/4,x+3/4&#34;, &#34;-z+1/4,y+3/4,x+1/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        214,
+    &#34;hermann_mauguin&#34;:
+        &#34;I 41 3 2&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/4,x+3/4,z+1/4&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;y+1/4,-x+1/4,z+3/4&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y+1/4,x+3/4,-z+3/4&#34;,
+        &#34;-x+1/2,y,-z&#34;, &#34;-y+1/4,-x+1/4,-z+1/4&#34;, &#34;z,x,y&#34;, &#34;-x+1/4,z+3/4,y+1/4&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;x+1/4,-z+1/4,y+3/4&#34;,
+        &#34;z,-x,-y+1/2&#34;, &#34;x+1/4,z+3/4,-y+3/4&#34;, &#34;-z+1/2,x,-y&#34;, &#34;-x+1/4,-z+1/4,-y+1/4&#34;, &#34;y,z,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;,
+        &#34;z+3/4,y+1/4,-x+1/4&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-z+1/4,-y+1/4,-x+1/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+3/4,-y+3/4,x+1/4&#34;,
+        &#34;-z+3/4,y+1/4,x+3/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+3/4,x+5/4,z+3/4&#34;, &#34;-x+1,-y+1/2,z+1&#34;, &#34;y+3/4,-x+3/4,z+5/4&#34;,
+        &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;y+3/4,x+5/4,-z+5/4&#34;, &#34;-x+1,y+1/2,-z+1/2&#34;, &#34;-y+3/4,-x+3/4,-z+3/4&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;,
+        &#34;-x+3/4,z+5/4,y+3/4&#34;, &#34;-z+1,-x+1/2,y+1&#34;, &#34;x+3/4,-z+3/4,y+5/4&#34;, &#34;z+1/2,-x+1/2,-y+1&#34;, &#34;x+3/4,z+5/4,-y+5/4&#34;,
+        &#34;-z+1,x+1/2,-y+1/2&#34;, &#34;-x+3/4,-z+3/4,-y+3/4&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1,-z+1,-x+1/2&#34;, &#34;z+5/4,y+3/4,-x+3/4&#34;,
+        &#34;-y+1/2,z+1,-x+1&#34;, &#34;-z+3/4,-y+3/4,-x+3/4&#34;, &#34;-y+1,-z+1/2,x+1&#34;, &#34;z+5/4,-y+5/4,x+3/4&#34;, &#34;-z+5/4,y+3/4,x+5/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        215,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -4 3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y,-z&#34;, &#34;-y,-x,z&#34;, &#34;-x,y,-z&#34;, &#34;y,x,z&#34;, &#34;z,x,y&#34;, &#34;x,-z,-y&#34;,
+        &#34;-z,-x,y&#34;, &#34;-x,z,-y&#34;, &#34;z,-x,-y&#34;, &#34;-x,-z,y&#34;, &#34;-z,x,-y&#34;, &#34;x,z,y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;-z,-y,x&#34;, &#34;-y,z,-x&#34;,
+        &#34;z,y,x&#34;, &#34;-y,-z,x&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        216,
+    &#34;hermann_mauguin&#34;:
+        &#34;F -4 3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y,-z&#34;, &#34;-y,-x,z&#34;, &#34;-x,y,-z&#34;, &#34;y,x,z&#34;, &#34;z,x,y&#34;, &#34;x,-z,-y&#34;,
+        &#34;-z,-x,y&#34;, &#34;-x,z,-y&#34;, &#34;z,-x,-y&#34;, &#34;-x,-z,y&#34;, &#34;-z,x,-y&#34;, &#34;x,z,y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;-z,-y,x&#34;, &#34;-y,z,-x&#34;,
+        &#34;z,y,x&#34;, &#34;-y,-z,x&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;y,-x+1/2,-z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;,
+        &#34;-y,x+1/2,-z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-y,-x+1/2,z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;, &#34;y,x+1/2,z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;,
+        &#34;x,-z+1/2,-y+1/2&#34;, &#34;-z,-x+1/2,y+1/2&#34;, &#34;-x,z+1/2,-y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;-x,-z+1/2,y+1/2&#34;,
+        &#34;-z,x+1/2,-y+1/2&#34;, &#34;x,z+1/2,y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;-z,-y+1/2,x+1/2&#34;, &#34;-y,z+1/2,-x+1/2&#34;,
+        &#34;z,y+1/2,x+1/2&#34;, &#34;-y,-z+1/2,x+1/2&#34;, &#34;-z,y+1/2,-x+1/2&#34;, &#34;z,-y+1/2,-x+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;y+1/2,-x,-z+1/2&#34;,
+        &#34;-x+1/2,-y,z+1/2&#34;, &#34;-y+1/2,x,-z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-y+1/2,-x,z+1/2&#34;, &#34;-x+1/2,y,-z+1/2&#34;, &#34;y+1/2,x,z+1/2&#34;,
+        &#34;z+1/2,x,y+1/2&#34;, &#34;x+1/2,-z,-y+1/2&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;-x+1/2,z,-y+1/2&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;-x+1/2,-z,y+1/2&#34;,
+        &#34;-z+1/2,x,-y+1/2&#34;, &#34;x+1/2,z,y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z,-x+1/2&#34;, &#34;-z+1/2,-y,x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;,
+        &#34;z+1/2,y,x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;-z+1/2,y,-x+1/2&#34;, &#34;z+1/2,-y,-x+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;y+1/2,-x+1/2,-z&#34;,
+        &#34;-x+1/2,-y+1/2,z&#34;, &#34;-y+1/2,x+1/2,-z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;-x+1/2,y+1/2,-z&#34;, &#34;y+1/2,x+1/2,z&#34;,
+        &#34;z+1/2,x+1/2,y&#34;, &#34;x+1/2,-z+1/2,-y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;-x+1/2,z+1/2,-y&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;-x+1/2,-z+1/2,y&#34;,
+        &#34;-z+1/2,x+1/2,-y&#34;, &#34;x+1/2,z+1/2,y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;, &#34;-z+1/2,-y+1/2,x&#34;, &#34;-y+1/2,z+1/2,-x&#34;,
+        &#34;z+1/2,y+1/2,x&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;-z+1/2,y+1/2,-x&#34;, &#34;z+1/2,-y+1/2,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        217,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4 3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y,-x,-z&#34;, &#34;-x,-y,z&#34;, &#34;-y,x,-z&#34;, &#34;x,-y,-z&#34;, &#34;-y,-x,z&#34;, &#34;-x,y,-z&#34;, &#34;y,x,z&#34;, &#34;z,x,y&#34;, &#34;x,-z,-y&#34;,
+        &#34;-z,-x,y&#34;, &#34;-x,z,-y&#34;, &#34;z,-x,-y&#34;, &#34;-x,-z,y&#34;, &#34;-z,x,-y&#34;, &#34;x,z,y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;-z,-y,x&#34;, &#34;-y,z,-x&#34;,
+        &#34;z,y,x&#34;, &#34;-y,-z,x&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;,
+        &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;x+1/2,-z+1/2,-y+1/2&#34;, &#34;-z+1/2,-x+1/2,y+1/2&#34;, &#34;-x+1/2,z+1/2,-y+1/2&#34;, &#34;z+1/2,-x+1/2,-y+1/2&#34;,
+        &#34;-x+1/2,-z+1/2,y+1/2&#34;, &#34;-z+1/2,x+1/2,-y+1/2&#34;, &#34;x+1/2,z+1/2,y+1/2&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1/2&#34;,
+        &#34;-z+1/2,-y+1/2,x+1/2&#34;, &#34;-y+1/2,z+1/2,-x+1/2&#34;, &#34;z+1/2,y+1/2,x+1/2&#34;, &#34;-y+1/2,-z+1/2,x+1/2&#34;, &#34;-z+1/2,y+1/2,-x+1/2&#34;,
+        &#34;z+1/2,-y+1/2,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        218,
+    &#34;hermann_mauguin&#34;:
+        &#34;P -4 3 n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;-x,y,-z&#34;,
+        &#34;y+1/2,x+1/2,z+1/2&#34;, &#34;z,x,y&#34;, &#34;x+1/2,-z+1/2,-y+1/2&#34;, &#34;-z,-x,y&#34;, &#34;-x+1/2,z+1/2,-y+1/2&#34;, &#34;z,-x,-y&#34;,
+        &#34;-x+1/2,-z+1/2,y+1/2&#34;, &#34;-z,x,-y&#34;, &#34;x+1/2,z+1/2,y+1/2&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;-z+1/2,-y+1/2,x+1/2&#34;, &#34;-y,z,-x&#34;,
+        &#34;z+1/2,y+1/2,x+1/2&#34;, &#34;-y,-z,x&#34;, &#34;-z+1/2,y+1/2,-x+1/2&#34;, &#34;z+1/2,-y+1/2,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        219,
+    &#34;hermann_mauguin&#34;:
+        &#34;F -4 3 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y+1/2,-x,-z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;-y,x+1/2,-z&#34;, &#34;x,-y,-z&#34;, &#34;-y+1/2,-x,z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;y,x+1/2,z&#34;, &#34;z,x,y&#34;, &#34;x+1/2,-z,-y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;-x,z+1/2,-y&#34;, &#34;z,-x,-y&#34;, &#34;-x+1/2,-z,y&#34;,
+        &#34;-z+1/2,x+1/2,-y&#34;, &#34;x,z+1/2,y&#34;, &#34;y,z,x&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;-z,-y,x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;, &#34;z+1/2,y,x&#34;,
+        &#34;-y,-z,x&#34;, &#34;-z,y,-x+1/2&#34;, &#34;z+1/2,-y+1/2,-x+1/2&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;,
+        &#34;-y,x+1,-z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;-x+1/2,y+1,-z+1/2&#34;, &#34;y,x+1,z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;,
+        &#34;x+1/2,-z+1/2,-y+1/2&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;, &#34;-x,z+1,-y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;-x+1/2,-z+1/2,y+1/2&#34;,
+        &#34;-z+1/2,x+1,-y+1/2&#34;, &#34;x,z+1,y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y,-z+1,-x+1&#34;, &#34;-z,-y+1/2,x+1&#34;, &#34;-y+1/2,z+1/2,-x+1&#34;,
+        &#34;z+1/2,y+1/2,x+1/2&#34;, &#34;-y,-z+1/2,x+1/2&#34;, &#34;-z,y+1/2,-x+1&#34;, &#34;z+1/2,-y+1,-x+1&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;y+1,-x,-z+1/2&#34;,
+        &#34;-x+1,-y+1/2,z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;-y+1,-x,z+1/2&#34;, &#34;-x+1,y+1/2,-z+1/2&#34;,
+        &#34;y+1/2,x+1/2,z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;, &#34;x+1,-z,-y+1/2&#34;, &#34;-z+1,-x+1/2,y+1/2&#34;, &#34;-x+1/2,z+1/2,-y+1/2&#34;,
+        &#34;z+1/2,-x,-y+1/2&#34;, &#34;-x+1,-z,y+1/2&#34;, &#34;-z+1,x+1/2,-y+1/2&#34;, &#34;x+1/2,z+1/2,y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;,
+        &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;-z+1/2,-y,x+1&#34;, &#34;-y+1,z,-x+1&#34;, &#34;z+1,y,x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;-z+1/2,y,-x+1&#34;,
+        &#34;z+1,-y+1/2,-x+1&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;y+1,-x+1/2,-z&#34;, &#34;-x+1,-y+1,z&#34;, &#34;-y+1/2,x+1,-z&#34;, &#34;x+1/2,-y+1/2,-z&#34;,
+        &#34;-y+1,-x+1/2,z&#34;, &#34;-x+1,y+1,-z&#34;, &#34;y+1/2,x+1,z&#34;, &#34;z+1/2,x+1/2,y&#34;, &#34;x+1,-z+1/2,-y&#34;, &#34;-z+1,-x+1,y&#34;, &#34;-x+1/2,z+1,-y&#34;,
+        &#34;z+1/2,-x+1/2,-y&#34;, &#34;-x+1,-z+1/2,y&#34;, &#34;-z+1,x+1,-y&#34;, &#34;x+1/2,z+1,y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1,-x+1/2&#34;,
+        &#34;-z+1/2,-y+1/2,x+1/2&#34;, &#34;-y+1,z+1/2,-x+1/2&#34;, &#34;z+1,y+1/2,x&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;-z+1/2,y+1/2,-x+1/2&#34;,
+        &#34;z+1,-y+1,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        220,
+    &#34;hermann_mauguin&#34;:
+        &#34;I -4 3 d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;y+1/4,-x+3/4,-z+1/4&#34;, &#34;-x,-y+1/2,z&#34;, &#34;-y+3/4,x+3/4,-z+1/4&#34;, &#34;x,-y,-z+1/2&#34;, &#34;-y+1/4,-x+3/4,z+3/4&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;y+3/4,x+3/4,z+3/4&#34;, &#34;z,x,y&#34;, &#34;x+1/4,-z+3/4,-y+1/4&#34;, &#34;-z,-x+1/2,y&#34;, &#34;-x+3/4,z+3/4,-y+1/4&#34;,
+        &#34;z,-x,-y+1/2&#34;, &#34;-x+1/4,-z+3/4,y+3/4&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;x+3/4,z+3/4,y+3/4&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x+1/2&#34;,
+        &#34;-z+1/4,-y+3/4,x+3/4&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;z+1/4,y+1/4,x+1/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;-z+1/4,y+1/4,-x+3/4&#34;,
+        &#34;z+3/4,-y+1/4,-x+3/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;y+3/4,-x+5/4,-z+3/4&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;-y+5/4,x+5/4,-z+3/4&#34;,
+        &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;-y+3/4,-x+5/4,z+5/4&#34;, &#34;-x+1/2,y+1,-z+1&#34;, &#34;y+5/4,x+5/4,z+5/4&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;,
+        &#34;x+3/4,-z+5/4,-y+3/4&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;, &#34;-x+5/4,z+5/4,-y+3/4&#34;, &#34;z+1/2,-x+1/2,-y+1&#34;, &#34;-x+3/4,-z+5/4,y+5/4&#34;,
+        &#34;-z+1/2,x+1,-y+1&#34;, &#34;x+5/4,z+5/4,y+5/4&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;-z+3/4,-y+5/4,x+5/4&#34;,
+        &#34;-y+1/2,z+1,-x+1&#34;, &#34;z+3/4,y+3/4,x+3/4&#34;, &#34;-y+1,-z+1/2,x+1&#34;, &#34;-z+3/4,y+3/4,-x+5/4&#34;, &#34;z+5/4,-y+3/4,-x+5/4&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        221,
+    &#34;hermann_mauguin&#34;:
+        &#34;P m -3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;,
+        &#34;x,-y,z&#34;, &#34;y,x,z&#34;, &#34;-z,-x,-y&#34;, &#34;x,-z,-y&#34;, &#34;z,x,-y&#34;, &#34;-x,z,-y&#34;, &#34;-z,x,y&#34;, &#34;-x,-z,y&#34;, &#34;z,-x,y&#34;, &#34;x,z,y&#34;,
+        &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;-z,-y,x&#34;, &#34;y,-z,x&#34;, &#34;z,y,x&#34;, &#34;y,z,-x&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        222,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n -3 n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,-z+1/2&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;,
+        &#34;-z+1/2,-x+1/2,-y+1/2&#34;, &#34;x+1/2,-z+1/2,-y+1/2&#34;, &#34;z+1/2,x+1/2,-y+1/2&#34;, &#34;-x+1/2,z+1/2,-y+1/2&#34;,
+        &#34;-z+1/2,x+1/2,y+1/2&#34;, &#34;-x+1/2,-z+1/2,y+1/2&#34;, &#34;z+1/2,-x+1/2,y+1/2&#34;, &#34;x+1/2,z+1/2,y+1/2&#34;, &#34;-y+1/2,-z+1/2,-x+1/2&#34;,
+        &#34;-y+1/2,z+1/2,x+1/2&#34;, &#34;-z+1/2,-y+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,x+1/2&#34;, &#34;z+1/2,y+1/2,x+1/2&#34;, &#34;y+1/2,z+1/2,-x+1/2&#34;,
+        &#34;-z+1/2,y+1/2,-x+1/2&#34;, &#34;z+1/2,-y+1/2,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        223,
+    &#34;hermann_mauguin&#34;:
+        &#34;P m -3 n&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x,y,-z&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-x+1/2,z+1/2,y+1/2&#34;, &#34;-z,-x,y&#34;, &#34;x+1/2,-z+1/2,y+1/2&#34;, &#34;z,-x,-y&#34;,
+        &#34;x+1/2,z+1/2,-y+1/2&#34;, &#34;-z,x,-y&#34;, &#34;-x+1/2,-z+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z+1/2,y+1/2,-x+1/2&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z+1/2,-y+1/2,-x+1/2&#34;, &#34;-y,-z,x&#34;, &#34;z+1/2,-y+1/2,x+1/2&#34;, &#34;-z+1/2,y+1/2,x+1/2&#34;, &#34;-x,-y,-z&#34;,
+        &#34;y-1/2,-x-1/2,-z-1/2&#34;, &#34;x,y,-z&#34;, &#34;-y-1/2,x-1/2,-z-1/2&#34;, &#34;-x,y,z&#34;, &#34;-y-1/2,-x-1/2,z-1/2&#34;, &#34;x,-y,z&#34;,
+        &#34;y-1/2,x-1/2,z-1/2&#34;, &#34;-z,-x,-y&#34;, &#34;x-1/2,-z-1/2,-y-1/2&#34;, &#34;z,x,-y&#34;, &#34;-x-1/2,z-1/2,-y-1/2&#34;, &#34;-z,x,y&#34;,
+        &#34;-x-1/2,-z-1/2,y-1/2&#34;, &#34;z,-x,y&#34;, &#34;x-1/2,z-1/2,y-1/2&#34;, &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;-z-1/2,-y-1/2,x-1/2&#34;, &#34;y,-z,x&#34;,
+        &#34;z-1/2,y-1/2,x-1/2&#34;, &#34;y,z,-x&#34;, &#34;-z-1/2,y-1/2,-x-1/2&#34;, &#34;z-1/2,-y-1/2,-x-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        224,
+    &#34;hermann_mauguin&#34;:
+        &#34;P n -3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x,-y,z&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x,-y,-z&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;, &#34;-x,y,-z&#34;,
+        &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;z,x,y&#34;, &#34;-x+1/2,z+1/2,y+1/2&#34;, &#34;-z,-x,y&#34;, &#34;x+1/2,-z+1/2,y+1/2&#34;, &#34;z,-x,-y&#34;,
+        &#34;x+1/2,z+1/2,-y+1/2&#34;, &#34;-z,x,-y&#34;, &#34;-x+1/2,-z+1/2,-y+1/2&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z+1/2,y+1/2,-x+1/2&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z+1/2,-y+1/2,-x+1/2&#34;, &#34;-y,-z,x&#34;, &#34;z+1/2,-y+1/2,x+1/2&#34;, &#34;-z+1/2,y+1/2,x+1/2&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;,
+        &#34;y,-x,-z&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y,x,-z&#34;, &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y,-x,z&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y,x,z&#34;,
+        &#34;-z+1/2,-x+1/2,-y+1/2&#34;, &#34;x,-z,-y&#34;, &#34;z+1/2,x+1/2,-y+1/2&#34;, &#34;-x,z,-y&#34;, &#34;-z+1/2,x+1/2,y+1/2&#34;, &#34;-x,-z,y&#34;,
+        &#34;z+1/2,-x+1/2,y+1/2&#34;, &#34;x,z,y&#34;, &#34;-y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,x+1/2&#34;, &#34;-z,-y,x&#34;, &#34;y+1/2,-z+1/2,x+1/2&#34;,
+        &#34;z,y,x&#34;, &#34;y+1/2,z+1/2,-x+1/2&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        225,
+    &#34;hermann_mauguin&#34;:
+        &#34;F m -3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;,
+        &#34;x,-y,z&#34;, &#34;y,x,z&#34;, &#34;-z,-x,-y&#34;, &#34;x,-z,-y&#34;, &#34;z,x,-y&#34;, &#34;-x,z,-y&#34;, &#34;-z,x,y&#34;, &#34;-x,-z,y&#34;, &#34;z,-x,y&#34;, &#34;x,z,y&#34;,
+        &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;-z,-y,x&#34;, &#34;y,-z,x&#34;, &#34;z,y,x&#34;, &#34;y,z,-x&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;, &#34;x,y+1/2,z+1/2&#34;,
+        &#34;-y,x+1/2,z+1/2&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;y,-x+1/2,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;y,x+1/2,-z+1/2&#34;, &#34;-x,y+1/2,-z+1/2&#34;,
+        &#34;-y,-x+1/2,-z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;, &#34;-x,z+1/2,y+1/2&#34;, &#34;-z,-x+1/2,y+1/2&#34;, &#34;x,-z+1/2,y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;,
+        &#34;x,z+1/2,-y+1/2&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;-x,-z+1/2,-y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;z,y+1/2,-x+1/2&#34;,
+        &#34;-y,z+1/2,-x+1/2&#34;, &#34;-z,-y+1/2,-x+1/2&#34;, &#34;-y,-z+1/2,x+1/2&#34;, &#34;z,-y+1/2,x+1/2&#34;, &#34;-z,y+1/2,x+1/2&#34;,
+        &#34;-x,-y+1/2,-z+1/2&#34;, &#34;y,-x+1/2,-z+1/2&#34;, &#34;x,y+1/2,-z+1/2&#34;, &#34;-y,x+1/2,-z+1/2&#34;, &#34;-x,y+1/2,z+1/2&#34;, &#34;-y,-x+1/2,z+1/2&#34;,
+        &#34;x,-y+1/2,z+1/2&#34;, &#34;y,x+1/2,z+1/2&#34;, &#34;-z,-x+1/2,-y+1/2&#34;, &#34;x,-z+1/2,-y+1/2&#34;, &#34;z,x+1/2,-y+1/2&#34;, &#34;-x,z+1/2,-y+1/2&#34;,
+        &#34;-z,x+1/2,y+1/2&#34;, &#34;-x,-z+1/2,y+1/2&#34;, &#34;z,-x+1/2,y+1/2&#34;, &#34;x,z+1/2,y+1/2&#34;, &#34;-y,-z+1/2,-x+1/2&#34;, &#34;-y,z+1/2,x+1/2&#34;,
+        &#34;-z,-y+1/2,x+1/2&#34;, &#34;y,-z+1/2,x+1/2&#34;, &#34;z,y+1/2,x+1/2&#34;, &#34;y,z+1/2,-x+1/2&#34;, &#34;-z,y+1/2,-x+1/2&#34;, &#34;z,-y+1/2,-x+1/2&#34;,
+        &#34;x+1/2,y,z+1/2&#34;, &#34;-y+1/2,x,z+1/2&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;y+1/2,-x,z+1/2&#34;, &#34;x+1/2,-y,-z+1/2&#34;, &#34;y+1/2,x,-z+1/2&#34;,
+        &#34;-x+1/2,y,-z+1/2&#34;, &#34;-y+1/2,-x,-z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;, &#34;-x+1/2,z,y+1/2&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;x+1/2,-z,y+1/2&#34;,
+        &#34;z+1/2,-x,-y+1/2&#34;, &#34;x+1/2,z,-y+1/2&#34;, &#34;-z+1/2,x,-y+1/2&#34;, &#34;-x+1/2,-z,-y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z,-x+1/2&#34;,
+        &#34;z+1/2,y,-x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;, &#34;-z+1/2,-y,-x+1/2&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+1/2,-y,x+1/2&#34;, &#34;-z+1/2,y,x+1/2&#34;,
+        &#34;-x+1/2,-y,-z+1/2&#34;, &#34;y+1/2,-x,-z+1/2&#34;, &#34;x+1/2,y,-z+1/2&#34;, &#34;-y+1/2,x,-z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;, &#34;-y+1/2,-x,z+1/2&#34;,
+        &#34;x+1/2,-y,z+1/2&#34;, &#34;y+1/2,x,z+1/2&#34;, &#34;-z+1/2,-x,-y+1/2&#34;, &#34;x+1/2,-z,-y+1/2&#34;, &#34;z+1/2,x,-y+1/2&#34;, &#34;-x+1/2,z,-y+1/2&#34;,
+        &#34;-z+1/2,x,y+1/2&#34;, &#34;-x+1/2,-z,y+1/2&#34;, &#34;z+1/2,-x,y+1/2&#34;, &#34;x+1/2,z,y+1/2&#34;, &#34;-y+1/2,-z,-x+1/2&#34;, &#34;-y+1/2,z,x+1/2&#34;,
+        &#34;-z+1/2,-y,x+1/2&#34;, &#34;y+1/2,-z,x+1/2&#34;, &#34;z+1/2,y,x+1/2&#34;, &#34;y+1/2,z,-x+1/2&#34;, &#34;-z+1/2,y,-x+1/2&#34;, &#34;z+1/2,-y,-x+1/2&#34;,
+        &#34;x+1/2,y+1/2,z&#34;, &#34;-y+1/2,x+1/2,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;y+1/2,-x+1/2,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+1/2,x+1/2,-z&#34;,
+        &#34;-x+1/2,y+1/2,-z&#34;, &#34;-y+1/2,-x+1/2,-z&#34;, &#34;z+1/2,x+1/2,y&#34;, &#34;-x+1/2,z+1/2,y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;x+1/2,-z+1/2,y&#34;,
+        &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+1/2,z+1/2,-y&#34;, &#34;-z+1/2,x+1/2,-y&#34;, &#34;-x+1/2,-z+1/2,-y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;,
+        &#34;z+1/2,y+1/2,-x&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-z+1/2,-y+1/2,-x&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;z+1/2,-y+1/2,x&#34;, &#34;-z+1/2,y+1/2,x&#34;,
+        &#34;-x+1/2,-y+1/2,-z&#34;, &#34;y+1/2,-x+1/2,-z&#34;, &#34;x+1/2,y+1/2,-z&#34;, &#34;-y+1/2,x+1/2,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;-y+1/2,-x+1/2,z&#34;,
+        &#34;x+1/2,-y+1/2,z&#34;, &#34;y+1/2,x+1/2,z&#34;, &#34;-z+1/2,-x+1/2,-y&#34;, &#34;x+1/2,-z+1/2,-y&#34;, &#34;z+1/2,x+1/2,-y&#34;, &#34;-x+1/2,z+1/2,-y&#34;,
+        &#34;-z+1/2,x+1/2,y&#34;, &#34;-x+1/2,-z+1/2,y&#34;, &#34;z+1/2,-x+1/2,y&#34;, &#34;x+1/2,z+1/2,y&#34;, &#34;-y+1/2,-z+1/2,-x&#34;, &#34;-y+1/2,z+1/2,x&#34;,
+        &#34;-z+1/2,-y+1/2,x&#34;, &#34;y+1/2,-z+1/2,x&#34;, &#34;z+1/2,y+1/2,x&#34;, &#34;y+1/2,z+1/2,-x&#34;, &#34;-z+1/2,y+1/2,-x&#34;, &#34;z+1/2,-y+1/2,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        226,
+    &#34;hermann_mauguin&#34;:
+        &#34;F m -3 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/2,x,z&#34;, &#34;-x+1/2,-y+1/2,z&#34;, &#34;y,-x+1/2,z&#34;, &#34;x,-y,-z&#34;, &#34;y+1/2,x,-z&#34;, &#34;-x+1/2,y+1/2,-z&#34;,
+        &#34;-y,-x+1/2,-z&#34;, &#34;z,x,y&#34;, &#34;-x+1/2,z,y&#34;, &#34;-z+1/2,-x+1/2,y&#34;, &#34;x,-z+1/2,y&#34;, &#34;z,-x,-y&#34;, &#34;x+1/2,z,-y&#34;,
+        &#34;-z+1/2,x+1/2,-y&#34;, &#34;-x,-z+1/2,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z+1/2,-x+1/2&#34;, &#34;z,y,-x+1/2&#34;, &#34;-y+1/2,z,-x+1/2&#34;, &#34;-z+1/2,-y,-x&#34;,
+        &#34;-y,-z,x&#34;, &#34;z,-y,x+1/2&#34;, &#34;-z+1/2,y+1/2,x+1/2&#34;, &#34;-x,-y,-z&#34;, &#34;y-1/2,-x,-z&#34;, &#34;x-1/2,y-1/2,-z&#34;, &#34;-y,x-1/2,-z&#34;,
+        &#34;-x,y,z&#34;, &#34;-y-1/2,-x,z&#34;, &#34;x-1/2,-y-1/2,z&#34;, &#34;y,x-1/2,z&#34;, &#34;-z,-x,-y&#34;, &#34;x-1/2,-z,-y&#34;, &#34;z-1/2,x-1/2,-y&#34;,
+        &#34;-x,z-1/2,-y&#34;, &#34;-z,x,y&#34;, &#34;-x-1/2,-z,y&#34;, &#34;z-1/2,-x-1/2,y&#34;, &#34;x,z-1/2,y&#34;, &#34;-y,-z,-x&#34;, &#34;-y,z-1/2,x-1/2&#34;,
+        &#34;-z,-y,x-1/2&#34;, &#34;y-1/2,-z,x-1/2&#34;, &#34;z-1/2,y,x&#34;, &#34;y,z,-x&#34;, &#34;-z,y,-x-1/2&#34;, &#34;z-1/2,-y-1/2,-x-1/2&#34;, &#34;x,y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;y,-x+1,z+1/2&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y+1,-z+1/2&#34;, &#34;-y,-x+1,-z+1/2&#34;, &#34;z,x+1/2,y+1/2&#34;, &#34;-x+1/2,z+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;,
+        &#34;x,-z+1,y+1/2&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;x+1/2,z+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1,-y+1/2&#34;, &#34;-x,-z+1,-y+1/2&#34;, &#34;y,z+1/2,x+1/2&#34;,
+        &#34;y,-z+1,-x+1&#34;, &#34;z,y+1/2,-x+1&#34;, &#34;-y+1/2,z+1/2,-x+1&#34;, &#34;-z+1/2,-y+1/2,-x+1/2&#34;, &#34;-y,-z+1/2,x+1/2&#34;, &#34;z,-y+1/2,x+1&#34;,
+        &#34;-z+1/2,y+1,x+1&#34;, &#34;-x,-y+1/2,-z+1/2&#34;, &#34;y-1/2,-x+1/2,-z+1/2&#34;, &#34;x-1/2,y,-z+1/2&#34;, &#34;-y,x,-z+1/2&#34;, &#34;-x,y+1/2,z+1/2&#34;,
+        &#34;-y-1/2,-x+1/2,z+1/2&#34;, &#34;x-1/2,-y,z+1/2&#34;, &#34;y,x,z+1/2&#34;, &#34;-z,-x+1/2,-y+1/2&#34;, &#34;x-1/2,-z+1/2,-y+1/2&#34;,
+        &#34;z-1/2,x,-y+1/2&#34;, &#34;-x,z,-y+1/2&#34;, &#34;-z,x+1/2,y+1/2&#34;, &#34;-x-1/2,-z+1/2,y+1/2&#34;, &#34;z-1/2,-x,y+1/2&#34;, &#34;x,z,y+1/2&#34;,
+        &#34;-y,-z+1/2,-x+1/2&#34;, &#34;-y,z,x&#34;, &#34;-z,-y+1/2,x&#34;, &#34;y-1/2,-z+1/2,x&#34;, &#34;z-1/2,y+1/2,x+1/2&#34;, &#34;y,z+1/2,-x+1/2&#34;,
+        &#34;-z,y+1/2,-x&#34;, &#34;z-1/2,-y,-x&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-y+1,x,z+1/2&#34;, &#34;-x+1,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;,
+        &#34;x+1/2,-y,-z+1/2&#34;, &#34;y+1,x,-z+1/2&#34;, &#34;-x+1,y+1/2,-z+1/2&#34;, &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;z+1/2,x,y+1/2&#34;, &#34;-x+1,z,y+1/2&#34;,
+        &#34;-z+1,-x+1/2,y+1/2&#34;, &#34;x+1/2,-z+1/2,y+1/2&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;x+1,z,-y+1/2&#34;, &#34;-z+1,x+1/2,-y+1/2&#34;,
+        &#34;-x+1/2,-z+1/2,-y+1/2&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;z+1/2,y,-x+1&#34;, &#34;-y+1,z,-x+1&#34;, &#34;-z+1,-y,-x+1/2&#34;,
+        &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+1/2,-y,x+1&#34;, &#34;-z+1,y+1/2,x+1&#34;, &#34;-x+1/2,-y,-z+1/2&#34;, &#34;y,-x,-z+1/2&#34;, &#34;x,y-1/2,-z+1/2&#34;,
+        &#34;-y+1/2,x-1/2,-z+1/2&#34;, &#34;-x+1/2,y,z+1/2&#34;, &#34;-y,-x,z+1/2&#34;, &#34;x,-y-1/2,z+1/2&#34;, &#34;y+1/2,x-1/2,z+1/2&#34;,
+        &#34;-z+1/2,-x,-y+1/2&#34;, &#34;x,-z,-y+1/2&#34;, &#34;z,x-1/2,-y+1/2&#34;, &#34;-x+1/2,z-1/2,-y+1/2&#34;, &#34;-z+1/2,x,y+1/2&#34;, &#34;-x,-z,y+1/2&#34;,
+        &#34;z,-x-1/2,y+1/2&#34;, &#34;x+1/2,z-1/2,y+1/2&#34;, &#34;-y+1/2,-z,-x+1/2&#34;, &#34;-y+1/2,z-1/2,x&#34;, &#34;-z+1/2,-y,x&#34;, &#34;y,-z,x&#34;,
+        &#34;z,y,x+1/2&#34;, &#34;y+1/2,z,-x+1/2&#34;, &#34;-z+1/2,y,-x&#34;, &#34;z,-y-1/2,-x&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-y+1,x+1/2,z&#34;, &#34;-x+1,-y+1,z&#34;,
+        &#34;y+1/2,-x+1,z&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+1,x+1/2,-z&#34;, &#34;-x+1,y+1,-z&#34;, &#34;-y+1/2,-x+1,-z&#34;, &#34;z+1/2,x+1/2,y&#34;,
+        &#34;-x+1,z+1/2,y&#34;, &#34;-z+1,-x+1,y&#34;, &#34;x+1/2,-z+1,y&#34;, &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+1,z+1/2,-y&#34;, &#34;-z+1,x+1,-y&#34;,
+        &#34;-x+1/2,-z+1,-y&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1/2,-z+1,-x+1/2&#34;, &#34;z+1/2,y+1/2,-x+1/2&#34;, &#34;-y+1,z+1/2,-x+1/2&#34;,
+        &#34;-z+1,-y+1/2,-x&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;z+1/2,-y+1/2,x+1/2&#34;, &#34;-z+1,y+1,x+1/2&#34;, &#34;-x+1/2,-y+1/2,-z&#34;, &#34;y,-x+1/2,-z&#34;,
+        &#34;x,y,-z&#34;, &#34;-y+1/2,x,-z&#34;, &#34;-x+1/2,y+1/2,z&#34;, &#34;-y,-x+1/2,z&#34;, &#34;x,-y,z&#34;, &#34;y+1/2,x,z&#34;, &#34;-z+1/2,-x+1/2,-y&#34;,
+        &#34;x,-z+1/2,-y&#34;, &#34;z,x,-y&#34;, &#34;-x+1/2,z,-y&#34;, &#34;-z+1/2,x+1/2,y&#34;, &#34;-x,-z+1/2,y&#34;, &#34;z,-x,y&#34;, &#34;x+1/2,z,y&#34;,
+        &#34;-y+1/2,-z+1/2,-x&#34;, &#34;-y+1/2,z,x-1/2&#34;, &#34;-z+1/2,-y+1/2,x-1/2&#34;, &#34;y,-z+1/2,x-1/2&#34;, &#34;z,y+1/2,x&#34;, &#34;y+1/2,z+1/2,-x&#34;,
+        &#34;-z+1/2,y+1/2,-x-1/2&#34;, &#34;z,-y,-x-1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        227,
+    &#34;hermann_mauguin&#34;:
+        &#34;F d -3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/4,x+1/4,z+1/4&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;y+3/4,-x+1/4,z+3/4&#34;, &#34;x,-y,-z&#34;, &#34;y+1/4,x+1/4,-z+1/4&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;-y+3/4,-x+1/4,-z+3/4&#34;, &#34;z,x,y&#34;, &#34;-x+1/4,z+1/4,y+1/4&#34;, &#34;-z,-x+1/2,y+1/2&#34;,
+        &#34;x+3/4,-z+1/4,y+3/4&#34;, &#34;z,-x,-y&#34;, &#34;x+1/4,z+1/4,-y+1/4&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;-x+3/4,-z+1/4,-y+3/4&#34;, &#34;y,z,x&#34;,
+        &#34;y+1/2,-z,-x+1/2&#34;, &#34;z+1/4,y+3/4,-x+3/4&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-z+1/4,-y+1/4,-x+1/4&#34;, &#34;-y,-z,x&#34;,
+        &#34;z+1/4,-y+3/4,x+3/4&#34;, &#34;-z+3/4,y+3/4,x+1/4&#34;, &#34;-x+1/4,-y+1/4,-z+1/4&#34;, &#34;y,-x,-z&#34;, &#34;x+1/4,y-1/4,-z-1/4&#34;,
+        &#34;-y-1/2,x,-z-1/2&#34;, &#34;-x+1/4,y+1/4,z+1/4&#34;, &#34;-y,-x,z&#34;, &#34;x+1/4,-y-1/4,z-1/4&#34;, &#34;y-1/2,x,z-1/2&#34;,
+        &#34;-z+1/4,-x+1/4,-y+1/4&#34;, &#34;x,-z,-y&#34;, &#34;z+1/4,x-1/4,-y-1/4&#34;, &#34;-x-1/2,z,-y-1/2&#34;, &#34;-z+1/4,x+1/4,y+1/4&#34;, &#34;-x,-z,y&#34;,
+        &#34;z+1/4,-x-1/4,y-1/4&#34;, &#34;x-1/2,z,y-1/2&#34;, &#34;-y+1/4,-z+1/4,-x+1/4&#34;, &#34;-y-1/4,z+1/4,x-1/4&#34;, &#34;-z,-y-1/2,x-1/2&#34;,
+        &#34;y-1/4,-z-1/4,x+1/4&#34;, &#34;z,y,x&#34;, &#34;y+1/4,z+1/4,-x+1/4&#34;, &#34;-z,y-1/2,-x-1/2&#34;, &#34;z-1/2,-y-1/2,-x&#34;, &#34;x,y+1/2,z+1/2&#34;,
+        &#34;-y+1/4,x+3/4,z+3/4&#34;, &#34;-x,-y+1,z+1&#34;, &#34;y+3/4,-x+3/4,z+5/4&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;y+1/4,x+3/4,-z+3/4&#34;,
+        &#34;-x,y+1,-z+1&#34;, &#34;-y+3/4,-x+3/4,-z+5/4&#34;, &#34;z,x+1/2,y+1/2&#34;, &#34;-x+1/4,z+3/4,y+3/4&#34;, &#34;-z,-x+1,y+1&#34;,
+        &#34;x+3/4,-z+3/4,y+5/4&#34;, &#34;z,-x+1/2,-y+1/2&#34;, &#34;x+1/4,z+3/4,-y+3/4&#34;, &#34;-z,x+1,-y+1&#34;, &#34;-x+3/4,-z+3/4,-y+5/4&#34;,
+        &#34;y,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;z+1/4,y+5/4,-x+5/4&#34;, &#34;-y+1/2,z+1,-x+1/2&#34;, &#34;-z+1/4,-y+3/4,-x+3/4&#34;,
+        &#34;-y,-z+1/2,x+1/2&#34;, &#34;z+1/4,-y+5/4,x+5/4&#34;, &#34;-z+3/4,y+5/4,x+3/4&#34;, &#34;-x+1/4,-y+3/4,-z+3/4&#34;, &#34;y,-x+1/2,-z+1/2&#34;,
+        &#34;x+1/4,y+1/4,-z+1/4&#34;, &#34;-y-1/2,x+1/2,-z&#34;, &#34;-x+1/4,y+3/4,z+3/4&#34;, &#34;-y,-x+1/2,z+1/2&#34;, &#34;x+1/4,-y+1/4,z+1/4&#34;,
+        &#34;y-1/2,x+1/2,z&#34;, &#34;-z+1/4,-x+3/4,-y+3/4&#34;, &#34;x,-z+1/2,-y+1/2&#34;, &#34;z+1/4,x+1/4,-y+1/4&#34;, &#34;-x-1/2,z+1/2,-y&#34;,
+        &#34;-z+1/4,x+3/4,y+3/4&#34;, &#34;-x,-z+1/2,y+1/2&#34;, &#34;z+1/4,-x+1/4,y+1/4&#34;, &#34;x-1/2,z+1/2,y&#34;, &#34;-y+1/4,-z+3/4,-x+3/4&#34;,
+        &#34;-y-1/4,z+3/4,x+1/4&#34;, &#34;-z,-y,x&#34;, &#34;y-1/4,-z+1/4,x+3/4&#34;, &#34;z,y+1/2,x+1/2&#34;, &#34;y+1/4,z+3/4,-x+3/4&#34;, &#34;-z,y,-x&#34;,
+        &#34;z-1/2,-y,-x+1/2&#34;, &#34;x+1/2,y,z+1/2&#34;, &#34;-y+3/4,x+1/4,z+3/4&#34;, &#34;-x+1/2,-y+1/2,z+1&#34;, &#34;y+5/4,-x+1/4,z+5/4&#34;,
+        &#34;x+1/2,-y,-z+1/2&#34;, &#34;y+3/4,x+1/4,-z+3/4&#34;, &#34;-x+1/2,y+1/2,-z+1&#34;, &#34;-y+5/4,-x+1/4,-z+5/4&#34;, &#34;z+1/2,x,y+1/2&#34;,
+        &#34;-x+3/4,z+1/4,y+3/4&#34;, &#34;-z+1/2,-x+1/2,y+1&#34;, &#34;x+5/4,-z+1/4,y+5/4&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;x+3/4,z+1/4,-y+3/4&#34;,
+        &#34;-z+1/2,x+1/2,-y+1&#34;, &#34;-x+5/4,-z+1/4,-y+5/4&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1,-z,-x+1&#34;, &#34;z+3/4,y+3/4,-x+5/4&#34;,
+        &#34;-y+1,z+1/2,-x+1/2&#34;, &#34;-z+3/4,-y+1/4,-x+3/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+3/4,-y+3/4,x+5/4&#34;, &#34;-z+5/4,y+3/4,x+3/4&#34;,
+        &#34;-x+3/4,-y+1/4,-z+3/4&#34;, &#34;y+1/2,-x,-z+1/2&#34;, &#34;x+3/4,y-1/4,-z+1/4&#34;, &#34;-y,x,-z&#34;, &#34;-x+3/4,y+1/4,z+3/4&#34;,
+        &#34;-y+1/2,-x,z+1/2&#34;, &#34;x+3/4,-y-1/4,z+1/4&#34;, &#34;y,x,z&#34;, &#34;-z+3/4,-x+1/4,-y+3/4&#34;, &#34;x+1/2,-z,-y+1/2&#34;,
+        &#34;z+3/4,x-1/4,-y+1/4&#34;, &#34;-x,z,-y&#34;, &#34;-z+3/4,x+1/4,y+3/4&#34;, &#34;-x+1/2,-z,y+1/2&#34;, &#34;z+3/4,-x-1/4,y+1/4&#34;, &#34;x,z,y&#34;,
+        &#34;-y+3/4,-z+1/4,-x+3/4&#34;, &#34;-y+1/4,z+1/4,x+1/4&#34;, &#34;-z+1/2,-y-1/2,x&#34;, &#34;y+1/4,-z-1/4,x+3/4&#34;, &#34;z+1/2,y,x+1/2&#34;,
+        &#34;y+3/4,z+1/4,-x+3/4&#34;, &#34;-z+1/2,y-1/2,-x&#34;, &#34;z,-y-1/2,-x+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-y+3/4,x+3/4,z+1/4&#34;,
+        &#34;-x+1/2,-y+1,z+1/2&#34;, &#34;y+5/4,-x+3/4,z+3/4&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+3/4,x+3/4,-z+1/4&#34;, &#34;-x+1/2,y+1,-z+1/2&#34;,
+        &#34;-y+5/4,-x+3/4,-z+3/4&#34;, &#34;z+1/2,x+1/2,y&#34;, &#34;-x+3/4,z+3/4,y+1/4&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;, &#34;x+5/4,-z+3/4,y+3/4&#34;,
+        &#34;z+1/2,-x+1/2,-y&#34;, &#34;x+3/4,z+3/4,-y+1/4&#34;, &#34;-z+1/2,x+1,-y+1/2&#34;, &#34;-x+5/4,-z+3/4,-y+3/4&#34;, &#34;y+1/2,z+1/2,x&#34;,
+        &#34;y+1,-z+1/2,-x+1/2&#34;, &#34;z+3/4,y+5/4,-x+3/4&#34;, &#34;-y+1,z+1,-x&#34;, &#34;-z+3/4,-y+3/4,-x+1/4&#34;, &#34;-y+1/2,-z+1/2,x&#34;,
+        &#34;z+3/4,-y+5/4,x+3/4&#34;, &#34;-z+5/4,y+5/4,x+1/4&#34;, &#34;-x+3/4,-y+3/4,-z+1/4&#34;, &#34;y+1/2,-x+1/2,-z&#34;, &#34;x+3/4,y+1/4,-z-1/4&#34;,
+        &#34;-y,x+1/2,-z-1/2&#34;, &#34;-x+3/4,y+3/4,z+1/4&#34;, &#34;-y+1/2,-x+1/2,z&#34;, &#34;x+3/4,-y+1/4,z-1/4&#34;, &#34;y,x+1/2,z-1/2&#34;,
+        &#34;-z+3/4,-x+3/4,-y+1/4&#34;, &#34;x+1/2,-z+1/2,-y&#34;, &#34;z+3/4,x+1/4,-y-1/4&#34;, &#34;-x,z+1/2,-y-1/2&#34;, &#34;-z+3/4,x+3/4,y+1/4&#34;,
+        &#34;-x+1/2,-z+1/2,y&#34;, &#34;z+3/4,-x+1/4,y-1/4&#34;, &#34;x,z+1/2,y-1/2&#34;, &#34;-y+3/4,-z+3/4,-x+1/4&#34;, &#34;-y+1/4,z+3/4,x-1/4&#34;,
+        &#34;-z+1/2,-y,x-1/2&#34;, &#34;y+1/4,-z+1/4,x+1/4&#34;, &#34;z+1/2,y+1/2,x&#34;, &#34;y+3/4,z+3/4,-x+1/4&#34;, &#34;-z+1/2,y,-x-1/2&#34;, &#34;z,-y,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        228,
+    &#34;hermann_mauguin&#34;:
+        &#34;F d -3 c&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/4,x+1/4,z+1/4&#34;, &#34;-x,-y+1/2,z+1/2&#34;, &#34;y+3/4,-x+1/4,z+3/4&#34;, &#34;x,-y,-z&#34;, &#34;y+1/4,x+1/4,-z+1/4&#34;,
+        &#34;-x,y+1/2,-z+1/2&#34;, &#34;-y+3/4,-x+1/4,-z+3/4&#34;, &#34;z,x,y&#34;, &#34;-x+1/4,z+1/4,y+1/4&#34;, &#34;-z,-x+1/2,y+1/2&#34;,
+        &#34;x+3/4,-z+1/4,y+3/4&#34;, &#34;z,-x,-y&#34;, &#34;x+1/4,z+1/4,-y+1/4&#34;, &#34;-z,x+1/2,-y+1/2&#34;, &#34;-x+3/4,-z+1/4,-y+3/4&#34;, &#34;y,z,x&#34;,
+        &#34;y+1/2,-z,-x+1/2&#34;, &#34;z+1/4,y+3/4,-x+3/4&#34;, &#34;-y+1/2,z+1/2,-x&#34;, &#34;-z+1/4,-y+1/4,-x+1/4&#34;, &#34;-y,-z,x&#34;,
+        &#34;z+1/4,-y+3/4,x+3/4&#34;, &#34;-z+3/4,y+3/4,x+1/4&#34;, &#34;-x+3/4,-y+1/4,-z+1/4&#34;, &#34;y+1/2,-x,-z&#34;, &#34;x+3/4,y-1/4,-z-1/4&#34;,
+        &#34;-y,x,-z-1/2&#34;, &#34;-x+3/4,y+1/4,z+1/4&#34;, &#34;-y+1/2,-x,z&#34;, &#34;x+3/4,-y-1/4,z-1/4&#34;, &#34;y,x,z-1/2&#34;, &#34;-z+3/4,-x+1/4,-y+1/4&#34;,
+        &#34;x+1/2,-z,-y&#34;, &#34;z+3/4,x-1/4,-y-1/4&#34;, &#34;-x,z,-y-1/2&#34;, &#34;-z+3/4,x+1/4,y+1/4&#34;, &#34;-x+1/2,-z,y&#34;, &#34;z+3/4,-x-1/4,y-1/4&#34;,
+        &#34;x,z,y-1/2&#34;, &#34;-y+3/4,-z+1/4,-x+1/4&#34;, &#34;-y+1/4,z+1/4,x-1/4&#34;, &#34;-z+1/2,-y-1/2,x-1/2&#34;, &#34;y+1/4,-z-1/4,x+1/4&#34;,
+        &#34;z+1/2,y,x&#34;, &#34;y+3/4,z+1/4,-x+1/4&#34;, &#34;-z+1/2,y-1/2,-x-1/2&#34;, &#34;z,-y-1/2,-x&#34;, &#34;x,y+1/2,z+1/2&#34;, &#34;-y+1/4,x+3/4,z+3/4&#34;,
+        &#34;-x,-y+1,z+1&#34;, &#34;y+3/4,-x+3/4,z+5/4&#34;, &#34;x,-y+1/2,-z+1/2&#34;, &#34;y+1/4,x+3/4,-z+3/4&#34;, &#34;-x,y+1,-z+1&#34;,
+        &#34;-y+3/4,-x+3/4,-z+5/4&#34;, &#34;z,x+1/2,y+1/2&#34;, &#34;-x+1/4,z+3/4,y+3/4&#34;, &#34;-z,-x+1,y+1&#34;, &#34;x+3/4,-z+3/4,y+5/4&#34;,
+        &#34;z,-x+1/2,-y+1/2&#34;, &#34;x+1/4,z+3/4,-y+3/4&#34;, &#34;-z,x+1,-y+1&#34;, &#34;-x+3/4,-z+3/4,-y+5/4&#34;, &#34;y,z+1/2,x+1/2&#34;,
+        &#34;y+1/2,-z+1/2,-x+1&#34;, &#34;z+1/4,y+5/4,-x+5/4&#34;, &#34;-y+1/2,z+1,-x+1/2&#34;, &#34;-z+1/4,-y+3/4,-x+3/4&#34;, &#34;-y,-z+1/2,x+1/2&#34;,
+        &#34;z+1/4,-y+5/4,x+5/4&#34;, &#34;-z+3/4,y+5/4,x+3/4&#34;, &#34;-x+3/4,-y+3/4,-z+3/4&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+3/4,y+1/4,-z+1/4&#34;,
+        &#34;-y,x+1/2,-z&#34;, &#34;-x+3/4,y+3/4,z+3/4&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x+3/4,-y+1/4,z+1/4&#34;, &#34;y,x+1/2,z&#34;,
+        &#34;-z+3/4,-x+3/4,-y+3/4&#34;, &#34;x+1/2,-z+1/2,-y+1/2&#34;, &#34;z+3/4,x+1/4,-y+1/4&#34;, &#34;-x,z+1/2,-y&#34;, &#34;-z+3/4,x+3/4,y+3/4&#34;,
+        &#34;-x+1/2,-z+1/2,y+1/2&#34;, &#34;z+3/4,-x+1/4,y+1/4&#34;, &#34;x,z+1/2,y&#34;, &#34;-y+3/4,-z+3/4,-x+3/4&#34;, &#34;-y+1/4,z+3/4,x+1/4&#34;,
+        &#34;-z+1/2,-y,x&#34;, &#34;y+1/4,-z+1/4,x+3/4&#34;, &#34;z+1/2,y+1/2,x+1/2&#34;, &#34;y+3/4,z+3/4,-x+3/4&#34;, &#34;-z+1/2,y,-x&#34;, &#34;z,-y,-x+1/2&#34;,
+        &#34;x+1/2,y,z+1/2&#34;, &#34;-y+3/4,x+1/4,z+3/4&#34;, &#34;-x+1/2,-y+1/2,z+1&#34;, &#34;y+5/4,-x+1/4,z+5/4&#34;, &#34;x+1/2,-y,-z+1/2&#34;,
+        &#34;y+3/4,x+1/4,-z+3/4&#34;, &#34;-x+1/2,y+1/2,-z+1&#34;, &#34;-y+5/4,-x+1/4,-z+5/4&#34;, &#34;z+1/2,x,y+1/2&#34;, &#34;-x+3/4,z+1/4,y+3/4&#34;,
+        &#34;-z+1/2,-x+1/2,y+1&#34;, &#34;x+5/4,-z+1/4,y+5/4&#34;, &#34;z+1/2,-x,-y+1/2&#34;, &#34;x+3/4,z+1/4,-y+3/4&#34;, &#34;-z+1/2,x+1/2,-y+1&#34;,
+        &#34;-x+5/4,-z+1/4,-y+5/4&#34;, &#34;y+1/2,z,x+1/2&#34;, &#34;y+1,-z,-x+1&#34;, &#34;z+3/4,y+3/4,-x+5/4&#34;, &#34;-y+1,z+1/2,-x+1/2&#34;,
+        &#34;-z+3/4,-y+1/4,-x+3/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+3/4,-y+3/4,x+5/4&#34;, &#34;-z+5/4,y+3/4,x+3/4&#34;, &#34;-x+5/4,-y+1/4,-z+3/4&#34;,
+        &#34;y+1,-x,-z+1/2&#34;, &#34;x+5/4,y-1/4,-z+1/4&#34;, &#34;-y+1/2,x,-z&#34;, &#34;-x+5/4,y+1/4,z+3/4&#34;, &#34;-y+1,-x,z+1/2&#34;,
+        &#34;x+5/4,-y-1/4,z+1/4&#34;, &#34;y+1/2,x,z&#34;, &#34;-z+5/4,-x+1/4,-y+3/4&#34;, &#34;x+1,-z,-y+1/2&#34;, &#34;z+5/4,x-1/4,-y+1/4&#34;, &#34;-x+1/2,z,-y&#34;,
+        &#34;-z+5/4,x+1/4,y+3/4&#34;, &#34;-x+1,-z,y+1/2&#34;, &#34;z+5/4,-x-1/4,y+1/4&#34;, &#34;x+1/2,z,y&#34;, &#34;-y+5/4,-z+1/4,-x+3/4&#34;,
+        &#34;-y+3/4,z+1/4,x+1/4&#34;, &#34;-z+1,-y-1/2,x&#34;, &#34;y+3/4,-z-1/4,x+3/4&#34;, &#34;z+1,y,x+1/2&#34;, &#34;y+5/4,z+1/4,-x+3/4&#34;,
+        &#34;-z+1,y-1/2,-x&#34;, &#34;z+1/2,-y-1/2,-x+1/2&#34;, &#34;x+1/2,y+1/2,z&#34;, &#34;-y+3/4,x+3/4,z+1/4&#34;, &#34;-x+1/2,-y+1,z+1/2&#34;,
+        &#34;y+5/4,-x+3/4,z+3/4&#34;, &#34;x+1/2,-y+1/2,-z&#34;, &#34;y+3/4,x+3/4,-z+1/4&#34;, &#34;-x+1/2,y+1,-z+1/2&#34;, &#34;-y+5/4,-x+3/4,-z+3/4&#34;,
+        &#34;z+1/2,x+1/2,y&#34;, &#34;-x+3/4,z+3/4,y+1/4&#34;, &#34;-z+1/2,-x+1,y+1/2&#34;, &#34;x+5/4,-z+3/4,y+3/4&#34;, &#34;z+1/2,-x+1/2,-y&#34;,
+        &#34;x+3/4,z+3/4,-y+1/4&#34;, &#34;-z+1/2,x+1,-y+1/2&#34;, &#34;-x+5/4,-z+3/4,-y+3/4&#34;, &#34;y+1/2,z+1/2,x&#34;, &#34;y+1,-z+1/2,-x+1/2&#34;,
+        &#34;z+3/4,y+5/4,-x+3/4&#34;, &#34;-y+1,z+1,-x&#34;, &#34;-z+3/4,-y+3/4,-x+1/4&#34;, &#34;-y+1/2,-z+1/2,x&#34;, &#34;z+3/4,-y+5/4,x+3/4&#34;,
+        &#34;-z+5/4,y+5/4,x+1/4&#34;, &#34;-x+5/4,-y+3/4,-z+1/4&#34;, &#34;y+1,-x+1/2,-z&#34;, &#34;x+5/4,y+1/4,-z-1/4&#34;, &#34;-y+1/2,x+1/2,-z-1/2&#34;,
+        &#34;-x+5/4,y+3/4,z+1/4&#34;, &#34;-y+1,-x+1/2,z&#34;, &#34;x+5/4,-y+1/4,z-1/4&#34;, &#34;y+1/2,x+1/2,z-1/2&#34;, &#34;-z+5/4,-x+3/4,-y+1/4&#34;,
+        &#34;x+1,-z+1/2,-y&#34;, &#34;z+5/4,x+1/4,-y-1/4&#34;, &#34;-x+1/2,z+1/2,-y-1/2&#34;, &#34;-z+5/4,x+3/4,y+1/4&#34;, &#34;-x+1,-z+1/2,y&#34;,
+        &#34;z+5/4,-x+1/4,y-1/4&#34;, &#34;x+1/2,z+1/2,y-1/2&#34;, &#34;-y+5/4,-z+3/4,-x+1/4&#34;, &#34;-y+3/4,z+3/4,x-1/4&#34;, &#34;-z+1,-y,x-1/2&#34;,
+        &#34;y+3/4,-z+1/4,x+1/4&#34;, &#34;z+1,y+1/2,x&#34;, &#34;y+5/4,z+3/4,-x+1/4&#34;, &#34;-z+1,y,-x-1/2&#34;, &#34;z+1/2,-y,-x&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        229,
+    &#34;hermann_mauguin&#34;:
+        &#34;I m -3 m&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y,x,z&#34;, &#34;-x,-y,z&#34;, &#34;y,-x,z&#34;, &#34;x,-y,-z&#34;, &#34;y,x,-z&#34;, &#34;-x,y,-z&#34;, &#34;-y,-x,-z&#34;, &#34;z,x,y&#34;, &#34;-x,z,y&#34;,
+        &#34;-z,-x,y&#34;, &#34;x,-z,y&#34;, &#34;z,-x,-y&#34;, &#34;x,z,-y&#34;, &#34;-z,x,-y&#34;, &#34;-x,-z,-y&#34;, &#34;y,z,x&#34;, &#34;y,-z,-x&#34;, &#34;z,y,-x&#34;, &#34;-y,z,-x&#34;,
+        &#34;-z,-y,-x&#34;, &#34;-y,-z,x&#34;, &#34;z,-y,x&#34;, &#34;-z,y,x&#34;, &#34;-x,-y,-z&#34;, &#34;y,-x,-z&#34;, &#34;x,y,-z&#34;, &#34;-y,x,-z&#34;, &#34;-x,y,z&#34;, &#34;-y,-x,z&#34;,
+        &#34;x,-y,z&#34;, &#34;y,x,z&#34;, &#34;-z,-x,-y&#34;, &#34;x,-z,-y&#34;, &#34;z,x,-y&#34;, &#34;-x,z,-y&#34;, &#34;-z,x,y&#34;, &#34;-x,-z,y&#34;, &#34;z,-x,y&#34;, &#34;x,z,y&#34;,
+        &#34;-y,-z,-x&#34;, &#34;-y,z,x&#34;, &#34;-z,-y,x&#34;, &#34;y,-z,x&#34;, &#34;z,y,x&#34;, &#34;y,z,-x&#34;, &#34;-z,y,-x&#34;, &#34;z,-y,-x&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;,
+        &#34;-y+1/2,x+1/2,z+1/2&#34;, &#34;-x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,-z+1/2&#34;, &#34;-y+1/2,-x+1/2,-z+1/2&#34;, &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-x+1/2,z+1/2,y+1/2&#34;, &#34;-z+1/2,-x+1/2,y+1/2&#34;,
+        &#34;x+1/2,-z+1/2,y+1/2&#34;, &#34;z+1/2,-x+1/2,-y+1/2&#34;, &#34;x+1/2,z+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,-y+1/2&#34;,
+        &#34;-x+1/2,-z+1/2,-y+1/2&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1/2,-z+1/2,-x+1/2&#34;, &#34;z+1/2,y+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,-x+1/2&#34;,
+        &#34;-z+1/2,-y+1/2,-x+1/2&#34;, &#34;-y+1/2,-z+1/2,x+1/2&#34;, &#34;z+1/2,-y+1/2,x+1/2&#34;, &#34;-z+1/2,y+1/2,x+1/2&#34;,
+        &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/2,-x+1/2,-z+1/2&#34;, &#34;x+1/2,y+1/2,-z+1/2&#34;, &#34;-y+1/2,x+1/2,-z+1/2&#34;,
+        &#34;-x+1/2,y+1/2,z+1/2&#34;, &#34;-y+1/2,-x+1/2,z+1/2&#34;, &#34;x+1/2,-y+1/2,z+1/2&#34;, &#34;y+1/2,x+1/2,z+1/2&#34;, &#34;-z+1/2,-x+1/2,-y+1/2&#34;,
+        &#34;x+1/2,-z+1/2,-y+1/2&#34;, &#34;z+1/2,x+1/2,-y+1/2&#34;, &#34;-x+1/2,z+1/2,-y+1/2&#34;, &#34;-z+1/2,x+1/2,y+1/2&#34;, &#34;-x+1/2,-z+1/2,y+1/2&#34;,
+        &#34;z+1/2,-x+1/2,y+1/2&#34;, &#34;x+1/2,z+1/2,y+1/2&#34;, &#34;-y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y+1/2,z+1/2,x+1/2&#34;, &#34;-z+1/2,-y+1/2,x+1/2&#34;,
+        &#34;y+1/2,-z+1/2,x+1/2&#34;, &#34;z+1/2,y+1/2,x+1/2&#34;, &#34;y+1/2,z+1/2,-x+1/2&#34;, &#34;-z+1/2,y+1/2,-x+1/2&#34;, &#34;z+1/2,-y+1/2,-x+1/2&#34;
+    ]
+}, {
+    &#34;bravais_lattice&#34;:
+        &#34;cubic&#34;,
+    &#34;international_number&#34;:
+        230,
+    &#34;hermann_mauguin&#34;:
+        &#34;I a -3 d&#34;,
+    &#34;genpos&#34;: [
+        &#34;x,y,z&#34;, &#34;-y+1/4,x+3/4,z+1/4&#34;, &#34;-x+1/2,-y,z+1/2&#34;, &#34;y+1/4,-x+1/4,z+3/4&#34;, &#34;x,-y,-z+1/2&#34;, &#34;y+1/4,x+3/4,-z+3/4&#34;,
+        &#34;-x+1/2,y,-z&#34;, &#34;-y+1/4,-x+1/4,-z+1/4&#34;, &#34;z,x,y&#34;, &#34;-x+1/4,z+3/4,y+1/4&#34;, &#34;-z+1/2,-x,y+1/2&#34;, &#34;x+1/4,-z+1/4,y+3/4&#34;,
+        &#34;z,-x,-y+1/2&#34;, &#34;x+1/4,z+3/4,-y+3/4&#34;, &#34;-z+1/2,x,-y&#34;, &#34;-x+1/4,-z+1/4,-y+1/4&#34;, &#34;y,z,x&#34;, &#34;y+1/2,-z+1/2,-x&#34;,
+        &#34;z+3/4,y+1/4,-x+1/4&#34;, &#34;-y,z+1/2,-x+1/2&#34;, &#34;-z+1/4,-y+1/4,-x+1/4&#34;, &#34;-y+1/2,-z,x+1/2&#34;, &#34;z+3/4,-y+3/4,x+1/4&#34;,
+        &#34;-z+3/4,y+1/4,x+3/4&#34;, &#34;-x,-y,-z&#34;, &#34;y-1/4,-x-3/4,-z-1/4&#34;, &#34;x-1/2,y,-z-1/2&#34;, &#34;-y-1/4,x-1/4,-z-3/4&#34;, &#34;-x,y,z-1/2&#34;,
+        &#34;-y-1/4,-x-3/4,z-3/4&#34;, &#34;x-1/2,-y,z&#34;, &#34;y-1/4,x-1/4,z-1/4&#34;, &#34;-z,-x,-y&#34;, &#34;x-1/4,-z-3/4,-y-1/4&#34;, &#34;z-1/2,x,-y-1/2&#34;,
+        &#34;-x-1/4,z-1/4,-y-3/4&#34;, &#34;-z,x,y-1/2&#34;, &#34;-x-1/4,-z-3/4,y-3/4&#34;, &#34;z-1/2,-x,y&#34;, &#34;x-1/4,z-1/4,y-1/4&#34;, &#34;-y,-z,-x&#34;,
+        &#34;-y-1/2,z-1/2,x&#34;, &#34;-z-3/4,-y-1/4,x-1/4&#34;, &#34;y,-z-1/2,x-1/2&#34;, &#34;z-1/4,y-1/4,x-1/4&#34;, &#34;y-1/2,z,-x-1/2&#34;,
+        &#34;-z-3/4,y-3/4,-x-1/4&#34;, &#34;z-3/4,-y-1/4,-x-3/4&#34;, &#34;x+1/2,y+1/2,z+1/2&#34;, &#34;-y+3/4,x+5/4,z+3/4&#34;, &#34;-x+1,-y+1/2,z+1&#34;,
+        &#34;y+3/4,-x+3/4,z+5/4&#34;, &#34;x+1/2,-y+1/2,-z+1&#34;, &#34;y+3/4,x+5/4,-z+5/4&#34;, &#34;-x+1,y+1/2,-z+1/2&#34;, &#34;-y+3/4,-x+3/4,-z+3/4&#34;,
+        &#34;z+1/2,x+1/2,y+1/2&#34;, &#34;-x+3/4,z+5/4,y+3/4&#34;, &#34;-z+1,-x+1/2,y+1&#34;, &#34;x+3/4,-z+3/4,y+5/4&#34;, &#34;z+1/2,-x+1/2,-y+1&#34;,
+        &#34;x+3/4,z+5/4,-y+5/4&#34;, &#34;-z+1,x+1/2,-y+1/2&#34;, &#34;-x+3/4,-z+3/4,-y+3/4&#34;, &#34;y+1/2,z+1/2,x+1/2&#34;, &#34;y+1,-z+1,-x+1/2&#34;,
+        &#34;z+5/4,y+3/4,-x+3/4&#34;, &#34;-y+1/2,z+1,-x+1&#34;, &#34;-z+3/4,-y+3/4,-x+3/4&#34;, &#34;-y+1,-z+1/2,x+1&#34;, &#34;z+5/4,-y+5/4,x+3/4&#34;,
+        &#34;-z+5/4,y+3/4,x+5/4&#34;, &#34;-x+1/2,-y+1/2,-z+1/2&#34;, &#34;y+1/4,-x-1/4,-z+1/4&#34;, &#34;x,y+1/2,-z&#34;, &#34;-y+1/4,x+1/4,-z-1/4&#34;,
+        &#34;-x+1/2,y+1/2,z&#34;, &#34;-y+1/4,-x-1/4,z-1/4&#34;, &#34;x,-y+1/2,z+1/2&#34;, &#34;y+1/4,x+1/4,z+1/4&#34;, &#34;-z+1/2,-x+1/2,-y+1/2&#34;,
+        &#34;x+1/4,-z-1/4,-y+1/4&#34;, &#34;z,x+1/2,-y&#34;, &#34;-x+1/4,z+1/4,-y-1/4&#34;, &#34;-z+1/2,x+1/2,y&#34;, &#34;-x+1/4,-z-1/4,y-1/4&#34;,
+        &#34;z,-x+1/2,y+1/2&#34;, &#34;x+1/4,z+1/4,y+1/4&#34;, &#34;-y+1/2,-z+1/2,-x+1/2&#34;, &#34;-y,z,x+1/2&#34;, &#34;-z-1/4,-y+1/4,x+1/4&#34;,
+        &#34;y+1/2,-z,x&#34;, &#34;z+1/4,y+1/4,x+1/4&#34;, &#34;y,z+1/2,-x&#34;, &#34;-z-1/4,y-1/4,-x+1/4&#34;, &#34;z-1/4,-y+1/4,-x-1/4&#34;
+    ]
+}]</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="atompack.spacegroup.Spacegroup"><code class="flex name class">
+<span>class <span class="ident">Spacegroup</span></span>
+<span>(</span><span>spg: Union[int, str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of a spacegroup.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>spg</code></strong></dt>
+<dd>Hermann Mauguin symbol or International spacegroup number.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Spacegroup(object):
+    &#34;&#34;&#34;Representation of a spacegroup.
+
+    Args:
+        spg: Hermann Mauguin symbol or International spacegroup number.
+    &#34;&#34;&#34;
+
+    def __init__(self, spg: Union[int, str]) -&gt; None:
+        group = None
+        if type(spg) is int:
+            if spg &gt; 230 or spg &lt; 1:
+                raise ValueError(&#34;`spg` must be in range 1..230&#34;)
+            group = SPACEGROUPS[spg - 1]
+        elif type(spg) is str:
+            for i, _group in enumerate(SPACEGROUPS):
+                if _group[&#34;hermann_mauguin&#34;] == spg:
+                    group = SPACEGROUPS[i]
+                    break
+            if group is None:
+                raise ValueError(&#34;`spg` is not a valid Hermann Mauguin spacegroup symbol&#34;)
+        else:
+            raise TypeError(&#34;`spg` must be of type int or str&#34;)
+
+        self._bravais_lattice = group[&#34;bravais_lattice&#34;]
+        self._international_number = group[&#34;international_number&#34;]
+        self._hermann_mauguin = group[&#34;hermann_mauguin&#34;]
+        self._genpos = group[&#34;genpos&#34;]
+
+    ####################
+    #    Properties    #
+    ####################
+
+    @property
+    def bravais_lattice(self) -&gt; str:
+        &#34;&#34;&#34;Returns the bravais lattice name.&#34;&#34;&#34;
+        return self._bravais_lattice
+
+    @property
+    def international_number(self) -&gt; int:
+        &#34;&#34;&#34;Returns the international spacegroup number.&#34;&#34;&#34;
+        return self._international_number
+
+    @property
+    def hermann_mauguin(self) -&gt; str:
+        &#34;&#34;&#34;Returns the Hermann Mauguin spacegroup symbol.&#34;&#34;&#34;
+        return self._hermann_mauguin
+
+    @property
+    def genpos(self) -&gt; List[str]:
+        &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
+        return self._genpos</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.spacegroup.Spacegroup.bravais_lattice"><code class="name">var <span class="ident">bravais_lattice</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns the bravais lattice name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def bravais_lattice(self) -&gt; str:
+    &#34;&#34;&#34;Returns the bravais lattice name.&#34;&#34;&#34;
+    return self._bravais_lattice</code></pre>
+</details>
+</dd>
+<dt id="atompack.spacegroup.Spacegroup.genpos"><code class="name">var <span class="ident">genpos</span> : List[str]</code></dt>
+<dd>
+<div class="desc"><p>Returns the general position expressions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def genpos(self) -&gt; List[str]:
+    &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
+    return self._genpos</code></pre>
+</details>
+</dd>
+<dt id="atompack.spacegroup.Spacegroup.hermann_mauguin"><code class="name">var <span class="ident">hermann_mauguin</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns the Hermann Mauguin spacegroup symbol.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def hermann_mauguin(self) -&gt; str:
+    &#34;&#34;&#34;Returns the Hermann Mauguin spacegroup symbol.&#34;&#34;&#34;
+    return self._hermann_mauguin</code></pre>
+</details>
+</dd>
+<dt id="atompack.spacegroup.Spacegroup.international_number"><code class="name">var <span class="ident">international_number</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Returns the international spacegroup number.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def international_number(self) -&gt; int:
+    &#34;&#34;&#34;Returns the international spacegroup number.&#34;&#34;&#34;
+    return self._international_number</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="atompack" href="index.html">atompack</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="atompack.spacegroup.Spacegroup" href="#atompack.spacegroup.Spacegroup">Spacegroup</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.spacegroup.Spacegroup.bravais_lattice" href="#atompack.spacegroup.Spacegroup.bravais_lattice">bravais_lattice</a></code></li>
+<li><code><a title="atompack.spacegroup.Spacegroup.genpos" href="#atompack.spacegroup.Spacegroup.genpos">genpos</a></code></li>
+<li><code><a title="atompack.spacegroup.Spacegroup.hermann_mauguin" href="#atompack.spacegroup.Spacegroup.hermann_mauguin">hermann_mauguin</a></code></li>
+<li><code><a title="atompack.spacegroup.Spacegroup.international_number" href="#atompack.spacegroup.Spacegroup.international_number">international_number</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>

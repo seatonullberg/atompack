@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.0" />
+<meta name="generator" content="pdoc 0.9.1" />
 <title>atompack.bond API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -27,19 +27,56 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from atompack.util import AsDict
+<pre><code class="python">from collections.abc import Iterable, MutableMapping
+from typing import Any, Tuple
+
+from atompack.atom import Atom
 
 
-class Bond(AsDict):
-    &#34;&#34;&#34;Container to store metadata about a bond between atoms.
+class Bond(MutableMapping):
+    &#34;&#34;&#34;Dict like object containing arbitrary bond properties.
     
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
+    Note:
+        End users should not construct bond objects directly.
+
+    Args:
+        endpoints: Atoms at each end of the bond.
     &#34;&#34;&#34;
 
-    def __init__(self, **kwargs) -&gt; None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+    #######################################
+    #    MutableMapping Implementation    #
+    #######################################
+
+    def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -&gt; None:
+        self._attrs = {k: v for k, v in kwargs.items()}
+        self._attrs[&#34;endpoints&#34;] = endpoints
+
+    def __getitem__(self, key: str) -&gt; Any:
+        return self._attrs[key]
+
+    def __setitem__(self, key: str, value: Any) -&gt; None:
+        self._attrs[key] = value
+
+    def __delitem__(self, key: str) -&gt; None:
+        del self._attrs[key]
+
+    def __iter__(self) -&gt; Iterable:
+        return iter(self._attrs)
+
+    def __len__(self) -&gt; int:
+        return len(self._attrs)
+
+    ####################
+    #    Properties    #
+    ####################
+
+    @property
+    def endpoints(self) -&gt; Tuple[Atom, Atom]:
+        return self._attrs[&#34;endpoints&#34;]
+
+    @endpoints.setter
+    def endpoints(self, value: Tuple[Atom, Atom]) -&gt; None:
+        self._attrs[&#34;endpoints&#34;] = value</code></pre>
 </details>
 </section>
 <section>
@@ -53,31 +90,90 @@ class Bond(AsDict):
 <dl>
 <dt id="atompack.bond.Bond"><code class="flex name class">
 <span>class <span class="ident">Bond</span></span>
-<span>(</span><span>**kwargs)</span>
+<span>(</span><span>endpoints: Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Container to store metadata about a bond between atoms.</p>
-<h2 id="notes">Notes</h2>
-<p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.</p></div>
+<div class="desc"><p>Dict like object containing arbitrary bond properties.</p>
+<h2 id="note">Note</h2>
+<p>End users should not construct bond objects directly.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>endpoints</code></strong></dt>
+<dd>Atoms at each end of the bond.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Bond(AsDict):
-    &#34;&#34;&#34;Container to store metadata about a bond between atoms.
+<pre><code class="python">class Bond(MutableMapping):
+    &#34;&#34;&#34;Dict like object containing arbitrary bond properties.
     
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
+    Note:
+        End users should not construct bond objects directly.
+
+    Args:
+        endpoints: Atoms at each end of the bond.
     &#34;&#34;&#34;
 
-    def __init__(self, **kwargs) -&gt; None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+    #######################################
+    #    MutableMapping Implementation    #
+    #######################################
+
+    def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -&gt; None:
+        self._attrs = {k: v for k, v in kwargs.items()}
+        self._attrs[&#34;endpoints&#34;] = endpoints
+
+    def __getitem__(self, key: str) -&gt; Any:
+        return self._attrs[key]
+
+    def __setitem__(self, key: str, value: Any) -&gt; None:
+        self._attrs[key] = value
+
+    def __delitem__(self, key: str) -&gt; None:
+        del self._attrs[key]
+
+    def __iter__(self) -&gt; Iterable:
+        return iter(self._attrs)
+
+    def __len__(self) -&gt; int:
+        return len(self._attrs)
+
+    ####################
+    #    Properties    #
+    ####################
+
+    @property
+    def endpoints(self) -&gt; Tuple[Atom, Atom]:
+        return self._attrs[&#34;endpoints&#34;]
+
+    @endpoints.setter
+    def endpoints(self, value: Tuple[Atom, Atom]) -&gt; None:
+        self._attrs[&#34;endpoints&#34;] = value</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="atompack.util.AsDict" href="util.html#atompack.util.AsDict">AsDict</a></li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.bond.Bond.endpoints"><code class="name">var <span class="ident">endpoints</span> : Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def endpoints(self) -&gt; Tuple[Atom, Atom]:
+    return self._attrs[&#34;endpoints&#34;]</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -97,6 +193,9 @@ class Bond(AsDict):
 <ul>
 <li>
 <h4><code><a title="atompack.bond.Bond" href="#atompack.bond.Bond">Bond</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.bond.Bond.endpoints" href="#atompack.bond.Bond.endpoints">endpoints</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
@@ -104,7 +203,7 @@ class Bond(AsDict):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
 </footer>
 </body>
 </html>

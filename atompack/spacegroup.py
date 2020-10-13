@@ -3,12 +3,6 @@ from typing import Callable, List, Union
 import numpy as np
 
 
-def eval_genpos(site: np.ndarray, genpos: str) -> np.ndarray:
-    genpos = "[{}]".format(genpos)
-    x, y, z = site[0], site[1], site[2]
-    return np.array(eval(genpos))
-
-
 class Spacegroup(object):
     """Representation of a spacegroup.
 
@@ -36,6 +30,10 @@ class Spacegroup(object):
         self._international_number = group["international_number"]
         self._hermann_mauguin = group["hermann_mauguin"]
         self._genpos = group["genpos"]
+
+    ####################
+    #    Properties    #
+    ####################
 
     @property
     def bravais_lattice(self) -> str:
