@@ -408,16 +408,21 @@ class Crystal(Topology):
     #########################
 
     def _general_transform(self) -> None:
-        pass
+        if self._transformation_matrix is None:
+            return
 
     def _supercell(self) -> None:
-        pass
+        if self._extent is None:
+            return
 
     def _orient(self) -> None:
-        pass
+        if self._orientation is None:
+            return
 
     def _project(self) -> None:
-        pass
+        if self._projection_plane is None:
+            return
 
     def _cut(self) -> None:
-        pass
+        if self._cut_plane is None:
+            return

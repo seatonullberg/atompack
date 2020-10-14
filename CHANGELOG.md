@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `atom.Atom` and `bond.Bond` now inherit from `MutableMapping`.
 * `crystal.Crystal` and `crystal.UnitCell` are now initialized by spacegroup.
 
+### Removed
+
+* `elements` module.
 
 ## [0.3.0] - 2020-09-08
 
