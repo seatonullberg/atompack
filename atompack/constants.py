@@ -1,6 +1,5 @@
 import numpy as np
 
-
 DEG90 = np.pi / 2
 """90 degrees in radians."""
 

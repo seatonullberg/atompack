@@ -1,3 +1,4 @@
+import copy
 from collections.abc import MutableSequence
 from typing import List, Tuple, Union
 
@@ -59,7 +60,7 @@ class Basis(MutableSequence):
     def primitive(cls, specie: str) -> 'Basis':
         """Returns a primitive basis."""
         return cls([(np.zeros(3), specie)])
-    
+
     ########################
     #    Public Methods    #
     ########################
@@ -255,7 +256,7 @@ class UnitCell(Topology):
     def lattice_parameters(self) -> LatticeParameters:
         """Returns the lattice parameters."""
         return self._lattice_parameters
-    
+
     @property
     def lattice_vectors(self) -> np.ndarray:
         return np.sqrt(np.abs(self.lattice_parameters.metric_tensor))
@@ -297,8 +298,8 @@ class Crystal(Topology):
         super().__init__()
         # copy attributes from unit cell
         self._unit_cell = UnitCell(basis, lattice_parameters, spacegroup)
-        self._lattice_vectors = self._unit_cell._lattice_parameters.metric_tensor.copy()
-        self.atoms = self._unit_cell.atoms.copy()
+        self._atoms = self._unit_cell.atoms.copy()
+        self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
 
     ####################
     #    Properties    #
@@ -326,21 +327,19 @@ class Crystal(Topology):
             transformation: Transformation matrix.
 
         Note:
-            This method is idempotent.
             The transform is not applied until the `finish` method is called.
         """
         self._transformation_matrix = transformation
         return self
 
     def supercell(self, extent: Tuple[int, int, int]) -> 'Crystal':
-        """Creates a supercell by duplicating the crystal's unit cell in 3 dimensions.
+        """Creates a supercell by duplicating the crystal in 3 dimensions.
         Mutates the crystal and returns a reference to itself to enable method chaining.
 
         Args:
             extent: Number of repeat units in each direction.
 
         Note:
-            This method is idempotent.
             The transform is not applied until the `finish` method is called.
         """
         self._extent = extent
@@ -354,7 +353,6 @@ class Crystal(Topology):
             orientation: Crystallographic orientation.
 
         Note:
-            This method is idempotent.
             The transform is not applied until the `finish` method is called.
         """
         self._orientation = orientation
@@ -369,7 +367,6 @@ class Crystal(Topology):
             orthogonalize: Determines whether or not the projection is represented as an orthogonal lattice.
 
         Note:
-            This method is idempotent.
             The transform is not applied until the `finish` method is called.
             Setting `orthogonalize` to True may result in very large structures for acute projections.
         """
@@ -385,7 +382,6 @@ class Crystal(Topology):
             plane: Plane to cut along.
 
         Note:
-            This method is idempotent.
             The transform is not applied until the `finish` method is called.
         """
         self._cut_plane = plane
@@ -393,19 +389,33 @@ class Crystal(Topology):
 
     def finish(self) -> None:
         """Applies all active transforms to the crystal."""
-        # TODO: call underlying implementations
-
+        # call underlying implementations
+        # TODO: determine best order
+        self._project()
+        self._general_transform()
+        self._supercell()
+        self._cut()
+        self._orient()
         # reset attributes
+        self._reset_attributes()
+
+    def reset(self) -> None:
+        """Undo all transformations."""
+        self._atoms = self.unit_cell.atoms.copy()
+        self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
+        self._reset_attributes()
+
+    #########################
+    #    Private Methods    #
+    #########################
+
+    def _reset_attributes(self) -> None:
         self._cut_plane = None
         self._extent = None
         self._orientation = None
         self._orthogonalize = None
         self._projection_plane = None
         self._transformation_matrix = None
-
-    #########################
-    #    Private Methods    #
-    #########################
 
     def _general_transform(self) -> None:
         if self._transformation_matrix is None:
@@ -414,6 +424,20 @@ class Crystal(Topology):
     def _supercell(self) -> None:
         if self._extent is None:
             return
+        atoms: List[Atom] = []
+        for x in range(self._extent[0]):
+            for y in range(self._extent[1]):
+                for z in range(self._extent[2]):
+                    offset = np.matmul(
+                        np.array([x, y, z]),
+                        self.lattice_vectors,
+                    )
+                    for atom in self.atoms:
+                        _atom = copy.deepcopy(atom)
+                        _atom.position += offset
+                        atoms.append(_atom)
+        self._atoms = atoms
+        self._lattice_vectors *= self._extent
 
     def _orient(self) -> None:
         if self._orientation is None:

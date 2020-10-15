@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from atompack.crystal import Basis, LatticeParameters, UnitCell
+from atompack.crystal import Basis, Crystal, LatticeParameters, UnitCell
 from atompack.spacegroup import Spacegroup
 
 
@@ -89,3 +89,26 @@ def test_unit_cell_hexagonal():
     for i, (_site, _specie) in enumerate(target):
         assert np.allclose(unit_cell.atoms[i].position, _site)
         assert unit_cell.atoms[i].specie == _specie
+
+
+def test_crystal_supercell_cubic():
+    # primitive basis of iron
+    basis = Basis.primitive("Fe")
+    # cubic lattice parameters
+    lattparams = LatticeParameters.cubic(2.85)
+    # BCC spacegroup
+    spg = Spacegroup("I m -3 m")
+    # build the crystal
+    crystal = Crystal(basis, lattparams, spg)
+    # generate supercell
+    crystal.supercell((1, 2, 3)).finish()
+    assert len(crystal.atoms) == 12
+    assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors * np.array([1, 2, 3]))
+    # generate another supercell
+    crystal.supercell((2, 2, 2)).finish()
+    assert len(crystal.atoms) == 96
+    assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors * np.array([2, 4, 6]))
+    # reset the supercell
+    crystal.reset()
+    assert len(crystal.atoms) == 2
+    assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors)
