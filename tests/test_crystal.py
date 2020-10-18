@@ -9,10 +9,10 @@ def test_basis_not_fractional():
     specie = "Fe"
     site = np.array([1.5, 0, 0])
     with pytest.raises(ValueError):
-        _ = Basis([(site, specie)])
+        _ = Basis([(specie, site)])
     site = np.array([0, 0, -1.5])
     with pytest.raises(ValueError):
-        _ = Basis([(site, specie)])
+        _ = Basis([(specie, site)])
 
 
 def test_basis_apply_spacegroup_primitive_cubic():
@@ -23,34 +23,37 @@ def test_basis_apply_spacegroup_primitive_cubic():
     new_basis = basis.apply_spacegroup(spg)
     assert len(new_basis) == 4
     target = [
-        (np.array([0.0, 0.0, 0.0]), "Al"),
-        (np.array([0.0, 0.5, 0.5]), "Al"),
-        (np.array([0.5, 0.0, 0.5]), "Al"),
-        (np.array([0.5, 0.5, 0.0]), "Al"),
+        ("Al", np.array([0.0, 0.0, 0.0])),
+        ("Al", np.array([0.0, 0.5, 0.5])),
+        ("Al", np.array([0.5, 0.0, 0.5])),
+        ("Al", np.array([0.5, 0.5, 0.0])),
     ]
-    for i, (_site, _specie) in enumerate(target):
-        assert np.allclose(new_basis[i][0], _site)
-        assert new_basis[i][1] == _specie
+    for i, (
+            _specie,
+            _site,
+    ) in enumerate(target):
+        assert new_basis[i][0] == _specie
+        assert np.allclose(new_basis[i][1], _site)
 
 
 def test_basis_apply_spacegroup_complex_monoclinic():
     # complex basis of arbitrary species
     basis = Basis([
-        (np.array([0.0, 0.0, 0.0]), "X"),
-        (np.array([0.1, 0.2, 0.3]), "Y"),
+        ("X", np.array([0.0, 0.0, 0.0])),
+        ("Y", np.array([0.1, 0.2, 0.3])),
     ])
     # Monoclinic spacegroup from international number
     spg = Spacegroup(3)
     new_basis = basis.apply_spacegroup(spg)
     assert len(new_basis) == 3
     target = [
-        (np.array([0.0, 0.0, 0.0]), "X"),
-        (np.array([0.1, 0.2, 0.3]), "Y"),
-        (np.array([0.9, 0.2, 0.7]), "Y"),
+        ("X", np.array([0.0, 0.0, 0.0])),
+        ("Y", np.array([0.1, 0.2, 0.3])),
+        ("Y", np.array([0.9, 0.2, 0.7])),
     ]
-    for i, (_site, _specie) in enumerate(target):
-        assert np.allclose(new_basis[i][0], _site)
-        assert new_basis[i][1] == _specie
+    for i, (_specie, _site) in enumerate(target):
+        assert new_basis[i][0] == _specie
+        assert np.allclose(new_basis[i][1], _site)
 
 
 def test_basis_to_from_json():
@@ -58,8 +61,8 @@ def test_basis_to_from_json():
     json_data = basis.to_json()
     new_basis = Basis.from_json(json_data)
     assert len(basis) == len(new_basis) == 1
-    assert np.array_equal(new_basis[0][0], basis[0][0])
-    assert new_basis[0][1] == basis[0][1]
+    assert new_basis[0][0] == basis[0][0]
+    assert np.array_equal(new_basis[0][1], basis[0][1])
 
 
 def test_lattice_parameters_to_from_json():
@@ -81,12 +84,12 @@ def test_unit_cell_cubic():
     unit_cell = UnitCell(basis, lattparams, spg)
     assert len(unit_cell.atoms) == 2
     target = [
-        (np.array([0.0, 0.0, 0.0]), "Fe"),
-        (np.array([1.425, 1.425, 1.425]), "Fe"),
+        ("Fe", np.array([0.0, 0.0, 0.0])),
+        ("Fe", np.array([1.425, 1.425, 1.425])),
     ]
-    for i, (_site, _specie) in enumerate(target):
-        assert np.allclose(unit_cell.atoms[i].position, _site)
+    for i, (_specie, _site) in enumerate(target):
         assert unit_cell.atoms[i].specie == _specie
+        assert np.allclose(unit_cell.atoms[i].position, _site)
 
 
 def test_unit_cell_hexagonal():
@@ -100,12 +103,12 @@ def test_unit_cell_hexagonal():
     unit_cell = UnitCell(basis, lattparams, spg)
     assert len(unit_cell.atoms) == 2
     target = [
-        (np.array([0.0, 0.0, 0.0]), "X"),
-        (np.array([0.0, 0.0, 1.25]), "X"),
+        ("X", np.array([0.0, 0.0, 0.0])),
+        ("X", np.array([0.0, 0.0, 1.25])),
     ]
-    for i, (_site, _specie) in enumerate(target):
-        assert np.allclose(unit_cell.atoms[i].position, _site)
+    for i, (_specie, _site) in enumerate(target):
         assert unit_cell.atoms[i].specie == _specie
+        assert np.allclose(unit_cell.atoms[i].position, _site)
 
 
 def test_unit_cell_to_from_json():
@@ -115,11 +118,15 @@ def test_unit_cell_to_from_json():
     unit_cell = UnitCell(basis, params, spg)
     json_data = unit_cell.to_json()
     new_unit_cell = UnitCell.from_json(json_data)
-    assert np.array_equal(new_unit_cell.basis[0][0], unit_cell.basis[0][0])
-    assert new_unit_cell.basis[0][1] == unit_cell.basis[0][1]
+    # test basis
+    assert new_unit_cell.basis[0][0] == unit_cell.basis[0][0]
+    assert np.array_equal(new_unit_cell.basis[0][1], unit_cell.basis[0][1])
+    # test lattice parameters
     assert new_unit_cell.lattice_parameters.a == unit_cell.lattice_parameters.a
     assert new_unit_cell.lattice_parameters.alpha == unit_cell.lattice_parameters.alpha
+    # test spacegroup
     assert new_unit_cell.spacegroup == unit_cell.spacegroup
+    # test atoms/bonds
     assert len(new_unit_cell.atoms) == len(unit_cell.atoms) == 4
     assert len(new_unit_cell.bonds) == len(unit_cell.bonds) == 0
     assert np.array_equal(
@@ -127,6 +134,7 @@ def test_unit_cell_to_from_json():
         unit_cell.atoms[0].position,
     )
     assert new_unit_cell.atoms[0].specie == unit_cell.atoms[0].specie
+
 
 def test_crystal_supercell_cubic():
     # primitive basis of iron

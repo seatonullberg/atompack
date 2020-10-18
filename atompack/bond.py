@@ -9,15 +9,15 @@ class Bond(MutableMapping):
     """Dict like object containing arbitrary bond properties.
     
     Note:
-        End users should not construct bond objects directly.
+        End users should not construct Bond objects directly.
 
     Args:
-        endpoints: Atoms at each end of the bond.
+        indices: Index of each atom in the bond.
     """
 
-    def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -> None:
+    def __init__(self, indices: Tuple[int, int], **kwargs) -> None:
         self._attrs = {k: v for k, v in kwargs.items()}
-        self._attrs["endpoints"] = endpoints
+        self._attrs["indices"] = indices
 
     ######################
     #    Constructors    #
@@ -27,13 +27,12 @@ class Bond(MutableMapping):
     def from_json(cls, s: str) -> 'Bond':
         """Initializes from a JSON string."""
         data = json.loads(s)
-        # process endpoints
-        endpoints = data.pop("endpoints")
-        if endpoints is None:
-            raise ValueError("`endpoints` is a required attribute")
-        atom0 = Atom.from_json(endpoints[0])
-        atom1 = Atom.from_json(endpoints[1])
-        return cls((atom0, atom1), **data)
+        # process indices
+        indices = data.pop("indices")
+        if indices is None:
+            raise ValueError("`indices` is a required attribute")
+        indices = tuple(indices)
+        return cls(indices, **data)
 
     #######################################
     #    MutableMapping Implementation    #
@@ -59,12 +58,8 @@ class Bond(MutableMapping):
     ####################
 
     @property
-    def endpoints(self) -> Tuple[Atom, Atom]:
-        return self._attrs["endpoints"]
-
-    @endpoints.setter
-    def endpoints(self, value: Tuple[Atom, Atom]) -> None:
-        self._attrs["endpoints"] = value
+    def indices(self) -> Tuple[int, int]:
+        return self._attrs["indices"]
 
     ########################
     #    Public Methods    #
@@ -73,8 +68,5 @@ class Bond(MutableMapping):
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
         _attrs = self._attrs.copy()
-        _attrs["endpoints"] = [
-            self.endpoints[0].to_json(),
-            self.endpoints[1].to_json(),
-        ]
+        _attrs["indices"] = list(self.indices)
         return json.dumps(_attrs)

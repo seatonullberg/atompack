@@ -2,10 +2,10 @@ import numpy as np
 
 from atompack.cell import is_point_in_cell, wrap_point_into_cell
 
-
 ###################################
 #    Benchmark Implementations    #
 ###################################
+
 
 def bench_is_point_in_cell(cell, point):
     return is_point_in_cell(cell, point)
@@ -14,9 +14,11 @@ def bench_is_point_in_cell(cell, point):
 def bench_wrap_point_into_cell(cell, point):
     return wrap_point_into_cell(cell, point)
 
+
 ############################
 #    Benchmark Wrappers    #
 ############################
+
 
 def test_is_point_in_cell_inside(benchmark):
     cell = np.identity(3)
