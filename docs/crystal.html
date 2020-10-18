@@ -28,6 +28,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import copy
+import json
 from collections.abc import MutableSequence
 from typing import List, Tuple, Union
 
@@ -35,6 +36,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 from atompack.atom import Atom
+from atompack.bond import Bond
 from atompack.constants import DEG90, DEG120
 from atompack.spacegroup import Spacegroup
 from atompack.topology import Topology
@@ -90,6 +92,17 @@ class Basis(MutableSequence):
         &#34;&#34;&#34;Returns a primitive basis.&#34;&#34;&#34;
         return cls([(np.zeros(3), specie)])
 
+    @classmethod
+    def from_json(cls, s) -&gt; &#39;Basis&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        basis = []
+        for entry in data:
+            site = np.array(entry[&#34;site&#34;])
+            specie = entry[&#34;specie&#34;]
+            basis.append((site, specie))
+        return cls(basis)
+
     ########################
     #    Public Methods    #
     ########################
@@ -126,6 +139,12 @@ class Basis(MutableSequence):
                 if not is_occupied:
                     res.append((new_site, specie))
         return res
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
+        _basis = self._basis.copy()
+        _basis = [{&#34;site&#34;: site.tolist(), &#34;specie&#34;: specie} for site, specie in _basis]
+        return json.dumps(_basis)
 
 
 class LatticeParameters(object):
@@ -201,6 +220,13 @@ class LatticeParameters(object):
         &#34;&#34;&#34;Initialize with cubic constraints.&#34;&#34;&#34;
         return cls(a, a, a, DEG90, DEG90, DEG90)
 
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        data = {k: float(v) for k, v in data.items()}
+        return cls(**data)
+
     ####################
     #    Properties    #
     ####################
@@ -211,6 +237,21 @@ class LatticeParameters(object):
         return np.array([[self.a * self.a, self.a * self.b * np.cos(self.gamma), self.a * self.c * np.cos(self.beta)],
                          [self.a * self.b * np.cos(self.gamma), self.b * self.b, self.b * self.c * np.cos(self.alpha)],
                          [self.a * self.c * np.cos(self.beta), self.b * self.c * np.cos(self.alpha), self.c * self.c]])
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;a&#34;: self.a,
+            &#34;b&#34;: self.b,
+            &#34;c&#34;: self.c,
+            &#34;alpha&#34;: self.alpha,
+            &#34;beta&#34;: self.beta,
+            &#34;gamma&#34;: self.gamma
+        })
 
 
 class Orientation(Rotation):
@@ -255,22 +296,63 @@ class Plane(object):
 
 class UnitCell(Topology):
     &#34;&#34;&#34;Minimal representation of a crystalline structure.
-
-    Note:
-        End users should not construct unit cell objects directly.
     
     Args:
         basis: Asymmetric site occupancy.
         lattice_parameters: Lattice parameters object.
         spacegroup: Spacegroup object.
+
+    Example:
+        &gt;&gt;&gt; # primitive basis of iron
+        &gt;&gt;&gt; basis = Basis.primitive(&#34;Fe&#34;)
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # cubic lattice parameters
+        &gt;&gt;&gt; lattparams = LatticeParameters.cubic(2.85)
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # BCC spacegroup
+        &gt;&gt;&gt; spg = Spacegroup(&#34;I m -3 m&#34;)
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # build the unit cell
+        &gt;&gt;&gt; unit_cell = UnitCell(basis, lattparams, spg)
+        &gt;&gt;&gt; assert len(unit_cell.atoms) == 2
     &#34;&#34;&#34;
 
-    def __init__(self, basis: Basis, lattice_parameters: LatticeParameters, spacegroup: Spacegroup) -&gt; None:
+    def __init__(
+        self, 
+        basis: Basis, 
+        lattice_parameters: LatticeParameters, 
+        spacegroup: Spacegroup,
+        _build: bool = True,
+    ) -&gt; None:
+        # initialize superclass
         super().__init__()
+        # set attributes
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
-        self._build()
+        # build the unit cell
+        if _build:
+            self._build()
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;UnitCell&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        basis = Basis.from_json(json.dumps(data[&#34;basis&#34;]))
+        params = LatticeParameters.from_json(json.dumps(data[&#34;lattice_parameters&#34;]))
+        spg = Spacegroup(int(data[&#34;spacegroup&#34;]))
+        # initialize unit cell without placing atoms
+        res = cls(basis, params, spg, _build=False)
+        # load atoms and bonds 
+        atoms = [Atom.from_json(json.dumps(atom)) for atom in data[&#34;atoms&#34;]]
+        bonds = [Bond.from_json(json.dumps(bond)) for bond in data[&#34;bonds&#34;]]
+        res._atoms = atoms
+        res._bonds = bonds
+        return res
 
     ####################
     #    Properties    #
@@ -295,6 +377,20 @@ class UnitCell(Topology):
         &#34;&#34;&#34;Returns the spacegroup.&#34;&#34;&#34;
         return self._spacegroup
 
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;basis&#34;: json.loads(self.basis.to_json()),
+            &#34;lattice_parameters&#34;: json.loads(self.lattice_parameters.to_json()),
+            &#34;spacegroup&#34;: self.spacegroup.international_number,
+            &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+            &#34;bonds&#34;: [json.loads(atom.to_json()) for bond in self.bonds],
+        })
+
     #########################
     #    Private Methods    #
     #########################
@@ -305,30 +401,52 @@ class UnitCell(Topology):
             self.atoms.append(Atom(position, specie))
 
 
+# TODO: this initialization is garbage
+
 class Crystal(Topology):
     &#34;&#34;&#34;Atomic structure with long range order.
     
     Args:
-        basis: Atomic basis set.
-        lattice_parameters: Lattice parameters object.
-        spacegroup: Spacegroup object.
+        unit_cell: Minimal representation of a crystalline structure.
     &#34;&#34;&#34;
 
-    def __init__(self, basis: List[Tuple[str, np.ndarray]], lattice_parameters: LatticeParameters,
-                 spacegroup: Spacegroup) -&gt; None:
-        # initialize attributes
+    def __init__(
+        self, 
+        unit_cell: UnitCell,
+        _build: bool = True,
+    ) -&gt; None:
+        # initialize superclass
+        super().__init__()
+        # initialize private attributes
         self._cut_plane: Optional[Plane] = None
         self._extent: Optional[Tuple[int, int, int]] = None
         self._orientation: Optional[Orientation] = None
         self._orthogonalize: Optional[bool] = None
         self._projection_plane: Optional[Plane] = None
         self._transformation_matrix: Optional[np.ndarray] = None
-        # initialize superclass
-        super().__init__()
-        # copy attributes from unit cell
-        self._unit_cell = UnitCell(basis, lattice_parameters, spacegroup)
-        self._atoms = self._unit_cell.atoms.copy()
-        self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+        # build the crystal
+        self._unit_cell = unit_cell
+        if _build:
+            self._atoms = self._unit_cell.atoms.copy()
+            self._bonds = self._unit_cell.bonds.copy()
+            self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Crystal&#39;:
+        data = json.loads(s)
+        unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
+        res = cls(unit_cell, _build=False)
+        atoms = [Atom.from_json(json.dumps(atom)) for atom in data[&#34;atoms&#34;]]
+        bonds = [Bond.from_json(json.dumps(bond)) for bond in data[&#34;bonds&#34;]]
+        lattice_vectors = np.array(data[&#34;lattice_vectors&#34;])
+        res._atoms = atoms
+        res._bonds = bonds
+        res._lattice_vectors = lattice_vectors
+        return res
 
     ####################
     #    Properties    #
@@ -358,6 +476,7 @@ class Crystal(Topology):
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._transformation_matrix = transformation
         return self
 
@@ -384,6 +503,7 @@ class Crystal(Topology):
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._orientation = orientation
         return self
 
@@ -399,6 +519,7 @@ class Crystal(Topology):
             The transform is not applied until the `finish` method is called.
             Setting `orthogonalize` to True may result in very large structures for acute projections.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._projection_plane = plane
         self._orthogonalize = orthogonalize
         return self
@@ -413,6 +534,7 @@ class Crystal(Topology):
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._cut_plane = plane
         return self
 
@@ -422,9 +544,9 @@ class Crystal(Topology):
         # TODO: determine best order
         self._project()
         self._general_transform()
-        self._supercell()
         self._cut()
         self._orient()
+        self._supercell()
         # reset attributes
         self._reset_attributes()
 
@@ -433,6 +555,15 @@ class Crystal(Topology):
         self._atoms = self.unit_cell.atoms.copy()
         self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
         self._reset_attributes()
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
+            &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+            &#34;bonds&#34;: [json.loads(bond.to_json()) for bond in self.bonds],
+            &#34;lattice_vectors&#34;: self.lattice_vectors.tolist(),
+        })
 
     #########################
     #    Private Methods    #
@@ -562,6 +693,17 @@ class Crystal(Topology):
         &#34;&#34;&#34;Returns a primitive basis.&#34;&#34;&#34;
         return cls([(np.zeros(3), specie)])
 
+    @classmethod
+    def from_json(cls, s) -&gt; &#39;Basis&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        basis = []
+        for entry in data:
+            site = np.array(entry[&#34;site&#34;])
+            specie = entry[&#34;specie&#34;]
+            basis.append((site, specie))
+        return cls(basis)
+
     ########################
     #    Public Methods    #
     ########################
@@ -597,7 +739,13 @@ class Crystal(Topology):
                 # store unique sites
                 if not is_occupied:
                     res.append((new_site, specie))
-        return res</code></pre>
+        return res
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
+        _basis = self._basis.copy()
+        _basis = [{&#34;site&#34;: site.tolist(), &#34;specie&#34;: specie} for site, specie in _basis]
+        return json.dumps(_basis)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -611,6 +759,27 @@ class Crystal(Topology):
 </ul>
 <h3>Static methods</h3>
 <dl>
+<dt id="atompack.crystal.Basis.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s) ‑> <a title="atompack.crystal.Basis" href="#atompack.crystal.Basis">Basis</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s) -&gt; &#39;Basis&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    data = json.loads(s)
+    basis = []
+    for entry in data:
+        site = np.array(entry[&#34;site&#34;])
+        specie = entry[&#34;specie&#34;]
+        basis.append((site, specie))
+    return cls(basis)</code></pre>
+</details>
+</dd>
 <dt id="atompack.crystal.Basis.primitive"><code class="name flex">
 <span>def <span class="ident">primitive</span></span>(<span>specie: str) ‑> <a title="atompack.crystal.Basis" href="#atompack.crystal.Basis">Basis</a></span>
 </code></dt>
@@ -686,22 +855,34 @@ symmetry operations to the atomic basis.</p></div>
     self._basis.insert(index, value)</code></pre>
 </details>
 </dd>
+<dt id="atompack.crystal.Basis.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
+    _basis = self._basis.copy()
+    _basis = [{&#34;site&#34;: site.tolist(), &#34;specie&#34;: specie} for site, specie in _basis]
+    return json.dumps(_basis)</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 <dt id="atompack.crystal.Crystal"><code class="flex name class">
 <span>class <span class="ident">Crystal</span></span>
-<span>(</span><span>basis: List[Tuple[str, numpy.ndarray]], lattice_parameters: <a title="atompack.crystal.LatticeParameters" href="#atompack.crystal.LatticeParameters">LatticeParameters</a>, spacegroup: <a title="atompack.spacegroup.Spacegroup" href="spacegroup.html#atompack.spacegroup.Spacegroup">Spacegroup</a>)</span>
+<span>(</span><span>unit_cell: <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Atomic structure with long range order.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>basis</code></strong></dt>
-<dd>Atomic basis set.</dd>
-<dt><strong><code>lattice_parameters</code></strong></dt>
-<dd>Lattice parameters object.</dd>
-<dt><strong><code>spacegroup</code></strong></dt>
-<dd>Spacegroup object.</dd>
+<dt><strong><code>unit_cell</code></strong></dt>
+<dd>Minimal representation of a crystalline structure.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -711,26 +892,46 @@ symmetry operations to the atomic basis.</p></div>
     &#34;&#34;&#34;Atomic structure with long range order.
     
     Args:
-        basis: Atomic basis set.
-        lattice_parameters: Lattice parameters object.
-        spacegroup: Spacegroup object.
+        unit_cell: Minimal representation of a crystalline structure.
     &#34;&#34;&#34;
 
-    def __init__(self, basis: List[Tuple[str, np.ndarray]], lattice_parameters: LatticeParameters,
-                 spacegroup: Spacegroup) -&gt; None:
-        # initialize attributes
+    def __init__(
+        self, 
+        unit_cell: UnitCell,
+        _build: bool = True,
+    ) -&gt; None:
+        # initialize superclass
+        super().__init__()
+        # initialize private attributes
         self._cut_plane: Optional[Plane] = None
         self._extent: Optional[Tuple[int, int, int]] = None
         self._orientation: Optional[Orientation] = None
         self._orthogonalize: Optional[bool] = None
         self._projection_plane: Optional[Plane] = None
         self._transformation_matrix: Optional[np.ndarray] = None
-        # initialize superclass
-        super().__init__()
-        # copy attributes from unit cell
-        self._unit_cell = UnitCell(basis, lattice_parameters, spacegroup)
-        self._atoms = self._unit_cell.atoms.copy()
-        self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+        # build the crystal
+        self._unit_cell = unit_cell
+        if _build:
+            self._atoms = self._unit_cell.atoms.copy()
+            self._bonds = self._unit_cell.bonds.copy()
+            self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Crystal&#39;:
+        data = json.loads(s)
+        unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
+        res = cls(unit_cell, _build=False)
+        atoms = [Atom.from_json(json.dumps(atom)) for atom in data[&#34;atoms&#34;]]
+        bonds = [Bond.from_json(json.dumps(bond)) for bond in data[&#34;bonds&#34;]]
+        lattice_vectors = np.array(data[&#34;lattice_vectors&#34;])
+        res._atoms = atoms
+        res._bonds = bonds
+        res._lattice_vectors = lattice_vectors
+        return res
 
     ####################
     #    Properties    #
@@ -760,6 +961,7 @@ symmetry operations to the atomic basis.</p></div>
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._transformation_matrix = transformation
         return self
 
@@ -786,6 +988,7 @@ symmetry operations to the atomic basis.</p></div>
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._orientation = orientation
         return self
 
@@ -801,6 +1004,7 @@ symmetry operations to the atomic basis.</p></div>
             The transform is not applied until the `finish` method is called.
             Setting `orthogonalize` to True may result in very large structures for acute projections.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._projection_plane = plane
         self._orthogonalize = orthogonalize
         return self
@@ -815,6 +1019,7 @@ symmetry operations to the atomic basis.</p></div>
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._cut_plane = plane
         return self
 
@@ -824,9 +1029,9 @@ symmetry operations to the atomic basis.</p></div>
         # TODO: determine best order
         self._project()
         self._general_transform()
-        self._supercell()
         self._cut()
         self._orient()
+        self._supercell()
         # reset attributes
         self._reset_attributes()
 
@@ -835,6 +1040,15 @@ symmetry operations to the atomic basis.</p></div>
         self._atoms = self.unit_cell.atoms.copy()
         self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
         self._reset_attributes()
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
+            &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+            &#34;bonds&#34;: [json.loads(bond.to_json()) for bond in self.bonds],
+            &#34;lattice_vectors&#34;: self.lattice_vectors.tolist(),
+        })
 
     #########################
     #    Private Methods    #
@@ -886,6 +1100,32 @@ symmetry operations to the atomic basis.</p></div>
 <ul class="hlist">
 <li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.crystal.Crystal.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.crystal.Crystal" href="#atompack.crystal.Crystal">Crystal</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;Crystal&#39;:
+    data = json.loads(s)
+    unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
+    res = cls(unit_cell, _build=False)
+    atoms = [Atom.from_json(json.dumps(atom)) for atom in data[&#34;atoms&#34;]]
+    bonds = [Bond.from_json(json.dumps(bond)) for bond in data[&#34;bonds&#34;]]
+    lattice_vectors = np.array(data[&#34;lattice_vectors&#34;])
+    res._atoms = atoms
+    res._bonds = bonds
+    res._lattice_vectors = lattice_vectors
+    return res</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Instance variables</h3>
 <dl>
 <dt id="atompack.crystal.Crystal.lattice_vectors"><code class="name">var <span class="ident">lattice_vectors</span></code></dt>
@@ -944,6 +1184,7 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     Note:
         The transform is not applied until the `finish` method is called.
     &#34;&#34;&#34;
+    raise NotImplementedError
     self._cut_plane = plane
     return self</code></pre>
 </details>
@@ -963,9 +1204,9 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     # TODO: determine best order
     self._project()
     self._general_transform()
-    self._supercell()
     self._cut()
     self._orient()
+    self._supercell()
     # reset attributes
     self._reset_attributes()</code></pre>
 </details>
@@ -997,6 +1238,7 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     Note:
         The transform is not applied until the `finish` method is called.
     &#34;&#34;&#34;
+    raise NotImplementedError
     self._transformation_matrix = transformation
     return self</code></pre>
 </details>
@@ -1028,6 +1270,7 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     Note:
         The transform is not applied until the `finish` method is called.
     &#34;&#34;&#34;
+    raise NotImplementedError
     self._orientation = orientation
     return self</code></pre>
 </details>
@@ -1064,6 +1307,7 @@ Setting <code>orthogonalize</code> to True may result in very large structures f
         The transform is not applied until the `finish` method is called.
         Setting `orthogonalize` to True may result in very large structures for acute projections.
     &#34;&#34;&#34;
+    raise NotImplementedError
     self._projection_plane = plane
     self._orthogonalize = orthogonalize
     return self</code></pre>
@@ -1114,6 +1358,25 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     &#34;&#34;&#34;
     self._extent = extent
     return self</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.Crystal.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    return json.dumps({
+        &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
+        &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+        &#34;bonds&#34;: [json.loads(bond.to_json()) for bond in self.bonds],
+        &#34;lattice_vectors&#34;: self.lattice_vectors.tolist(),
+    })</code></pre>
 </details>
 </dd>
 </dl>
@@ -1234,6 +1497,13 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
         &#34;&#34;&#34;Initialize with cubic constraints.&#34;&#34;&#34;
         return cls(a, a, a, DEG90, DEG90, DEG90)
 
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        data = {k: float(v) for k, v in data.items()}
+        return cls(**data)
+
     ####################
     #    Properties    #
     ####################
@@ -1243,7 +1513,22 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
         &#34;&#34;&#34;Returns the metric tensor defined by the lattice parameters.&#34;&#34;&#34;
         return np.array([[self.a * self.a, self.a * self.b * np.cos(self.gamma), self.a * self.c * np.cos(self.beta)],
                          [self.a * self.b * np.cos(self.gamma), self.b * self.b, self.b * self.c * np.cos(self.alpha)],
-                         [self.a * self.c * np.cos(self.beta), self.b * self.c * np.cos(self.alpha), self.c * self.c]])</code></pre>
+                         [self.a * self.c * np.cos(self.beta), self.b * self.c * np.cos(self.alpha), self.c * self.c]])
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;a&#34;: self.a,
+            &#34;b&#34;: self.b,
+            &#34;c&#34;: self.c,
+            &#34;alpha&#34;: self.alpha,
+            &#34;beta&#34;: self.beta,
+            &#34;gamma&#34;: self.gamma
+        })</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -1260,6 +1545,23 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
 def cubic(cls, a) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initialize with cubic constraints.&#34;&#34;&#34;
     return cls(a, a, a, DEG90, DEG90, DEG90)</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.LatticeParameters.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.crystal.LatticeParameters" href="#atompack.crystal.LatticeParameters">LatticeParameters</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    data = json.loads(s)
+    data = {k: float(v) for k, v in data.items()}
+    return cls(**data)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.LatticeParameters.hexagonal"><code class="name flex">
@@ -1383,6 +1685,30 @@ def metric_tensor(self) -&gt; np.ndarray:
     return np.array([[self.a * self.a, self.a * self.b * np.cos(self.gamma), self.a * self.c * np.cos(self.beta)],
                      [self.a * self.b * np.cos(self.gamma), self.b * self.b, self.b * self.c * np.cos(self.alpha)],
                      [self.a * self.c * np.cos(self.beta), self.b * self.c * np.cos(self.alpha), self.c * self.c]])</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.LatticeParameters.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    return json.dumps({
+        &#34;a&#34;: self.a,
+        &#34;b&#34;: self.b,
+        &#34;c&#34;: self.c,
+        &#34;alpha&#34;: self.alpha,
+        &#34;beta&#34;: self.beta,
+        &#34;gamma&#34;: self.gamma
+    })</code></pre>
 </details>
 </dd>
 </dl>
@@ -1522,8 +1848,6 @@ def from_miller_indices(cls, hkl: Tuple[int, int, int]) -&gt; &#39;Plane&#39;:
 </code></dt>
 <dd>
 <div class="desc"><p>Minimal representation of a crystalline structure.</p>
-<h2 id="note">Note</h2>
-<p>End users should not construct unit cell objects directly.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>basis</code></strong></dt>
@@ -1532,29 +1856,84 @@ def from_miller_indices(cls, hkl: Tuple[int, int, int]) -&gt; &#39;Plane&#39;:
 <dd>Lattice parameters object.</dd>
 <dt><strong><code>spacegroup</code></strong></dt>
 <dd>Spacegroup object.</dd>
-</dl></div>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; # primitive basis of iron
+&gt;&gt;&gt; basis = Basis.primitive(&quot;Fe&quot;)
+&gt;&gt;&gt; 
+&gt;&gt;&gt; # cubic lattice parameters
+&gt;&gt;&gt; lattparams = LatticeParameters.cubic(2.85)
+&gt;&gt;&gt; 
+&gt;&gt;&gt; # BCC spacegroup
+&gt;&gt;&gt; spg = Spacegroup(&quot;I m -3 m&quot;)
+&gt;&gt;&gt; 
+&gt;&gt;&gt; # build the unit cell
+&gt;&gt;&gt; unit_cell = UnitCell(basis, lattparams, spg)
+&gt;&gt;&gt; assert len(unit_cell.atoms) == 2
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnitCell(Topology):
     &#34;&#34;&#34;Minimal representation of a crystalline structure.
-
-    Note:
-        End users should not construct unit cell objects directly.
     
     Args:
         basis: Asymmetric site occupancy.
         lattice_parameters: Lattice parameters object.
         spacegroup: Spacegroup object.
+
+    Example:
+        &gt;&gt;&gt; # primitive basis of iron
+        &gt;&gt;&gt; basis = Basis.primitive(&#34;Fe&#34;)
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # cubic lattice parameters
+        &gt;&gt;&gt; lattparams = LatticeParameters.cubic(2.85)
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # BCC spacegroup
+        &gt;&gt;&gt; spg = Spacegroup(&#34;I m -3 m&#34;)
+        &gt;&gt;&gt; 
+        &gt;&gt;&gt; # build the unit cell
+        &gt;&gt;&gt; unit_cell = UnitCell(basis, lattparams, spg)
+        &gt;&gt;&gt; assert len(unit_cell.atoms) == 2
     &#34;&#34;&#34;
 
-    def __init__(self, basis: Basis, lattice_parameters: LatticeParameters, spacegroup: Spacegroup) -&gt; None:
+    def __init__(
+        self, 
+        basis: Basis, 
+        lattice_parameters: LatticeParameters, 
+        spacegroup: Spacegroup,
+        _build: bool = True,
+    ) -&gt; None:
+        # initialize superclass
         super().__init__()
+        # set attributes
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
-        self._build()
+        # build the unit cell
+        if _build:
+            self._build()
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;UnitCell&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        basis = Basis.from_json(json.dumps(data[&#34;basis&#34;]))
+        params = LatticeParameters.from_json(json.dumps(data[&#34;lattice_parameters&#34;]))
+        spg = Spacegroup(int(data[&#34;spacegroup&#34;]))
+        # initialize unit cell without placing atoms
+        res = cls(basis, params, spg, _build=False)
+        # load atoms and bonds 
+        atoms = [Atom.from_json(json.dumps(atom)) for atom in data[&#34;atoms&#34;]]
+        bonds = [Bond.from_json(json.dumps(bond)) for bond in data[&#34;bonds&#34;]]
+        res._atoms = atoms
+        res._bonds = bonds
+        return res
 
     ####################
     #    Properties    #
@@ -1579,6 +1958,20 @@ def from_miller_indices(cls, hkl: Tuple[int, int, int]) -&gt; &#39;Plane&#39;:
         &#34;&#34;&#34;Returns the spacegroup.&#34;&#34;&#34;
         return self._spacegroup
 
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;basis&#34;: json.loads(self.basis.to_json()),
+            &#34;lattice_parameters&#34;: json.loads(self.lattice_parameters.to_json()),
+            &#34;spacegroup&#34;: self.spacegroup.international_number,
+            &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+            &#34;bonds&#34;: [json.loads(atom.to_json()) for bond in self.bonds],
+        })
+
     #########################
     #    Private Methods    #
     #########################
@@ -1592,6 +1985,35 @@ def from_miller_indices(cls, hkl: Tuple[int, int, int]) -&gt; &#39;Plane&#39;:
 <ul class="hlist">
 <li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.crystal.UnitCell.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;UnitCell&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    data = json.loads(s)
+    basis = Basis.from_json(json.dumps(data[&#34;basis&#34;]))
+    params = LatticeParameters.from_json(json.dumps(data[&#34;lattice_parameters&#34;]))
+    spg = Spacegroup(int(data[&#34;spacegroup&#34;]))
+    # initialize unit cell without placing atoms
+    res = cls(basis, params, spg, _build=False)
+    # load atoms and bonds 
+    atoms = [Atom.from_json(json.dumps(atom)) for atom in data[&#34;atoms&#34;]]
+    bonds = [Bond.from_json(json.dumps(bond)) for bond in data[&#34;bonds&#34;]]
+    res._atoms = atoms
+    res._bonds = bonds
+    return res</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Instance variables</h3>
 <dl>
 <dt id="atompack.crystal.UnitCell.basis"><code class="name">var <span class="ident">basis</span> : <a title="atompack.crystal.Basis" href="#atompack.crystal.Basis">Basis</a></code></dt>
@@ -1646,6 +2068,29 @@ def spacegroup(self) -&gt; Spacegroup:
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.UnitCell.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    return json.dumps({
+        &#34;basis&#34;: json.loads(self.basis.to_json()),
+        &#34;lattice_parameters&#34;: json.loads(self.lattice_parameters.to_json()),
+        &#34;spacegroup&#34;: self.spacegroup.international_number,
+        &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+        &#34;bonds&#34;: [json.loads(atom.to_json()) for bond in self.bonds],
+    })</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
@@ -1676,8 +2121,10 @@ def spacegroup(self) -&gt; Spacegroup:
 <h4><code><a title="atompack.crystal.Basis" href="#atompack.crystal.Basis">Basis</a></code></h4>
 <ul class="">
 <li><code><a title="atompack.crystal.Basis.apply_spacegroup" href="#atompack.crystal.Basis.apply_spacegroup">apply_spacegroup</a></code></li>
+<li><code><a title="atompack.crystal.Basis.from_json" href="#atompack.crystal.Basis.from_json">from_json</a></code></li>
 <li><code><a title="atompack.crystal.Basis.insert" href="#atompack.crystal.Basis.insert">insert</a></code></li>
 <li><code><a title="atompack.crystal.Basis.primitive" href="#atompack.crystal.Basis.primitive">primitive</a></code></li>
+<li><code><a title="atompack.crystal.Basis.to_json" href="#atompack.crystal.Basis.to_json">to_json</a></code></li>
 </ul>
 </li>
 <li>
@@ -1685,12 +2132,14 @@ def spacegroup(self) -&gt; Spacegroup:
 <ul class="two-column">
 <li><code><a title="atompack.crystal.Crystal.cut" href="#atompack.crystal.Crystal.cut">cut</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.finish" href="#atompack.crystal.Crystal.finish">finish</a></code></li>
+<li><code><a title="atompack.crystal.Crystal.from_json" href="#atompack.crystal.Crystal.from_json">from_json</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.general_transform" href="#atompack.crystal.Crystal.general_transform">general_transform</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.lattice_vectors" href="#atompack.crystal.Crystal.lattice_vectors">lattice_vectors</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.orient" href="#atompack.crystal.Crystal.orient">orient</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.project" href="#atompack.crystal.Crystal.project">project</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.reset" href="#atompack.crystal.Crystal.reset">reset</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.supercell" href="#atompack.crystal.Crystal.supercell">supercell</a></code></li>
+<li><code><a title="atompack.crystal.Crystal.to_json" href="#atompack.crystal.Crystal.to_json">to_json</a></code></li>
 <li><code><a title="atompack.crystal.Crystal.unit_cell" href="#atompack.crystal.Crystal.unit_cell">unit_cell</a></code></li>
 </ul>
 </li>
@@ -1698,12 +2147,14 @@ def spacegroup(self) -&gt; Spacegroup:
 <h4><code><a title="atompack.crystal.LatticeParameters" href="#atompack.crystal.LatticeParameters">LatticeParameters</a></code></h4>
 <ul class="two-column">
 <li><code><a title="atompack.crystal.LatticeParameters.cubic" href="#atompack.crystal.LatticeParameters.cubic">cubic</a></code></li>
+<li><code><a title="atompack.crystal.LatticeParameters.from_json" href="#atompack.crystal.LatticeParameters.from_json">from_json</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.hexagonal" href="#atompack.crystal.LatticeParameters.hexagonal">hexagonal</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.metric_tensor" href="#atompack.crystal.LatticeParameters.metric_tensor">metric_tensor</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.monoclinic" href="#atompack.crystal.LatticeParameters.monoclinic">monoclinic</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.orthorhombic" href="#atompack.crystal.LatticeParameters.orthorhombic">orthorhombic</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.rhombohedral" href="#atompack.crystal.LatticeParameters.rhombohedral">rhombohedral</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.tetragonal" href="#atompack.crystal.LatticeParameters.tetragonal">tetragonal</a></code></li>
+<li><code><a title="atompack.crystal.LatticeParameters.to_json" href="#atompack.crystal.LatticeParameters.to_json">to_json</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.triclinic" href="#atompack.crystal.LatticeParameters.triclinic">triclinic</a></code></li>
 <li><code><a title="atompack.crystal.LatticeParameters.trigonal" href="#atompack.crystal.LatticeParameters.trigonal">trigonal</a></code></li>
 </ul>
@@ -1723,11 +2174,13 @@ def spacegroup(self) -&gt; Spacegroup:
 </li>
 <li>
 <h4><code><a title="atompack.crystal.UnitCell" href="#atompack.crystal.UnitCell">UnitCell</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="atompack.crystal.UnitCell.basis" href="#atompack.crystal.UnitCell.basis">basis</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.from_json" href="#atompack.crystal.UnitCell.from_json">from_json</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.lattice_parameters" href="#atompack.crystal.UnitCell.lattice_parameters">lattice_parameters</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.lattice_vectors" href="#atompack.crystal.UnitCell.lattice_vectors">lattice_vectors</a></code></li>
 <li><code><a title="atompack.crystal.UnitCell.spacegroup" href="#atompack.crystal.UnitCell.spacegroup">spacegroup</a></code></li>
+<li><code><a title="atompack.crystal.UnitCell.to_json" href="#atompack.crystal.UnitCell.to_json">to_json</a></code></li>
 </ul>
 </li>
 </ul>

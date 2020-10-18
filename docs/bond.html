@@ -27,7 +27,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from collections.abc import Iterable, MutableMapping
+<pre><code class="python">import json
+from collections.abc import Iterable, MutableMapping
 from typing import Any, Tuple
 
 from atompack.atom import Atom
@@ -43,13 +44,29 @@ class Bond(MutableMapping):
         endpoints: Atoms at each end of the bond.
     &#34;&#34;&#34;
 
-    #######################################
-    #    MutableMapping Implementation    #
-    #######################################
-
     def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -&gt; None:
         self._attrs = {k: v for k, v in kwargs.items()}
         self._attrs[&#34;endpoints&#34;] = endpoints
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Bond&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        # process endpoints
+        endpoints = data.pop(&#34;endpoints&#34;)
+        if endpoints is None:
+            raise ValueError(&#34;`endpoints` is a required attribute&#34;)
+        atom0 = Atom.from_json(endpoints[0])
+        atom1 = Atom.from_json(endpoints[1])
+        return cls((atom0, atom1), **data)
+
+    #######################################
+    #    MutableMapping Implementation    #
+    #######################################
 
     def __getitem__(self, key: str) -&gt; Any:
         return self._attrs[key]
@@ -76,7 +93,20 @@ class Bond(MutableMapping):
 
     @endpoints.setter
     def endpoints(self, value: Tuple[Atom, Atom]) -&gt; None:
-        self._attrs[&#34;endpoints&#34;] = value</code></pre>
+        self._attrs[&#34;endpoints&#34;] = value
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        _attrs = self._attrs.copy()
+        _attrs[&#34;endpoints&#34;] = [
+            self.endpoints[0].to_json(),
+            self.endpoints[1].to_json(),
+        ]
+        return json.dumps(_attrs)</code></pre>
 </details>
 </section>
 <section>
@@ -115,13 +145,29 @@ class Bond(MutableMapping):
         endpoints: Atoms at each end of the bond.
     &#34;&#34;&#34;
 
-    #######################################
-    #    MutableMapping Implementation    #
-    #######################################
-
     def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -&gt; None:
         self._attrs = {k: v for k, v in kwargs.items()}
         self._attrs[&#34;endpoints&#34;] = endpoints
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Bond&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        # process endpoints
+        endpoints = data.pop(&#34;endpoints&#34;)
+        if endpoints is None:
+            raise ValueError(&#34;`endpoints` is a required attribute&#34;)
+        atom0 = Atom.from_json(endpoints[0])
+        atom1 = Atom.from_json(endpoints[1])
+        return cls((atom0, atom1), **data)
+
+    #######################################
+    #    MutableMapping Implementation    #
+    #######################################
 
     def __getitem__(self, key: str) -&gt; Any:
         return self._attrs[key]
@@ -148,7 +194,20 @@ class Bond(MutableMapping):
 
     @endpoints.setter
     def endpoints(self, value: Tuple[Atom, Atom]) -&gt; None:
-        self._attrs[&#34;endpoints&#34;] = value</code></pre>
+        self._attrs[&#34;endpoints&#34;] = value
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        _attrs = self._attrs.copy()
+        _attrs[&#34;endpoints&#34;] = [
+            self.endpoints[0].to_json(),
+            self.endpoints[1].to_json(),
+        ]
+        return json.dumps(_attrs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -159,6 +218,31 @@ class Bond(MutableMapping):
 <li>collections.abc.Iterable</li>
 <li>collections.abc.Container</li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.bond.Bond.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.bond.Bond" href="#atompack.bond.Bond">Bond</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;Bond&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    data = json.loads(s)
+    # process endpoints
+    endpoints = data.pop(&#34;endpoints&#34;)
+    if endpoints is None:
+        raise ValueError(&#34;`endpoints` is a required attribute&#34;)
+    atom0 = Atom.from_json(endpoints[0])
+    atom1 = Atom.from_json(endpoints[1])
+    return cls((atom0, atom1), **data)</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Instance variables</h3>
 <dl>
 <dt id="atompack.bond.Bond.endpoints"><code class="name">var <span class="ident">endpoints</span> : Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</code></dt>
@@ -171,6 +255,28 @@ class Bond(MutableMapping):
 <pre><code class="python">@property
 def endpoints(self) -&gt; Tuple[Atom, Atom]:
     return self._attrs[&#34;endpoints&#34;]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.bond.Bond.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    _attrs = self._attrs.copy()
+    _attrs[&#34;endpoints&#34;] = [
+        self.endpoints[0].to_json(),
+        self.endpoints[1].to_json(),
+    ]
+    return json.dumps(_attrs)</code></pre>
 </details>
 </dd>
 </dl>
@@ -195,6 +301,8 @@ def endpoints(self) -&gt; Tuple[Atom, Atom]:
 <h4><code><a title="atompack.bond.Bond" href="#atompack.bond.Bond">Bond</a></code></h4>
 <ul class="">
 <li><code><a title="atompack.bond.Bond.endpoints" href="#atompack.bond.Bond.endpoints">endpoints</a></code></li>
+<li><code><a title="atompack.bond.Bond.from_json" href="#atompack.bond.Bond.from_json">from_json</a></code></li>
+<li><code><a title="atompack.bond.Bond.to_json" href="#atompack.bond.Bond.to_json">to_json</a></code></li>
 </ul>
 </li>
 </ul>

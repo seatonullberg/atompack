@@ -84,6 +84,13 @@ class Spacegroup(object):
         &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
         return self._genpos
 
+    #########################
+    #    Special Methods    #
+    #########################
+
+    def __eq__(self, other: &#39;Spacegroup&#39;) -&gt; bool:
+        return self.international_number == other.international_number
+
 
 SPACEGROUPS = [{
     &#34;bravais_lattice&#34;: &#34;triclinic&#34;,
@@ -2695,7 +2702,14 @@ SPACEGROUPS = [{
     @property
     def genpos(self) -&gt; List[str]:
         &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
-        return self._genpos</code></pre>
+        return self._genpos
+
+    #########################
+    #    Special Methods    #
+    #########################
+
+    def __eq__(self, other: &#39;Spacegroup&#39;) -&gt; bool:
+        return self.international_number == other.international_number</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
