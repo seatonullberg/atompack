@@ -15,6 +15,7 @@ yapf = "*"
 [packages]
 numpy = "*"
 scipy = "*"
+retworkx = "*"
 
 [requires]
 python_version = "3.8"
