@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from atompack.crystal import Basis, Crystal, LatticeParameters, UnitCell
+from atompack.crystal import Basis, Crystal, LatticeParameters, MillerIndex, UnitCell
 from atompack.spacegroup import Spacegroup
 
 
@@ -71,6 +71,22 @@ def test_lattice_parameters_to_from_json():
     new_params = LatticeParameters.from_json(json_data)
     assert new_params.a == params.a
     assert new_params.alpha == params.alpha
+
+
+def test_miller_index_plane_intercepts():
+    cell = np.array([
+        [3, 2, 0],
+        [0, 4, 0],
+        [1, 1, 1],
+    ])
+    mi = MillerIndex((3,2,0))
+    res = mi.plane_intercepts(cell)
+    target = np.array([
+        [1.0, 0.7396, 0.0],
+        [0.0, 2.0, 0.0],
+        [np.inf, np.inf, np.inf]
+    ])
+    assert np.allclose(res, target)
 
 
 def test_unit_cell_cubic():

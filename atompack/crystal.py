@@ -256,7 +256,25 @@ class Orientation(Rotation):
         pass
 
 
+class MillerIndex(object):
+    """Representation of a Miller index."""
+
+    def __init__(self, hkl: Tuple[int, int, int]) -> None:
+        self.hkl = hkl
+
+    def plane_intercepts(self, cell: np.ndarray) -> np.ndarray:
+        """Returns the intercept coordinates."""
+        recip = self._reciprocal()
+        bounds = np.linalg.norm(cell, axis=1)
+        directions = cell / bounds[:,None]
+        return directions * recip[:,None] * bounds
+
+    def _reciprocal(self) -> np.ndarray:
+        return np.array([1 / index if index > 0 else np.inf for index in self.hkl])
+
+
 class Plane(object):
+    """Representation of a crystallographic plane."""
 
     ######################
     #    Constructors    #
