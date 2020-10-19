@@ -38,15 +38,15 @@ class Bond(MutableMapping):
     &#34;&#34;&#34;Dict like object containing arbitrary bond properties.
     
     Note:
-        End users should not construct bond objects directly.
+        End users should not construct Bond objects directly.
 
     Args:
-        endpoints: Atoms at each end of the bond.
+        indices: Index of each atom in the bond.
     &#34;&#34;&#34;
 
-    def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -&gt; None:
+    def __init__(self, indices: Tuple[int, int], **kwargs) -&gt; None:
         self._attrs = {k: v for k, v in kwargs.items()}
-        self._attrs[&#34;endpoints&#34;] = endpoints
+        self._attrs[&#34;indices&#34;] = indices
 
     ######################
     #    Constructors    #
@@ -56,13 +56,12 @@ class Bond(MutableMapping):
     def from_json(cls, s: str) -&gt; &#39;Bond&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
         data = json.loads(s)
-        # process endpoints
-        endpoints = data.pop(&#34;endpoints&#34;)
-        if endpoints is None:
-            raise ValueError(&#34;`endpoints` is a required attribute&#34;)
-        atom0 = Atom.from_json(endpoints[0])
-        atom1 = Atom.from_json(endpoints[1])
-        return cls((atom0, atom1), **data)
+        # process indices
+        indices = data.pop(&#34;indices&#34;)
+        if indices is None:
+            raise ValueError(&#34;`indices` is a required attribute&#34;)
+        indices = tuple(indices)
+        return cls(indices, **data)
 
     #######################################
     #    MutableMapping Implementation    #
@@ -88,12 +87,9 @@ class Bond(MutableMapping):
     ####################
 
     @property
-    def endpoints(self) -&gt; Tuple[Atom, Atom]:
-        return self._attrs[&#34;endpoints&#34;]
-
-    @endpoints.setter
-    def endpoints(self, value: Tuple[Atom, Atom]) -&gt; None:
-        self._attrs[&#34;endpoints&#34;] = value
+    def indices(self) -&gt; Tuple[int, int]:
+        &#34;&#34;&#34;Returns the index of each atom in the bond.&#34;&#34;&#34;
+        return self._attrs[&#34;indices&#34;]
 
     ########################
     #    Public Methods    #
@@ -102,10 +98,7 @@ class Bond(MutableMapping):
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
         _attrs = self._attrs.copy()
-        _attrs[&#34;endpoints&#34;] = [
-            self.endpoints[0].to_json(),
-            self.endpoints[1].to_json(),
-        ]
+        _attrs[&#34;indices&#34;] = list(self.indices)
         return json.dumps(_attrs)</code></pre>
 </details>
 </section>
@@ -120,16 +113,16 @@ class Bond(MutableMapping):
 <dl>
 <dt id="atompack.bond.Bond"><code class="flex name class">
 <span>class <span class="ident">Bond</span></span>
-<span>(</span><span>endpoints: Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>], **kwargs)</span>
+<span>(</span><span>indices: Tuple[int, int], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dict like object containing arbitrary bond properties.</p>
 <h2 id="note">Note</h2>
-<p>End users should not construct bond objects directly.</p>
+<p>End users should not construct Bond objects directly.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>endpoints</code></strong></dt>
-<dd>Atoms at each end of the bond.</dd>
+<dt><strong><code>indices</code></strong></dt>
+<dd>Index of each atom in the bond.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -139,15 +132,15 @@ class Bond(MutableMapping):
     &#34;&#34;&#34;Dict like object containing arbitrary bond properties.
     
     Note:
-        End users should not construct bond objects directly.
+        End users should not construct Bond objects directly.
 
     Args:
-        endpoints: Atoms at each end of the bond.
+        indices: Index of each atom in the bond.
     &#34;&#34;&#34;
 
-    def __init__(self, endpoints: Tuple[Atom, Atom], **kwargs) -&gt; None:
+    def __init__(self, indices: Tuple[int, int], **kwargs) -&gt; None:
         self._attrs = {k: v for k, v in kwargs.items()}
-        self._attrs[&#34;endpoints&#34;] = endpoints
+        self._attrs[&#34;indices&#34;] = indices
 
     ######################
     #    Constructors    #
@@ -157,13 +150,12 @@ class Bond(MutableMapping):
     def from_json(cls, s: str) -&gt; &#39;Bond&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
         data = json.loads(s)
-        # process endpoints
-        endpoints = data.pop(&#34;endpoints&#34;)
-        if endpoints is None:
-            raise ValueError(&#34;`endpoints` is a required attribute&#34;)
-        atom0 = Atom.from_json(endpoints[0])
-        atom1 = Atom.from_json(endpoints[1])
-        return cls((atom0, atom1), **data)
+        # process indices
+        indices = data.pop(&#34;indices&#34;)
+        if indices is None:
+            raise ValueError(&#34;`indices` is a required attribute&#34;)
+        indices = tuple(indices)
+        return cls(indices, **data)
 
     #######################################
     #    MutableMapping Implementation    #
@@ -189,12 +181,9 @@ class Bond(MutableMapping):
     ####################
 
     @property
-    def endpoints(self) -&gt; Tuple[Atom, Atom]:
-        return self._attrs[&#34;endpoints&#34;]
-
-    @endpoints.setter
-    def endpoints(self, value: Tuple[Atom, Atom]) -&gt; None:
-        self._attrs[&#34;endpoints&#34;] = value
+    def indices(self) -&gt; Tuple[int, int]:
+        &#34;&#34;&#34;Returns the index of each atom in the bond.&#34;&#34;&#34;
+        return self._attrs[&#34;indices&#34;]
 
     ########################
     #    Public Methods    #
@@ -203,10 +192,7 @@ class Bond(MutableMapping):
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
         _attrs = self._attrs.copy()
-        _attrs[&#34;endpoints&#34;] = [
-            self.endpoints[0].to_json(),
-            self.endpoints[1].to_json(),
-        ]
+        _attrs[&#34;indices&#34;] = list(self.indices)
         return json.dumps(_attrs)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -233,28 +219,28 @@ class Bond(MutableMapping):
 def from_json(cls, s: str) -&gt; &#39;Bond&#39;:
     &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
     data = json.loads(s)
-    # process endpoints
-    endpoints = data.pop(&#34;endpoints&#34;)
-    if endpoints is None:
-        raise ValueError(&#34;`endpoints` is a required attribute&#34;)
-    atom0 = Atom.from_json(endpoints[0])
-    atom1 = Atom.from_json(endpoints[1])
-    return cls((atom0, atom1), **data)</code></pre>
+    # process indices
+    indices = data.pop(&#34;indices&#34;)
+    if indices is None:
+        raise ValueError(&#34;`indices` is a required attribute&#34;)
+    indices = tuple(indices)
+    return cls(indices, **data)</code></pre>
 </details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="atompack.bond.Bond.endpoints"><code class="name">var <span class="ident">endpoints</span> : Tuple[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>, <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</code></dt>
+<dt id="atompack.bond.Bond.indices"><code class="name">var <span class="ident">indices</span> : Tuple[int, int]</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the index of each atom in the bond.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def endpoints(self) -&gt; Tuple[Atom, Atom]:
-    return self._attrs[&#34;endpoints&#34;]</code></pre>
+def indices(self) -&gt; Tuple[int, int]:
+    &#34;&#34;&#34;Returns the index of each atom in the bond.&#34;&#34;&#34;
+    return self._attrs[&#34;indices&#34;]</code></pre>
 </details>
 </dd>
 </dl>
@@ -272,10 +258,7 @@ def endpoints(self) -&gt; Tuple[Atom, Atom]:
 <pre><code class="python">def to_json(self) -&gt; str:
     &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
     _attrs = self._attrs.copy()
-    _attrs[&#34;endpoints&#34;] = [
-        self.endpoints[0].to_json(),
-        self.endpoints[1].to_json(),
-    ]
+    _attrs[&#34;indices&#34;] = list(self.indices)
     return json.dumps(_attrs)</code></pre>
 </details>
 </dd>
@@ -300,8 +283,8 @@ def endpoints(self) -&gt; Tuple[Atom, Atom]:
 <li>
 <h4><code><a title="atompack.bond.Bond" href="#atompack.bond.Bond">Bond</a></code></h4>
 <ul class="">
-<li><code><a title="atompack.bond.Bond.endpoints" href="#atompack.bond.Bond.endpoints">endpoints</a></code></li>
 <li><code><a title="atompack.bond.Bond.from_json" href="#atompack.bond.Bond.from_json">from_json</a></code></li>
+<li><code><a title="atompack.bond.Bond.indices" href="#atompack.bond.Bond.indices">indices</a></code></li>
 <li><code><a title="atompack.bond.Bond.to_json" href="#atompack.bond.Bond.to_json">to_json</a></code></li>
 </ul>
 </li>

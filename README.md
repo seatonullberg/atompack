@@ -23,13 +23,14 @@ $ git clone https://github.com/seatonullberg/atompack.git
 $ cd atompack
 ```
 
-The following steps can be done with either `pipenv` or `pip`. I recommend using `pipenv`. If you're not familiar with the benefits of using `pipenv`, educate yourself here: https://pipenv-fork.readthedocs.io/en/latest/.
-
 #### 2. Download the dependencies and install as editable:
+
+This step can be done with either `pipenv` or `pip`. I recommend using `pipenv`. If you're not familiar with the benefits of using `pipenv`, find out more about it here: https://pipenv-fork.readthedocs.io/en/latest/.
 
 For `pipenv` users:
 
 ```bash
+$ pipenv install
 $ pipenv install --dev
 ```
 
@@ -40,18 +41,13 @@ $ pip install -r requirements.txt
 $ pip install -e . [dev]
 ```
 
-#### 3. Verify that all tests pass:
+## Development
 
-For `pipenv` users:
+The project's [Makefile](Makefile) adds a few targets to help out with common development tasks.
 
-```bash
-$ pipenv run pytest --doctest-modules -v ./atompack ./tests
-```
-
-For `pip` users:
-
-```bash
-$ pytest --doctest-modules -v ./atompack ./tests
-```
-
-All done!
+* `make bench` - Run the benchmark suite.
+* `make clean` - Remove auto-generated files.
+* `make document` - Build the documentation in `./docs`.
+* `make format` - Enforce preferred code style.
+* `make lint` - Run static analysis checks.
+* `make test` - Run the unit test suite.

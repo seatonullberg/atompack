@@ -27,18 +27,43 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import List, Tuple
+<pre><code class="python">import json
+from typing import List, Tuple
+
+import numpy as np
+from retworkx import PyGraph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
 
 
 class Topology(object):
-    &#34;&#34;&#34;Internal abstraction for a collection of atoms and bonds.&#34;&#34;&#34;
+    &#34;&#34;&#34;Internal abstraction for a collection of atoms and bonds.
+    
+    Note:
+        End users should not construct Topology objects directly.
+    &#34;&#34;&#34;
 
     def __init__(self) -&gt; None:
-        self._atoms: List[Atom] = []
-        self._bonds: List[Bond] = []
+        self._graph = PyGraph()
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Topology&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        res = cls()
+        # process atoms
+        for atom in data[&#34;atoms&#34;]:
+            res._graph.add_node(Atom.from_json(json.dumps(atom)))
+        # process bonds
+        for bond in data[&#34;bonds&#34;]:
+            bond = Bond.from_json(json.dumps(bond))
+            res._graph.add_edge(*bond.indices, edge=bond)
+        return res
 
     ####################
     #    Properties    #
@@ -47,12 +72,51 @@ class Topology(object):
     @property
     def atoms(self) -&gt; List[Atom]:
         &#34;&#34;&#34;Returns a list of all atoms in the topology.&#34;&#34;&#34;
-        return self._atoms
+        return self._graph.nodes()
 
     @property
     def bonds(self) -&gt; List[Bond]:
         &#34;&#34;&#34;Returns a list of all bonds in the topology.&#34;&#34;&#34;
-        return self._bonds</code></pre>
+        return self._graph.edges()
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def insert_atom(self, atom: Atom) -&gt; int:
+        &#34;&#34;&#34;Inserts an atom and returns its index.&#34;&#34;&#34;
+        return self._graph.add_node(atom)
+
+    def remove_atom(self, index: int) -&gt; Atom:
+        &#34;&#34;&#34;Removes and returns an atom.&#34;&#34;&#34;
+        res = self._graph.get_node_data(index)
+        self._graph.remove_node(index)
+        return res
+
+    def select_atom(self, index: int) -&gt; Atom:
+        &#34;&#34;&#34;Returns a mutable reference to an atom.&#34;&#34;&#34;
+        return self._graph.get_node_data(index)
+
+    def insert_bond(self, bond: Bond) -&gt; None:
+        &#34;&#34;&#34;Inserts a bond.&#34;&#34;&#34;
+        self._graph.add_edge(*bond.indices, edge=bond)
+
+    def remove_bond(self, indices: Tuple[int, int]) -&gt; Bond:
+        &#34;&#34;&#34;Removes and returns a bond.&#34;&#34;&#34;
+        res = self._graph.get_edge_data(*indices)
+        self._graph.remove_edge(*indices)
+        return res
+
+    def select_bond(self, indices: Tuple[int, int]) -&gt; Bond:
+        &#34;&#34;&#34;Returns a mutable reference to a bond.&#34;&#34;&#34;
+        return self._graph.get_edge_data(*indices)
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+            &#34;bonds&#34;: [json.loads(bond.to_json()) for bond in self.bonds],
+        })</code></pre>
 </details>
 </section>
 <section>
@@ -68,17 +132,40 @@ class Topology(object):
 <span>class <span class="ident">Topology</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Internal abstraction for a collection of atoms and bonds.</p></div>
+<div class="desc"><p>Internal abstraction for a collection of atoms and bonds.</p>
+<h2 id="note">Note</h2>
+<p>End users should not construct Topology objects directly.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Topology(object):
-    &#34;&#34;&#34;Internal abstraction for a collection of atoms and bonds.&#34;&#34;&#34;
+    &#34;&#34;&#34;Internal abstraction for a collection of atoms and bonds.
+    
+    Note:
+        End users should not construct Topology objects directly.
+    &#34;&#34;&#34;
 
     def __init__(self) -&gt; None:
-        self._atoms: List[Atom] = []
-        self._bonds: List[Bond] = []
+        self._graph = PyGraph()
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Topology&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        res = cls()
+        # process atoms
+        for atom in data[&#34;atoms&#34;]:
+            res._graph.add_node(Atom.from_json(json.dumps(atom)))
+        # process bonds
+        for bond in data[&#34;bonds&#34;]:
+            bond = Bond.from_json(json.dumps(bond))
+            res._graph.add_edge(*bond.indices, edge=bond)
+        return res
 
     ####################
     #    Properties    #
@@ -87,12 +174,51 @@ class Topology(object):
     @property
     def atoms(self) -&gt; List[Atom]:
         &#34;&#34;&#34;Returns a list of all atoms in the topology.&#34;&#34;&#34;
-        return self._atoms
+        return self._graph.nodes()
 
     @property
     def bonds(self) -&gt; List[Bond]:
         &#34;&#34;&#34;Returns a list of all bonds in the topology.&#34;&#34;&#34;
-        return self._bonds</code></pre>
+        return self._graph.edges()
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def insert_atom(self, atom: Atom) -&gt; int:
+        &#34;&#34;&#34;Inserts an atom and returns its index.&#34;&#34;&#34;
+        return self._graph.add_node(atom)
+
+    def remove_atom(self, index: int) -&gt; Atom:
+        &#34;&#34;&#34;Removes and returns an atom.&#34;&#34;&#34;
+        res = self._graph.get_node_data(index)
+        self._graph.remove_node(index)
+        return res
+
+    def select_atom(self, index: int) -&gt; Atom:
+        &#34;&#34;&#34;Returns a mutable reference to an atom.&#34;&#34;&#34;
+        return self._graph.get_node_data(index)
+
+    def insert_bond(self, bond: Bond) -&gt; None:
+        &#34;&#34;&#34;Inserts a bond.&#34;&#34;&#34;
+        self._graph.add_edge(*bond.indices, edge=bond)
+
+    def remove_bond(self, indices: Tuple[int, int]) -&gt; Bond:
+        &#34;&#34;&#34;Removes and returns a bond.&#34;&#34;&#34;
+        res = self._graph.get_edge_data(*indices)
+        self._graph.remove_edge(*indices)
+        return res
+
+    def select_bond(self, indices: Tuple[int, int]) -&gt; Bond:
+        &#34;&#34;&#34;Returns a mutable reference to a bond.&#34;&#34;&#34;
+        return self._graph.get_edge_data(*indices)
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({
+            &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+            &#34;bonds&#34;: [json.loads(bond.to_json()) for bond in self.bonds],
+        })</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -100,6 +226,33 @@ class Topology(object):
 <li><a title="atompack.crystal.UnitCell" href="crystal.html#atompack.crystal.UnitCell">UnitCell</a></li>
 <li><a title="atompack.molecule.Molecule" href="molecule.html#atompack.molecule.Molecule">Molecule</a></li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.topology.Topology.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.topology.Topology" href="#atompack.topology.Topology">Topology</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;Topology&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    data = json.loads(s)
+    res = cls()
+    # process atoms
+    for atom in data[&#34;atoms&#34;]:
+        res._graph.add_node(Atom.from_json(json.dumps(atom)))
+    # process bonds
+    for bond in data[&#34;bonds&#34;]:
+        bond = Bond.from_json(json.dumps(bond))
+        res._graph.add_edge(*bond.indices, edge=bond)
+    return res</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Instance variables</h3>
 <dl>
 <dt id="atompack.topology.Topology.atoms"><code class="name">var <span class="ident">atoms</span> : List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</code></dt>
@@ -112,7 +265,7 @@ class Topology(object):
 <pre><code class="python">@property
 def atoms(self) -&gt; List[Atom]:
     &#34;&#34;&#34;Returns a list of all atoms in the topology.&#34;&#34;&#34;
-    return self._atoms</code></pre>
+    return self._graph.nodes()</code></pre>
 </details>
 </dd>
 <dt id="atompack.topology.Topology.bonds"><code class="name">var <span class="ident">bonds</span> : List[<a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a>]</code></dt>
@@ -125,7 +278,115 @@ def atoms(self) -&gt; List[Atom]:
 <pre><code class="python">@property
 def bonds(self) -&gt; List[Bond]:
     &#34;&#34;&#34;Returns a list of all bonds in the topology.&#34;&#34;&#34;
-    return self._bonds</code></pre>
+    return self._graph.edges()</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.topology.Topology.insert_atom"><code class="name flex">
+<span>def <span class="ident">insert_atom</span></span>(<span>self, atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inserts an atom and returns its index.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insert_atom(self, atom: Atom) -&gt; int:
+    &#34;&#34;&#34;Inserts an atom and returns its index.&#34;&#34;&#34;
+    return self._graph.add_node(atom)</code></pre>
+</details>
+</dd>
+<dt id="atompack.topology.Topology.insert_bond"><code class="name flex">
+<span>def <span class="ident">insert_bond</span></span>(<span>self, bond: <a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a>) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inserts a bond.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insert_bond(self, bond: Bond) -&gt; None:
+    &#34;&#34;&#34;Inserts a bond.&#34;&#34;&#34;
+    self._graph.add_edge(*bond.indices, edge=bond)</code></pre>
+</details>
+</dd>
+<dt id="atompack.topology.Topology.remove_atom"><code class="name flex">
+<span>def <span class="ident">remove_atom</span></span>(<span>self, index: int) ‑> <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes and returns an atom.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_atom(self, index: int) -&gt; Atom:
+    &#34;&#34;&#34;Removes and returns an atom.&#34;&#34;&#34;
+    res = self._graph.get_node_data(index)
+    self._graph.remove_node(index)
+    return res</code></pre>
+</details>
+</dd>
+<dt id="atompack.topology.Topology.remove_bond"><code class="name flex">
+<span>def <span class="ident">remove_bond</span></span>(<span>self, indices: Tuple[int, int]) ‑> <a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes and returns a bond.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_bond(self, indices: Tuple[int, int]) -&gt; Bond:
+    &#34;&#34;&#34;Removes and returns a bond.&#34;&#34;&#34;
+    res = self._graph.get_edge_data(*indices)
+    self._graph.remove_edge(*indices)
+    return res</code></pre>
+</details>
+</dd>
+<dt id="atompack.topology.Topology.select_atom"><code class="name flex">
+<span>def <span class="ident">select_atom</span></span>(<span>self, index: int) ‑> <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a mutable reference to an atom.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def select_atom(self, index: int) -&gt; Atom:
+    &#34;&#34;&#34;Returns a mutable reference to an atom.&#34;&#34;&#34;
+    return self._graph.get_node_data(index)</code></pre>
+</details>
+</dd>
+<dt id="atompack.topology.Topology.select_bond"><code class="name flex">
+<span>def <span class="ident">select_bond</span></span>(<span>self, indices: Tuple[int, int]) ‑> <a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a mutable reference to a bond.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def select_bond(self, indices: Tuple[int, int]) -&gt; Bond:
+    &#34;&#34;&#34;Returns a mutable reference to a bond.&#34;&#34;&#34;
+    return self._graph.get_edge_data(*indices)</code></pre>
+</details>
+</dd>
+<dt id="atompack.topology.Topology.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    return json.dumps({
+        &#34;atoms&#34;: [json.loads(atom.to_json()) for atom in self.atoms],
+        &#34;bonds&#34;: [json.loads(bond.to_json()) for bond in self.bonds],
+    })</code></pre>
 </details>
 </dd>
 </dl>
@@ -148,9 +409,17 @@ def bonds(self) -&gt; List[Bond]:
 <ul>
 <li>
 <h4><code><a title="atompack.topology.Topology" href="#atompack.topology.Topology">Topology</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="atompack.topology.Topology.atoms" href="#atompack.topology.Topology.atoms">atoms</a></code></li>
 <li><code><a title="atompack.topology.Topology.bonds" href="#atompack.topology.Topology.bonds">bonds</a></code></li>
+<li><code><a title="atompack.topology.Topology.from_json" href="#atompack.topology.Topology.from_json">from_json</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert_atom" href="#atompack.topology.Topology.insert_atom">insert_atom</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert_bond" href="#atompack.topology.Topology.insert_bond">insert_bond</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove_atom" href="#atompack.topology.Topology.remove_atom">remove_atom</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove_bond" href="#atompack.topology.Topology.remove_bond">remove_bond</a></code></li>
+<li><code><a title="atompack.topology.Topology.select_atom" href="#atompack.topology.Topology.select_atom">select_atom</a></code></li>
+<li><code><a title="atompack.topology.Topology.select_bond" href="#atompack.topology.Topology.select_bond">select_bond</a></code></li>
+<li><code><a title="atompack.topology.Topology.to_json" href="#atompack.topology.Topology.to_json">to_json</a></code></li>
 </ul>
 </li>
 </ul>

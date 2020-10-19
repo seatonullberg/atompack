@@ -38,17 +38,17 @@ class Atom(MutableMapping):
     &#34;&#34;&#34;Dict like object containing arbitrary atomic properties.
 
     Note:
-        End users should not construct atom objects directly.
+        End users should not construct Atom objects directly.
     
     Args:
-        position: 3D position in cartesian space.
         specie: Atomic specie.
+        position: 3D position in cartesian space.
     &#34;&#34;&#34;
 
-    def __init__(self, position: np.ndarray, specie: str, **kwargs) -&gt; None:
+    def __init__(self, specie: str, position: np.ndarray, **kwargs) -&gt; None:
         self._attrs = {k: v for k, v in kwargs.items()}
-        self._attrs[&#34;position&#34;] = position
         self._attrs[&#34;specie&#34;] = specie
+        self._attrs[&#34;position&#34;] = position
 
     ######################
     #    Constructors    #
@@ -58,16 +58,16 @@ class Atom(MutableMapping):
     def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
         data = json.loads(s)
+        # process specie
+        specie = data.pop(&#34;specie&#34;)
+        if specie is None:
+            raise ValueError(&#34;`specie` is a required attribute&#34;)
         # process position
         position = data.pop(&#34;position&#34;)
         if position is None:
             raise ValueError(&#34;`position` is a required attribute&#34;)
         position = np.array(position)
-        # process specie
-        specie = data.pop(&#34;specie&#34;)
-        if specie is None:
-            raise ValueError(&#34;`specie` is a required attribute&#34;)
-        return cls(position, specie, **data)
+        return cls(specie, position, **data)
 
     #######################################
     #    MutableMapping Implementation    #
@@ -93,20 +93,22 @@ class Atom(MutableMapping):
     ####################
 
     @property
-    def position(self) -&gt; np.ndarray:
-        return self._attrs[&#34;position&#34;]
-
-    @position.setter
-    def position(self, value: np.ndarray) -&gt; None:
-        self._attrs[&#34;position&#34;] = value
-
-    @property
     def specie(self) -&gt; str:
+        &#34;&#34;&#34;Returns the atomic specie.&#34;&#34;&#34;
         return self._attrs[&#34;specie&#34;]
 
     @specie.setter
     def specie(self, value: str) -&gt; None:
         self._attrs[&#34;specie&#34;] = value
+
+    @property
+    def position(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the atom&#39;s position.&#34;&#34;&#34;
+        return self._attrs[&#34;position&#34;]
+
+    @position.setter
+    def position(self, value: np.ndarray) -&gt; None:
+        self._attrs[&#34;position&#34;] = value
 
     ########################
     #    Public Methods    #
@@ -130,18 +132,18 @@ class Atom(MutableMapping):
 <dl>
 <dt id="atompack.atom.Atom"><code class="flex name class">
 <span>class <span class="ident">Atom</span></span>
-<span>(</span><span>position: numpy.ndarray, specie: str, **kwargs)</span>
+<span>(</span><span>specie: str, position: numpy.ndarray, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dict like object containing arbitrary atomic properties.</p>
 <h2 id="note">Note</h2>
-<p>End users should not construct atom objects directly.</p>
+<p>End users should not construct Atom objects directly.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>position</code></strong></dt>
-<dd>3D position in cartesian space.</dd>
 <dt><strong><code>specie</code></strong></dt>
 <dd>Atomic specie.</dd>
+<dt><strong><code>position</code></strong></dt>
+<dd>3D position in cartesian space.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -151,17 +153,17 @@ class Atom(MutableMapping):
     &#34;&#34;&#34;Dict like object containing arbitrary atomic properties.
 
     Note:
-        End users should not construct atom objects directly.
+        End users should not construct Atom objects directly.
     
     Args:
-        position: 3D position in cartesian space.
         specie: Atomic specie.
+        position: 3D position in cartesian space.
     &#34;&#34;&#34;
 
-    def __init__(self, position: np.ndarray, specie: str, **kwargs) -&gt; None:
+    def __init__(self, specie: str, position: np.ndarray, **kwargs) -&gt; None:
         self._attrs = {k: v for k, v in kwargs.items()}
-        self._attrs[&#34;position&#34;] = position
         self._attrs[&#34;specie&#34;] = specie
+        self._attrs[&#34;position&#34;] = position
 
     ######################
     #    Constructors    #
@@ -171,16 +173,16 @@ class Atom(MutableMapping):
     def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
         data = json.loads(s)
+        # process specie
+        specie = data.pop(&#34;specie&#34;)
+        if specie is None:
+            raise ValueError(&#34;`specie` is a required attribute&#34;)
         # process position
         position = data.pop(&#34;position&#34;)
         if position is None:
             raise ValueError(&#34;`position` is a required attribute&#34;)
         position = np.array(position)
-        # process specie
-        specie = data.pop(&#34;specie&#34;)
-        if specie is None:
-            raise ValueError(&#34;`specie` is a required attribute&#34;)
-        return cls(position, specie, **data)
+        return cls(specie, position, **data)
 
     #######################################
     #    MutableMapping Implementation    #
@@ -206,20 +208,22 @@ class Atom(MutableMapping):
     ####################
 
     @property
-    def position(self) -&gt; np.ndarray:
-        return self._attrs[&#34;position&#34;]
-
-    @position.setter
-    def position(self, value: np.ndarray) -&gt; None:
-        self._attrs[&#34;position&#34;] = value
-
-    @property
     def specie(self) -&gt; str:
+        &#34;&#34;&#34;Returns the atomic specie.&#34;&#34;&#34;
         return self._attrs[&#34;specie&#34;]
 
     @specie.setter
     def specie(self, value: str) -&gt; None:
         self._attrs[&#34;specie&#34;] = value
+
+    @property
+    def position(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the atom&#39;s position.&#34;&#34;&#34;
+        return self._attrs[&#34;position&#34;]
+
+    @position.setter
+    def position(self, value: np.ndarray) -&gt; None:
+        self._attrs[&#34;position&#34;] = value
 
     ########################
     #    Public Methods    #
@@ -255,16 +259,16 @@ class Atom(MutableMapping):
 def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
     &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
     data = json.loads(s)
+    # process specie
+    specie = data.pop(&#34;specie&#34;)
+    if specie is None:
+        raise ValueError(&#34;`specie` is a required attribute&#34;)
     # process position
     position = data.pop(&#34;position&#34;)
     if position is None:
         raise ValueError(&#34;`position` is a required attribute&#34;)
     position = np.array(position)
-    # process specie
-    specie = data.pop(&#34;specie&#34;)
-    if specie is None:
-        raise ValueError(&#34;`specie` is a required attribute&#34;)
-    return cls(position, specie, **data)</code></pre>
+    return cls(specie, position, **data)</code></pre>
 </details>
 </dd>
 </dl>
@@ -272,25 +276,27 @@ def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
 <dl>
 <dt id="atompack.atom.Atom.position"><code class="name">var <span class="ident">position</span> : numpy.ndarray</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the atom's position.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def position(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the atom&#39;s position.&#34;&#34;&#34;
     return self._attrs[&#34;position&#34;]</code></pre>
 </details>
 </dd>
 <dt id="atompack.atom.Atom.specie"><code class="name">var <span class="ident">specie</span> : str</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the atomic specie.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def specie(self) -&gt; str:
+    &#34;&#34;&#34;Returns the atomic specie.&#34;&#34;&#34;
     return self._attrs[&#34;specie&#34;]</code></pre>
 </details>
 </dd>

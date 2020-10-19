@@ -16,6 +16,9 @@ from atompack.topology import Topology
 class Basis(MutableSequence):
     """Crystalline basis.
 
+    Args:
+        basis: List of specie/site pairs.
+
     Example:
         >>> from atompack.crystal import Basis
         >>> import numpy as np
@@ -153,42 +156,42 @@ class LatticeParameters(object):
 
     @classmethod
     def triclinic(cls, a, b, c, alpha, beta, gamma) -> 'LatticeParameters':
-        """Initialize with triclinic constraints."""
+        """Initializes with triclinic constraints."""
         return cls(a, b, c, alpha, beta, gamma)
 
     @classmethod
     def monoclinic(cls, a, b, c, beta) -> 'LatticeParameters':
-        """Initialize with monoclinic constraints."""
+        """Initializes with monoclinic constraints."""
         return cls(a, b, c, DEG90, beta, DEG90)
 
     @classmethod
     def orthorhombic(cls, a, b, c) -> 'LatticeParameters':
-        """Initialize with orthorhombic constraints."""
+        """Initializes with orthorhombic constraints."""
         return cls(a, b, c, DEG90, DEG90, DEG90)
 
     @classmethod
     def tetragonal(cls, a, c) -> 'LatticeParameters':
-        """Initialize with tetragonal constraints."""
+        """Initializes with tetragonal constraints."""
         return cls(a, a, c, DEG90, DEG90, DEG90)
 
     @classmethod
     def trigonal(cls, a, c) -> 'LatticeParameters':
-        """Initialize with trigonal constraints."""
+        """Initializes with trigonal constraints."""
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
     def rhombohedral(cls, a, alpha) -> 'LatticeParameters':
-        """Initialize with rhombohedral constraints."""
+        """Initializes with rhombohedral constraints."""
         return cls(a, a, a, alpha, alpha, alpha)
 
     @classmethod
     def hexagonal(cls, a, c) -> 'LatticeParameters':
-        """Initialize with hexagonal constraints."""
+        """Initializes with hexagonal constraints."""
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
     def cubic(cls, a) -> 'LatticeParameters':
-        """Initialize with cubic constraints."""
+        """Initializes with cubic constraints."""
         return cls(a, a, a, DEG90, DEG90, DEG90)
 
     @classmethod
@@ -269,7 +272,7 @@ class UnitCell(Topology):
     """Minimal representation of a crystalline structure.
     
     Args:
-        basis: Asymmetric site occupancy.
+        basis: Atomic basis.
         lattice_parameters: Lattice parameters object.
         spacegroup: Spacegroup object.
 
@@ -338,6 +341,7 @@ class UnitCell(Topology):
 
     @property
     def lattice_vectors(self) -> np.ndarray:
+        """Returns the lattice vectors."""
         return np.sqrt(np.abs(self.lattice_parameters.metric_tensor))
 
     @property
@@ -368,9 +372,6 @@ class UnitCell(Topology):
         for specie, site in self.basis.apply_spacegroup(self.spacegroup):
             position = site * np.linalg.norm(self.lattice_vectors, axis=0)
             self.insert_atom(Atom(specie, position))
-
-
-# TODO: this initialization is garbage
 
 
 class Crystal(Topology):
@@ -409,6 +410,7 @@ class Crystal(Topology):
 
     @classmethod
     def from_json(cls, s: str) -> 'Crystal':
+        """Initializes from a JSON string."""
         topology = Topology.from_json(s)
         data = json.loads(s)
         unit_cell = UnitCell.from_json(json.dumps(data["unit_cell"]))
@@ -463,7 +465,7 @@ class Crystal(Topology):
         return self
 
     def orient(self, orientation: Orientation) -> 'Crystal':
-        """Change the crystal's orientation.
+        """Changes the crystal's orientation.
         Mutates the crystal and returns a reference to itself to enable method chaining.
 
         Args:
@@ -477,7 +479,7 @@ class Crystal(Topology):
         return self
 
     def project(self, plane: Plane, orthogonalize: bool = False) -> 'Crystal':
-        """Project the crystal onto a plane.
+        """Projects the crystal onto a plane.
         Mutates the crystal and returns a reference to itself to enable method chaining.
 
         Args:
@@ -494,7 +496,7 @@ class Crystal(Topology):
         return self
 
     def cut(self, plane: Plane) -> 'Crystal':
-        """Cut the crystal along a plane.
+        """Cuts the crystal along a plane.
         Mutates the crystal and returns a reference to itself to enable method chaining.
 
         Args:
@@ -508,7 +510,7 @@ class Crystal(Topology):
         return self
 
     def finish(self) -> None:
-        """Applies all active transforms to the crystal."""
+        """Applies all active transformations to the crystal."""
         # call underlying implementations
         # TODO: determine best order
         self._project()
@@ -520,7 +522,7 @@ class Crystal(Topology):
         self._reset_attributes()
 
     def reset(self) -> None:
-        """Undo all transformations."""
+        """Undoes all transformations."""
         super().__init__()
         self._reset_attributes()
         self._lattice_vectors = self.unit_cell.lattice_vectors.copy()

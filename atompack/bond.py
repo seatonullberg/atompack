@@ -59,6 +59,7 @@ class Bond(MutableMapping):
 
     @property
     def indices(self) -> Tuple[int, int]:
+        """Returns the index of each atom in the bond."""
         return self._attrs["indices"]
 
     ########################

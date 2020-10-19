@@ -65,6 +65,7 @@ class Atom(MutableMapping):
 
     @property
     def specie(self) -> str:
+        """Returns the atomic specie."""
         return self._attrs["specie"]
 
     @specie.setter
@@ -73,6 +74,7 @@ class Atom(MutableMapping):
 
     @property
     def position(self) -> np.ndarray:
+        """Returns the atom's position."""
         return self._attrs["position"]
 
     @position.setter
