@@ -1,7 +1,6 @@
 import json
 from typing import List, Union
 
-import numpy as np
 import pkg_resources
 
 SPACEGROUPS = None
@@ -25,9 +24,9 @@ class Spacegroup(object):
         spgs = _load_spacegroups()
         group = None
         if type(spg) is int:
-            if spg > 230 or spg < 1:
+            if spg > 230 or spg < 1:  # type: ignore
                 raise ValueError("`spg` must be in range 1..230")
-            group = spgs[spg - 1]
+            group = spgs[spg - 1]  # type: ignore
         elif type(spg) is str:
             for i, _group in enumerate(spgs):
                 if _group["hermann_mauguin"] == spg:
@@ -71,5 +70,7 @@ class Spacegroup(object):
     #    Special Methods    #
     #########################
 
-    def __eq__(self, other: 'Spacegroup') -> bool:
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Spacegroup):
+            return NotImplemented
         return self.international_number == other.international_number

@@ -1,6 +1,6 @@
 import copy
 import json
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 

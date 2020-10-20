@@ -4,8 +4,6 @@ from typing import List, Tuple
 
 import numpy as np
 
-from atompack.atom import Atom
-from atompack.bond import Bond
 from atompack.constants import DEG90, DEG120
 from atompack.symmetry import Spacegroup
 
@@ -39,19 +37,19 @@ class Basis(MutableSequence):
     #    MutableSequence Implementation    #
     ########################################
 
-    def __getitem__(self, index: int) -> Tuple[str, np.ndarray]:
+    def __getitem__(self, index):
         return self._basis[index]
 
-    def __setitem__(self, index: int, value: Tuple[str, np.ndarray]) -> None:
+    def __setitem__(self, index, value):
         self._basis[index] = value
 
-    def __delitem__(self, index: int) -> None:
+    def __delitem__(self, index):
         del self._basis[index]
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self._basis)
 
-    def insert(self, index: int, value: Tuple[str, np.ndarray]) -> None:
+    def insert(self, index, value):
         self._basis.insert(index, value)
 
     ######################
@@ -95,6 +93,7 @@ class Basis(MutableSequence):
             for genpos in spacegroup.genpos:
                 # convert string expressions to arrays
                 genpos = "[{}]".format(genpos)
+                # x, y, and z are created here to be used in the eval statement
                 x, y, z = site[0], site[1], site[2]
                 new_site = np.array(eval(genpos))
                 # wrap all values between 0-1
@@ -114,8 +113,8 @@ class Basis(MutableSequence):
     def to_json(self) -> str:
         """Returns a JSON serialized representation."""
         _basis = self._basis.copy()
-        _basis = [{"specie": specie, "site": site.tolist()} for specie, site in _basis]
-        return json.dumps(_basis)
+        json_basis = [{"specie": specie, "site": site.tolist()} for specie, site in _basis]
+        return json.dumps(json_basis)
 
 
 class LatticeParameters(object):

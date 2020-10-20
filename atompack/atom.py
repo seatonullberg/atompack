@@ -1,6 +1,5 @@
 import json
-from collections.abc import Iterable, MutableMapping
-from typing import Any
+from collections.abc import MutableMapping
 
 import numpy as np
 
@@ -44,19 +43,19 @@ class Atom(MutableMapping):
     #    MutableMapping Implementation    #
     #######################################
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key):
         return self._attrs[key]
 
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setitem__(self, key, value):
         self._attrs[key] = value
 
-    def __delitem__(self, key: str) -> None:
+    def __delitem__(self, key):
         del self._attrs[key]
 
-    def __iter__(self) -> Iterable:
+    def __iter__(self):
         return iter(self._attrs)
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self._attrs)
 
     ####################

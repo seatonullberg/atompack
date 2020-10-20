@@ -1,7 +1,6 @@
 import json
 from typing import List, Tuple
 
-import numpy as np
 from retworkx import PyGraph
 
 from atompack.atom import Atom
@@ -54,17 +53,17 @@ class Topology(object):
     #    Public Methods    #
     ########################
 
-    def insert_atoms(self, *atoms: List[Atom]) -> List[int]:
+    def insert_atoms(self, *atoms: Atom) -> List[int]:
         """Inserts one or more atoms and returns their indices."""
         return self._graph.add_nodes_from(atoms)
 
-    def remove_atoms(self, *indices: List[int]) -> List[Atom]:
+    def remove_atoms(self, *indices: int) -> List[Atom]:
         """Removes and returns one or more atoms."""
         res = [self._graph.get_node_data(index) for index in indices]
         self._graph.remove_nodes_from(indices)
         return res
 
-    def select_atoms(self, *indices: List[int]) -> List[Atom]:
+    def select_atoms(self, *indices: int) -> List[Atom]:
         """Returns a reference to one or more atoms."""
         return [self._graph.get_node_data(index) for index in indices]
 

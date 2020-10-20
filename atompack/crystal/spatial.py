@@ -1,10 +1,7 @@
-import json
 from typing import Tuple
 
 import numpy as np
 from scipy.spatial.transform import Rotation
-
-from atompack.symmetry import Spacegroup
 
 
 class LatticeVectors(object):
@@ -92,7 +89,7 @@ class Plane(object):
     """Representation of a crystallographic plane."""
 
     def __init__(self, coords: np.ndarray) -> None:
-        self.self._coords = coords
+        self._coords = coords
 
     ######################
     #    Constructors    #
