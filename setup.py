@@ -13,6 +13,8 @@ setup(name="atompack",
       url="https://github.com/seatonullberg/atompack",
       license="MIT License",
       packages=["atompack"],
+      package_data={'': ['data/*.json']},
+      include_package_data=True,
       extras_require={"dev": [
           "isort",
           "mypy",
