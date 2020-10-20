@@ -59,13 +59,6 @@ class MillerIndex(object):
         _max = max(self.hkl)
         return np.array([index / _max if index > 0 else np.inf for index in self.hkl])
 
-    # def intercepts(self, cell: np.ndarray) -> np.ndarray:
-    #     """Returns the cartesian coordinates of each planar intercept."""
-    #     recip = self._reciprocal()
-    #     bounds = np.linalg.norm(cell, axis=1)
-    #     directions = cell / bounds[:, None]
-    #     return directions * recip[:, None] * bounds
-
 
 class Orientation(Rotation):
     """Representation of a crystallographic orientation.
@@ -84,7 +77,7 @@ class Orientation(Rotation):
             hkl: Indices of the plane.
             uvw: Indices of the direction.
         """
-        pass
+        raise NotImplementedError
 
     ########################
     #    Public Methods    #
@@ -92,7 +85,7 @@ class Orientation(Rotation):
 
     def as_miller_indices(self) -> Tuple[MillerIndex, MillerIndex]:
         """Represent as Miller Indices."""
-        pass
+        raise NotImplementedError
 
 
 class Plane(object):
@@ -108,12 +101,12 @@ class Plane(object):
     @classmethod
     def from_miller_index(cls, miller_index: MillerIndex) -> 'Plane':
         """Initializes from a Miller index."""
-        pass
+        raise NotImplementedError
 
     @classmethod
     def from_axis_normal(cls, axis: int, length_fraction: float) -> 'Plane':
         """Initializes from an axis and a fractional position along that axis."""
-        pass
+        raise NotImplementedError
 
     ####################
     #    Properties    #
@@ -121,7 +114,7 @@ class Plane(object):
 
     def centroid(self) -> np.ndarray:
         """Returns the center of the plane."""
-        pass
+        raise NotImplementedError
 
     ########################
     #    Public Methods    #
@@ -129,14 +122,14 @@ class Plane(object):
 
     def coefficients(self, lattice_vectors: LatticeVectors) -> np.ndarray:
         """Returns the 'A', 'B', 'C', and 'D' coefficients of the equation of the plane."""
-        pass
+        raise NotImplementedError
 
     def coplanar_points(self, lattice_vectors: LatticeVectors) -> np.ndarray:
         """Returns 3 points which define the plane."""
-        pass
+        raise NotImplementedError
 
     def intercepts(self, lattice_vectors: LatticeVectors) -> np.ndarray:
         """Returns the 3 points at which the plane intercepts each axis.
         Each point is represented as a scalar since the off-axis components are by definition 0.
         """
-        pass
+        raise NotImplementedError

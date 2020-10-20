@@ -93,23 +93,6 @@ def test_crystal_supercell_cubic():
     assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors)
 
 
-# def test_crystal_cut_cubic():
-#     # primitive basis of iron
-#     basis = Basis.primitive("Fe")
-#     # cubic lattice parameters
-#     lattparams = LatticeParameters.cubic(2.85)
-#     # BCC spacegroup
-#     spg = Spacegroup("I m -3 m")
-#     # build the crystal
-#     unit_cell = UnitCell(basis, lattparams, spg)
-#     crystal = Crystal(unit_cell)
-#     # define a plane to cut along
-#     plane = MillerIndex((1, 1, 1))
-#     # cut along plane
-#     crystal.cut(plane).finish()
-#     assert len(crystal.atoms) == 2
-
-
 def test_crystal_to_from_json():
     basis = Basis.primitive("Fe")
     lattparams = LatticeParameters.cubic(2.85)

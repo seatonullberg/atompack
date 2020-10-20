@@ -1,7 +1,7 @@
 import numpy as np
 
 from atompack.crystal import Basis, LatticeParameters, UnitCell, Crystal
-from atompack.spacegroup import Spacegroup
+from atompack.symmetry import Spacegroup
 
 ###############
 #    Setup    #

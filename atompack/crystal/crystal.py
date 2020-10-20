@@ -249,6 +249,7 @@ class Crystal(Topology):
         Note:
             The transform is not applied until the `finish` method is called.
         """
+        raise NotImplementedError
         self._cut_plane = plane
         return self
 
@@ -303,7 +304,6 @@ class Crystal(Topology):
     def _supercell(self) -> None:
         if self._extent is None:
             return
-
         existing_atoms = self.atoms.copy()
         for x in range(self._extent[0]):
             for y in range(self._extent[1]):
@@ -328,19 +328,3 @@ class Crystal(Topology):
     def _cut(self) -> None:
         if self._cut_plane is None:
             return
-
-        removal_indices = []
-        intercepts = self._cut_plane.plane_intercepts(self.lattice_vectors)
-        print(intercepts)
-        print()
-        center = intercepts / 2
-        print(center)
-        print()
-        for i, atom in enumerate(self.atoms):
-            for j, intercept in enumerate(intercepts):
-                search_vector = atom.position - center
-                print(search_vector)
-                print()
-                if min(search_vector) > 0:
-                    removal_indices.append(i)
-        self.remove_atoms(*removal_indices)
