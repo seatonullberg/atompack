@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.1" />
-<title>atompack.molecule API documentation</title>
-<meta name="description" content="" />
+<title>atompack API documentation</title>
+<meta name="description" content="A flexible Python library for atomic structure generation." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,70 +20,56 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>atompack.molecule</code></h1>
+<h1 class="title">Package <code>atompack</code></h1>
 </header>
 <section id="section-intro">
+<p>A flexible Python library for atomic structure generation.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from atompack.topology import Topology
-
-
-class Molecule(Topology):
-    &#34;&#34;&#34;Minimal representation of a chemical compound.&#34;&#34;&#34;
-
-    def __init__(self) -&gt; None:
-        super().__init__()</code></pre>
+<pre><code class="python">&#34;&#34;&#34;A flexible Python library for atomic structure generation.
+&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="atompack.molecule.Molecule"><code class="flex name class">
-<span>class <span class="ident">Molecule</span></span>
-</code></dt>
+<dt><code class="name"><a title="atompack.atom" href="atom.html">atompack.atom</a></code></dt>
 <dd>
-<div class="desc"><p>Minimal representation of a chemical compound.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Molecule(Topology):
-    &#34;&#34;&#34;Minimal representation of a chemical compound.&#34;&#34;&#34;
-
-    def __init__(self) -&gt; None:
-        super().__init__()</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
-<ul class="hlist">
-<li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
-<li><code><a title="atompack.topology.Topology.bonds" href="topology.html#atompack.topology.Topology.bonds">bonds</a></code></li>
-<li><code><a title="atompack.topology.Topology.from_json" href="topology.html#atompack.topology.Topology.from_json">from_json</a></code></li>
-<li><code><a title="atompack.topology.Topology.insert_atom" href="topology.html#atompack.topology.Topology.insert_atom">insert_atom</a></code></li>
-<li><code><a title="atompack.topology.Topology.insert_bond" href="topology.html#atompack.topology.Topology.insert_bond">insert_bond</a></code></li>
-<li><code><a title="atompack.topology.Topology.remove_atom" href="topology.html#atompack.topology.Topology.remove_atom">remove_atom</a></code></li>
-<li><code><a title="atompack.topology.Topology.remove_bond" href="topology.html#atompack.topology.Topology.remove_bond">remove_bond</a></code></li>
-<li><code><a title="atompack.topology.Topology.select_atom" href="topology.html#atompack.topology.Topology.select_atom">select_atom</a></code></li>
-<li><code><a title="atompack.topology.Topology.select_bond" href="topology.html#atompack.topology.Topology.select_bond">select_bond</a></code></li>
-<li><code><a title="atompack.topology.Topology.to_json" href="topology.html#atompack.topology.Topology.to_json">to_json</a></code></li>
-</ul>
-</li>
-</ul>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="atompack.bond" href="bond.html">atompack.bond</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="atompack.constants" href="constants.html">atompack.constants</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="atompack.crystal" href="crystal/index.html">atompack.crystal</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="atompack.molecule" href="molecule.html">atompack.molecule</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="atompack.symmetry" href="symmetry.html">atompack.symmetry</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="atompack.topology" href="topology.html">atompack.topology</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 </dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -92,16 +78,15 @@ class Molecule(Topology):
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3>Super-module</h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="atompack" href="index.html">atompack</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></code></h4>
-</li>
+<li><code><a title="atompack.atom" href="atom.html">atompack.atom</a></code></li>
+<li><code><a title="atompack.bond" href="bond.html">atompack.bond</a></code></li>
+<li><code><a title="atompack.constants" href="constants.html">atompack.constants</a></code></li>
+<li><code><a title="atompack.crystal" href="crystal/index.html">atompack.crystal</a></code></li>
+<li><code><a title="atompack.molecule" href="molecule.html">atompack.molecule</a></code></li>
+<li><code><a title="atompack.symmetry" href="symmetry.html">atompack.symmetry</a></code></li>
+<li><code><a title="atompack.topology" href="topology.html">atompack.topology</a></code></li>
 </ul>
 </li>
 </ul>

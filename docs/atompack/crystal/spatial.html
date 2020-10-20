@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>atompack.crystal.spatial API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>atompack.crystal.spatial</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import json
+from typing import Tuple
+
+import numpy as np
+from scipy.spatial.transform import Rotation
+
+from atompack.symmetry import Spacegroup
+
+
+class LatticeVectors(object):
+    &#34;&#34;&#34;Representation of the vectors that define the size and shape of a crystalline system.
+    
+    Args:
+        vectors: Row-major matrix of lattice vectors.
+    &#34;&#34;&#34;
+
+    def __init__(self, vectors: np.ndarray) -&gt; None:
+        self.vectors = vectors
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def contain(self, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
+        &#34;&#34;&#34;Returns True if the point is within the bounding volume.&#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            if point[i] &gt; (bounds[i] + tol):
+                return False
+            if point[i] &lt; -tol:
+                return False
+        return True
+
+    def wrap(self, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
+        &#34;&#34;&#34;Wraps a point into the bounding volume. 
+        The `point` argument is mutated and returned.
+        &#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            bound = bounds[i]
+            tmpval = point[i]
+            if tmpval &gt; (bound + tol):
+                tmpval -= bound * (tmpval // bound)
+            if tmpval &lt; -tol:
+                tmpval += bound * (1 + (-tmpval // bound))
+            point[i] = tmpval
+        return point
+
+
+class MillerIndex(object):
+    &#34;&#34;&#34;Representation of a Miller index for describing crystallographic planes and directions.&#34;&#34;&#34;
+
+    def __init__(self, hkl: Tuple[int, int, int]) -&gt; None:
+        self.hkl = hkl
+
+    @property
+    def reciprocal(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the reciprocal index.&#34;&#34;&#34;
+        _max = max(self.hkl)
+        return np.array([index / _max if index &gt; 0 else np.inf for index in self.hkl])
+
+    # def intercepts(self, cell: np.ndarray) -&gt; np.ndarray:
+    #     &#34;&#34;&#34;Returns the cartesian coordinates of each planar intercept.&#34;&#34;&#34;
+    #     recip = self._reciprocal()
+    #     bounds = np.linalg.norm(cell, axis=1)
+    #     directions = cell / bounds[:, None]
+    #     return directions * recip[:, None] * bounds
+
+
+class Orientation(Rotation):
+    &#34;&#34;&#34;Representation of a crystallographic orientation.
+    This class inherits from `scipy.spatial.transform.Rotation`.
+    &#34;&#34;&#34;
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_miller_indices(cls, hkl: MillerIndex, uvw: MillerIndex) -&gt; &#39;Orientation&#39;:
+        &#34;&#34;&#34;Initialize from Miller Indices.
+        
+        Args:
+            hkl: Indices of the plane.
+            uvw: Indices of the direction.
+        &#34;&#34;&#34;
+        pass
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def as_miller_indices(self) -&gt; Tuple[MillerIndex, MillerIndex]:
+        &#34;&#34;&#34;Represent as Miller Indices.&#34;&#34;&#34;
+        pass
+
+
+class Plane(object):
+    &#34;&#34;&#34;Representation of a crystallographic plane.&#34;&#34;&#34;
+
+    def __init__(self, coords: np.ndarray) -&gt; None:
+        self.self._coords = coords
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_miller_index(cls, miller_index: MillerIndex) -&gt; &#39;Plane&#39;:
+        &#34;&#34;&#34;Initializes from a Miller index.&#34;&#34;&#34;
+        pass
+
+    @classmethod
+    def from_axis_normal(cls, axis: int, length_fraction: float) -&gt; &#39;Plane&#39;:
+        &#34;&#34;&#34;Initializes from an axis and a fractional position along that axis.&#34;&#34;&#34;
+        pass
+
+    ####################
+    #    Properties    #
+    ####################
+
+    def centroid(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the center of the plane.&#34;&#34;&#34;
+        pass
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def coefficients(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, and &#39;D&#39; coefficients of the equation of the plane.&#34;&#34;&#34;
+        pass
+
+    def coplanar_points(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns 3 points which define the plane.&#34;&#34;&#34;
+        pass
+
+    def intercepts(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the 3 points at which the plane intercepts each axis.
+        Each point is represented as a scalar since the off-axis components are by definition 0.
+        &#34;&#34;&#34;
+        pass</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="atompack.crystal.spatial.LatticeVectors"><code class="flex name class">
+<span>class <span class="ident">LatticeVectors</span></span>
+<span>(</span><span>vectors: numpy.ndarray)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of the vectors that define the size and shape of a crystalline system.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>vectors</code></strong></dt>
+<dd>Row-major matrix of lattice vectors.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LatticeVectors(object):
+    &#34;&#34;&#34;Representation of the vectors that define the size and shape of a crystalline system.
+    
+    Args:
+        vectors: Row-major matrix of lattice vectors.
+    &#34;&#34;&#34;
+
+    def __init__(self, vectors: np.ndarray) -&gt; None:
+        self.vectors = vectors
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def contain(self, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
+        &#34;&#34;&#34;Returns True if the point is within the bounding volume.&#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            if point[i] &gt; (bounds[i] + tol):
+                return False
+            if point[i] &lt; -tol:
+                return False
+        return True
+
+    def wrap(self, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
+        &#34;&#34;&#34;Wraps a point into the bounding volume. 
+        The `point` argument is mutated and returned.
+        &#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            bound = bounds[i]
+            tmpval = point[i]
+            if tmpval &gt; (bound + tol):
+                tmpval -= bound * (tmpval // bound)
+            if tmpval &lt; -tol:
+                tmpval += bound * (1 + (-tmpval // bound))
+            point[i] = tmpval
+        return point</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.spatial.LatticeVectors.contain"><code class="name flex">
+<span>def <span class="ident">contain</span></span>(<span>self, point: numpy.ndarray, tol: float = 1e-06) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns True if the point is within the bounding volume.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contain(self, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
+    &#34;&#34;&#34;Returns True if the point is within the bounding volume.&#34;&#34;&#34;
+    bounds = np.linalg.norm(self.vectors, axis=0)
+    for i in range(3):
+        if point[i] &gt; (bounds[i] + tol):
+            return False
+        if point[i] &lt; -tol:
+            return False
+    return True</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.spatial.LatticeVectors.wrap"><code class="name flex">
+<span>def <span class="ident">wrap</span></span>(<span>self, point: numpy.ndarray, tol: float = 1e-06) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wraps a point into the bounding volume.
+The <code>point</code> argument is mutated and returned.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrap(self, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
+    &#34;&#34;&#34;Wraps a point into the bounding volume. 
+    The `point` argument is mutated and returned.
+    &#34;&#34;&#34;
+    bounds = np.linalg.norm(self.vectors, axis=0)
+    for i in range(3):
+        bound = bounds[i]
+        tmpval = point[i]
+        if tmpval &gt; (bound + tol):
+            tmpval -= bound * (tmpval // bound)
+        if tmpval &lt; -tol:
+            tmpval += bound * (1 + (-tmpval // bound))
+        point[i] = tmpval
+    return point</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="atompack.crystal.spatial.MillerIndex"><code class="flex name class">
+<span>class <span class="ident">MillerIndex</span></span>
+<span>(</span><span>hkl: Tuple[int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of a Miller index for describing crystallographic planes and directions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MillerIndex(object):
+    &#34;&#34;&#34;Representation of a Miller index for describing crystallographic planes and directions.&#34;&#34;&#34;
+
+    def __init__(self, hkl: Tuple[int, int, int]) -&gt; None:
+        self.hkl = hkl
+
+    @property
+    def reciprocal(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the reciprocal index.&#34;&#34;&#34;
+        _max = max(self.hkl)
+        return np.array([index / _max if index &gt; 0 else np.inf for index in self.hkl])</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="atompack.crystal.spatial.MillerIndex.reciprocal"><code class="name">var <span class="ident">reciprocal</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"><p>Returns the reciprocal index.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def reciprocal(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the reciprocal index.&#34;&#34;&#34;
+    _max = max(self.hkl)
+    return np.array([index / _max if index &gt; 0 else np.inf for index in self.hkl])</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="atompack.crystal.spatial.Orientation"><code class="flex name class">
+<span>class <span class="ident">Orientation</span></span>
+<span>(</span><span>quat, normalize=True, copy=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of a crystallographic orientation.
+This class inherits from <code>scipy.spatial.transform.Rotation</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Orientation(Rotation):
+    &#34;&#34;&#34;Representation of a crystallographic orientation.
+    This class inherits from `scipy.spatial.transform.Rotation`.
+    &#34;&#34;&#34;
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_miller_indices(cls, hkl: MillerIndex, uvw: MillerIndex) -&gt; &#39;Orientation&#39;:
+        &#34;&#34;&#34;Initialize from Miller Indices.
+        
+        Args:
+            hkl: Indices of the plane.
+            uvw: Indices of the direction.
+        &#34;&#34;&#34;
+        pass
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def as_miller_indices(self) -&gt; Tuple[MillerIndex, MillerIndex]:
+        &#34;&#34;&#34;Represent as Miller Indices.&#34;&#34;&#34;
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>scipy.spatial.transform.rotation.Rotation</li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.crystal.spatial.Orientation.from_miller_indices"><code class="name flex">
+<span>def <span class="ident">from_miller_indices</span></span>(<span>hkl: <a title="atompack.crystal.spatial.MillerIndex" href="#atompack.crystal.spatial.MillerIndex">MillerIndex</a>, uvw: <a title="atompack.crystal.spatial.MillerIndex" href="#atompack.crystal.spatial.MillerIndex">MillerIndex</a>) ‑> <a title="atompack.crystal.spatial.Orientation" href="#atompack.crystal.spatial.Orientation">Orientation</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initialize from Miller Indices.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hkl</code></strong></dt>
+<dd>Indices of the plane.</dd>
+<dt><strong><code>uvw</code></strong></dt>
+<dd>Indices of the direction.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_miller_indices(cls, hkl: MillerIndex, uvw: MillerIndex) -&gt; &#39;Orientation&#39;:
+    &#34;&#34;&#34;Initialize from Miller Indices.
+    
+    Args:
+        hkl: Indices of the plane.
+        uvw: Indices of the direction.
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.spatial.Orientation.as_miller_indices"><code class="name flex">
+<span>def <span class="ident">as_miller_indices</span></span>(<span>self) ‑> Tuple[<a title="atompack.crystal.spatial.MillerIndex" href="#atompack.crystal.spatial.MillerIndex">MillerIndex</a>, <a title="atompack.crystal.spatial.MillerIndex" href="#atompack.crystal.spatial.MillerIndex">MillerIndex</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represent as Miller Indices.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def as_miller_indices(self) -&gt; Tuple[MillerIndex, MillerIndex]:
+    &#34;&#34;&#34;Represent as Miller Indices.&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="atompack.crystal.spatial.Plane"><code class="flex name class">
+<span>class <span class="ident">Plane</span></span>
+<span>(</span><span>coords: numpy.ndarray)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of a crystallographic plane.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Plane(object):
+    &#34;&#34;&#34;Representation of a crystallographic plane.&#34;&#34;&#34;
+
+    def __init__(self, coords: np.ndarray) -&gt; None:
+        self.self._coords = coords
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_miller_index(cls, miller_index: MillerIndex) -&gt; &#39;Plane&#39;:
+        &#34;&#34;&#34;Initializes from a Miller index.&#34;&#34;&#34;
+        pass
+
+    @classmethod
+    def from_axis_normal(cls, axis: int, length_fraction: float) -&gt; &#39;Plane&#39;:
+        &#34;&#34;&#34;Initializes from an axis and a fractional position along that axis.&#34;&#34;&#34;
+        pass
+
+    ####################
+    #    Properties    #
+    ####################
+
+    def centroid(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the center of the plane.&#34;&#34;&#34;
+        pass
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def coefficients(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, and &#39;D&#39; coefficients of the equation of the plane.&#34;&#34;&#34;
+        pass
+
+    def coplanar_points(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns 3 points which define the plane.&#34;&#34;&#34;
+        pass
+
+    def intercepts(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+        &#34;&#34;&#34;Returns the 3 points at which the plane intercepts each axis.
+        Each point is represented as a scalar since the off-axis components are by definition 0.
+        &#34;&#34;&#34;
+        pass</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.crystal.spatial.Plane.from_axis_normal"><code class="name flex">
+<span>def <span class="ident">from_axis_normal</span></span>(<span>axis: int, length_fraction: float) ‑> <a title="atompack.crystal.spatial.Plane" href="#atompack.crystal.spatial.Plane">Plane</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from an axis and a fractional position along that axis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_axis_normal(cls, axis: int, length_fraction: float) -&gt; &#39;Plane&#39;:
+    &#34;&#34;&#34;Initializes from an axis and a fractional position along that axis.&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.spatial.Plane.from_miller_index"><code class="name flex">
+<span>def <span class="ident">from_miller_index</span></span>(<span>miller_index: <a title="atompack.crystal.spatial.MillerIndex" href="#atompack.crystal.spatial.MillerIndex">MillerIndex</a>) ‑> <a title="atompack.crystal.spatial.Plane" href="#atompack.crystal.spatial.Plane">Plane</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a Miller index.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_miller_index(cls, miller_index: MillerIndex) -&gt; &#39;Plane&#39;:
+    &#34;&#34;&#34;Initializes from a Miller index.&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.spatial.Plane.centroid"><code class="name flex">
+<span>def <span class="ident">centroid</span></span>(<span>self) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the center of the plane.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def centroid(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the center of the plane.&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.spatial.Plane.coefficients"><code class="name flex">
+<span>def <span class="ident">coefficients</span></span>(<span>self, lattice_vectors: <a title="atompack.crystal.spatial.LatticeVectors" href="#atompack.crystal.spatial.LatticeVectors">LatticeVectors</a>) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the 'A', 'B', 'C', and 'D' coefficients of the equation of the plane.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coefficients(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, and &#39;D&#39; coefficients of the equation of the plane.&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.spatial.Plane.coplanar_points"><code class="name flex">
+<span>def <span class="ident">coplanar_points</span></span>(<span>self, lattice_vectors: <a title="atompack.crystal.spatial.LatticeVectors" href="#atompack.crystal.spatial.LatticeVectors">LatticeVectors</a>) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns 3 points which define the plane.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coplanar_points(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns 3 points which define the plane.&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.spatial.Plane.intercepts"><code class="name flex">
+<span>def <span class="ident">intercepts</span></span>(<span>self, lattice_vectors: <a title="atompack.crystal.spatial.LatticeVectors" href="#atompack.crystal.spatial.LatticeVectors">LatticeVectors</a>) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the 3 points at which the plane intercepts each axis.
+Each point is represented as a scalar since the off-axis components are by definition 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def intercepts(self, lattice_vectors: LatticeVectors) -&gt; np.ndarray:
+    &#34;&#34;&#34;Returns the 3 points at which the plane intercepts each axis.
+    Each point is represented as a scalar since the off-axis components are by definition 0.
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="atompack.crystal" href="index.html">atompack.crystal</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="atompack.crystal.spatial.LatticeVectors" href="#atompack.crystal.spatial.LatticeVectors">LatticeVectors</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.crystal.spatial.LatticeVectors.contain" href="#atompack.crystal.spatial.LatticeVectors.contain">contain</a></code></li>
+<li><code><a title="atompack.crystal.spatial.LatticeVectors.wrap" href="#atompack.crystal.spatial.LatticeVectors.wrap">wrap</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="atompack.crystal.spatial.MillerIndex" href="#atompack.crystal.spatial.MillerIndex">MillerIndex</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.crystal.spatial.MillerIndex.reciprocal" href="#atompack.crystal.spatial.MillerIndex.reciprocal">reciprocal</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="atompack.crystal.spatial.Orientation" href="#atompack.crystal.spatial.Orientation">Orientation</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.crystal.spatial.Orientation.as_miller_indices" href="#atompack.crystal.spatial.Orientation.as_miller_indices">as_miller_indices</a></code></li>
+<li><code><a title="atompack.crystal.spatial.Orientation.from_miller_indices" href="#atompack.crystal.spatial.Orientation.from_miller_indices">from_miller_indices</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="atompack.crystal.spatial.Plane" href="#atompack.crystal.spatial.Plane">Plane</a></code></h4>
+<ul class="two-column">
+<li><code><a title="atompack.crystal.spatial.Plane.centroid" href="#atompack.crystal.spatial.Plane.centroid">centroid</a></code></li>
+<li><code><a title="atompack.crystal.spatial.Plane.coefficients" href="#atompack.crystal.spatial.Plane.coefficients">coefficients</a></code></li>
+<li><code><a title="atompack.crystal.spatial.Plane.coplanar_points" href="#atompack.crystal.spatial.Plane.coplanar_points">coplanar_points</a></code></li>
+<li><code><a title="atompack.crystal.spatial.Plane.from_axis_normal" href="#atompack.crystal.spatial.Plane.from_axis_normal">from_axis_normal</a></code></li>
+<li><code><a title="atompack.crystal.spatial.Plane.from_miller_index" href="#atompack.crystal.spatial.Plane.from_miller_index">from_miller_index</a></code></li>
+<li><code><a title="atompack.crystal.spatial.Plane.intercepts" href="#atompack.crystal.spatial.Plane.intercepts">intercepts</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>

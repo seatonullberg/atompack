@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.1" />
-<title>atompack.cell API documentation</title>
+<title>atompack.molecule API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -20,43 +20,21 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>atompack.cell</code></h1>
+<h1 class="title">Module <code>atompack.molecule</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">from atompack.topology import Topology
 
 
-def is_point_in_cell(cell: np.ndarray, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
-    &#34;&#34;&#34;Returns True if `point` is within the parallelepiped cell 
-    defined by the 3x3 matrix `cell`.&#34;&#34;&#34;
-    bounds = np.linalg.norm(cell, axis=0)
-    for i in range(3):
-        if point[i] &gt; (bounds[i] + tol):
-            return False
-        if point[i] &lt; -tol:
-            return False
-    return True
+class Molecule(Topology):
+    &#34;&#34;&#34;Minimal representation of a chemical compound.&#34;&#34;&#34;
 
-
-def wrap_point_into_cell(cell: np.ndarray, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
-    &#34;&#34;&#34;Mutates `point` to reside within the parallelepiped cell defined by 
-    the 3x3 matrix `cell`.
-    Returns the mutated `point`.
-    &#34;&#34;&#34;
-    bounds = np.linalg.norm(cell, axis=0)
-    for i in range(3):
-        bound = bounds[i]
-        tmpval = point[i]
-        if tmpval &gt; (bound + tol):
-            tmpval -= bound * (tmpval // bound)
-        if tmpval &lt; -tol:
-            tmpval += bound * (1 + (-tmpval // bound))
-        point[i] = tmpval
-    return point</code></pre>
+    def __init__(self) -&gt; None:
+        super().__init__()</code></pre>
 </details>
 </section>
 <section>
@@ -64,61 +42,48 @@ def wrap_point_into_cell(cell: np.ndarray, point: np.ndarray, tol: float = 1E-6)
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="atompack.cell.is_point_in_cell"><code class="name flex">
-<span>def <span class="ident">is_point_in_cell</span></span>(<span>cell: numpy.ndarray, point: numpy.ndarray, tol: float = 1e-06) ‑> bool</span>
+<dt id="atompack.molecule.Molecule"><code class="flex name class">
+<span>class <span class="ident">Molecule</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns True if <code>point</code> is within the parallelepiped cell
-defined by the 3x3 matrix <code>cell</code>.</p></div>
+<div class="desc"><p>Minimal representation of a chemical compound.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def is_point_in_cell(cell: np.ndarray, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
-    &#34;&#34;&#34;Returns True if `point` is within the parallelepiped cell 
-    defined by the 3x3 matrix `cell`.&#34;&#34;&#34;
-    bounds = np.linalg.norm(cell, axis=0)
-    for i in range(3):
-        if point[i] &gt; (bounds[i] + tol):
-            return False
-        if point[i] &lt; -tol:
-            return False
-    return True</code></pre>
+<pre><code class="python">class Molecule(Topology):
+    &#34;&#34;&#34;Minimal representation of a chemical compound.&#34;&#34;&#34;
+
+    def __init__(self) -&gt; None:
+        super().__init__()</code></pre>
 </details>
-</dd>
-<dt id="atompack.cell.wrap_point_into_cell"><code class="name flex">
-<span>def <span class="ident">wrap_point_into_cell</span></span>(<span>cell: numpy.ndarray, point: numpy.ndarray, tol: float = 1e-06) ‑> numpy.ndarray</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Mutates <code>point</code> to reside within the parallelepiped cell defined by
-the 3x3 matrix <code>cell</code>.
-Returns the mutated <code>point</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrap_point_into_cell(cell: np.ndarray, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
-    &#34;&#34;&#34;Mutates `point` to reside within the parallelepiped cell defined by 
-    the 3x3 matrix `cell`.
-    Returns the mutated `point`.
-    &#34;&#34;&#34;
-    bounds = np.linalg.norm(cell, axis=0)
-    for i in range(3):
-        bound = bounds[i]
-        tmpval = point[i]
-        if tmpval &gt; (bound + tol):
-            tmpval -= bound * (tmpval // bound)
-        if tmpval &lt; -tol:
-            tmpval += bound * (1 + (-tmpval // bound))
-        point[i] = tmpval
-    return point</code></pre>
-</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="atompack.topology.Topology" href="topology.html#atompack.topology.Topology">Topology</a></b></code>:
+<ul class="hlist">
+<li><code><a title="atompack.topology.Topology.atoms" href="topology.html#atompack.topology.Topology.atoms">atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.bonds" href="topology.html#atompack.topology.Topology.bonds">bonds</a></code></li>
+<li><code><a title="atompack.topology.Topology.from_json" href="topology.html#atompack.topology.Topology.from_json">from_json</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert_atoms" href="topology.html#atompack.topology.Topology.insert_atoms">insert_atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert_bond" href="topology.html#atompack.topology.Topology.insert_bond">insert_bond</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove_atoms" href="topology.html#atompack.topology.Topology.remove_atoms">remove_atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove_bond" href="topology.html#atompack.topology.Topology.remove_bond">remove_bond</a></code></li>
+<li><code><a title="atompack.topology.Topology.select_atoms" href="topology.html#atompack.topology.Topology.select_atoms">select_atoms</a></code></li>
+<li><code><a title="atompack.topology.Topology.select_bond" href="topology.html#atompack.topology.Topology.select_bond">select_bond</a></code></li>
+<li><code><a title="atompack.topology.Topology.to_json" href="topology.html#atompack.topology.Topology.to_json">to_json</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
-</section>
-<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -132,10 +97,11 @@ Returns the mutated <code>point</code>.</p></div>
 <li><code><a title="atompack" href="index.html">atompack</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="atompack.cell.is_point_in_cell" href="#atompack.cell.is_point_in_cell">is_point_in_cell</a></code></li>
-<li><code><a title="atompack.cell.wrap_point_into_cell" href="#atompack.cell.wrap_point_into_cell">wrap_point_into_cell</a></code></li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="atompack.molecule.Molecule" href="#atompack.molecule.Molecule">Molecule</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

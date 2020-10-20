@@ -83,26 +83,28 @@ class Topology(object):
     #    Public Methods    #
     ########################
 
-    def insert_atom(self, atom: Atom) -&gt; int:
-        &#34;&#34;&#34;Inserts an atom and returns its index.&#34;&#34;&#34;
-        return self._graph.add_node(atom)
+    def insert_atoms(self, *atoms: List[Atom]) -&gt; List[int]:
+        &#34;&#34;&#34;Inserts one or more atoms and returns their indices.&#34;&#34;&#34;
+        return self._graph.add_nodes_from(atoms)
 
-    def remove_atom(self, index: int) -&gt; Atom:
-        &#34;&#34;&#34;Removes and returns an atom.&#34;&#34;&#34;
-        res = self._graph.get_node_data(index)
-        self._graph.remove_node(index)
+    def remove_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+        &#34;&#34;&#34;Removes and returns one or more atoms.&#34;&#34;&#34;
+        res = [self._graph.get_node_data(index) for index in indices]
+        self._graph.remove_nodes_from(indices)
         return res
 
-    def select_atom(self, index: int) -&gt; Atom:
-        &#34;&#34;&#34;Returns a mutable reference to an atom.&#34;&#34;&#34;
-        return self._graph.get_node_data(index)
+    def select_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+        &#34;&#34;&#34;Returns a reference to one or more atoms.&#34;&#34;&#34;
+        return [self._graph.get_node_data(index) for index in indices]
+
+    # TODO: update these upon new retworkx release.
 
     def insert_bond(self, bond: Bond) -&gt; None:
         &#34;&#34;&#34;Inserts a bond.&#34;&#34;&#34;
         self._graph.add_edge(*bond.indices, edge=bond)
 
     def remove_bond(self, indices: Tuple[int, int]) -&gt; Bond:
-        &#34;&#34;&#34;Removes and returns a bond.&#34;&#34;&#34;
+        &#34;&#34;&#34;Removes and returns bonds.&#34;&#34;&#34;
         res = self._graph.get_edge_data(*indices)
         self._graph.remove_edge(*indices)
         return res
@@ -185,26 +187,28 @@ class Topology(object):
     #    Public Methods    #
     ########################
 
-    def insert_atom(self, atom: Atom) -&gt; int:
-        &#34;&#34;&#34;Inserts an atom and returns its index.&#34;&#34;&#34;
-        return self._graph.add_node(atom)
+    def insert_atoms(self, *atoms: List[Atom]) -&gt; List[int]:
+        &#34;&#34;&#34;Inserts one or more atoms and returns their indices.&#34;&#34;&#34;
+        return self._graph.add_nodes_from(atoms)
 
-    def remove_atom(self, index: int) -&gt; Atom:
-        &#34;&#34;&#34;Removes and returns an atom.&#34;&#34;&#34;
-        res = self._graph.get_node_data(index)
-        self._graph.remove_node(index)
+    def remove_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+        &#34;&#34;&#34;Removes and returns one or more atoms.&#34;&#34;&#34;
+        res = [self._graph.get_node_data(index) for index in indices]
+        self._graph.remove_nodes_from(indices)
         return res
 
-    def select_atom(self, index: int) -&gt; Atom:
-        &#34;&#34;&#34;Returns a mutable reference to an atom.&#34;&#34;&#34;
-        return self._graph.get_node_data(index)
+    def select_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+        &#34;&#34;&#34;Returns a reference to one or more atoms.&#34;&#34;&#34;
+        return [self._graph.get_node_data(index) for index in indices]
+
+    # TODO: update these upon new retworkx release.
 
     def insert_bond(self, bond: Bond) -&gt; None:
         &#34;&#34;&#34;Inserts a bond.&#34;&#34;&#34;
         self._graph.add_edge(*bond.indices, edge=bond)
 
     def remove_bond(self, indices: Tuple[int, int]) -&gt; Bond:
-        &#34;&#34;&#34;Removes and returns a bond.&#34;&#34;&#34;
+        &#34;&#34;&#34;Removes and returns bonds.&#34;&#34;&#34;
         res = self._graph.get_edge_data(*indices)
         self._graph.remove_edge(*indices)
         return res
@@ -222,8 +226,8 @@ class Topology(object):
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="atompack.crystal.Crystal" href="crystal.html#atompack.crystal.Crystal">Crystal</a></li>
-<li><a title="atompack.crystal.UnitCell" href="crystal.html#atompack.crystal.UnitCell">UnitCell</a></li>
+<li><a title="atompack.crystal.crystal.Crystal" href="crystal/crystal.html#atompack.crystal.crystal.Crystal">Crystal</a></li>
+<li><a title="atompack.crystal.crystal.UnitCell" href="crystal/crystal.html#atompack.crystal.crystal.UnitCell">UnitCell</a></li>
 <li><a title="atompack.molecule.Molecule" href="molecule.html#atompack.molecule.Molecule">Molecule</a></li>
 </ul>
 <h3>Static methods</h3>
@@ -284,18 +288,18 @@ def bonds(self) -&gt; List[Bond]:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="atompack.topology.Topology.insert_atom"><code class="name flex">
-<span>def <span class="ident">insert_atom</span></span>(<span>self, atom: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>) ‑> int</span>
+<dt id="atompack.topology.Topology.insert_atoms"><code class="name flex">
+<span>def <span class="ident">insert_atoms</span></span>(<span>self, *atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Inserts an atom and returns its index.</p></div>
+<div class="desc"><p>Inserts one or more atoms and returns their indices.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def insert_atom(self, atom: Atom) -&gt; int:
-    &#34;&#34;&#34;Inserts an atom and returns its index.&#34;&#34;&#34;
-    return self._graph.add_node(atom)</code></pre>
+<pre><code class="python">def insert_atoms(self, *atoms: List[Atom]) -&gt; List[int]:
+    &#34;&#34;&#34;Inserts one or more atoms and returns their indices.&#34;&#34;&#34;
+    return self._graph.add_nodes_from(atoms)</code></pre>
 </details>
 </dd>
 <dt id="atompack.topology.Topology.insert_bond"><code class="name flex">
@@ -312,19 +316,19 @@ def bonds(self) -&gt; List[Bond]:
     self._graph.add_edge(*bond.indices, edge=bond)</code></pre>
 </details>
 </dd>
-<dt id="atompack.topology.Topology.remove_atom"><code class="name flex">
-<span>def <span class="ident">remove_atom</span></span>(<span>self, index: int) ‑> <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a></span>
+<dt id="atompack.topology.Topology.remove_atoms"><code class="name flex">
+<span>def <span class="ident">remove_atoms</span></span>(<span>self, *indices: List[int]) ‑> List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Removes and returns an atom.</p></div>
+<div class="desc"><p>Removes and returns one or more atoms.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def remove_atom(self, index: int) -&gt; Atom:
-    &#34;&#34;&#34;Removes and returns an atom.&#34;&#34;&#34;
-    res = self._graph.get_node_data(index)
-    self._graph.remove_node(index)
+<pre><code class="python">def remove_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+    &#34;&#34;&#34;Removes and returns one or more atoms.&#34;&#34;&#34;
+    res = [self._graph.get_node_data(index) for index in indices]
+    self._graph.remove_nodes_from(indices)
     return res</code></pre>
 </details>
 </dd>
@@ -332,30 +336,30 @@ def bonds(self) -&gt; List[Bond]:
 <span>def <span class="ident">remove_bond</span></span>(<span>self, indices: Tuple[int, int]) ‑> <a title="atompack.bond.Bond" href="bond.html#atompack.bond.Bond">Bond</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Removes and returns a bond.</p></div>
+<div class="desc"><p>Removes and returns bonds.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def remove_bond(self, indices: Tuple[int, int]) -&gt; Bond:
-    &#34;&#34;&#34;Removes and returns a bond.&#34;&#34;&#34;
+    &#34;&#34;&#34;Removes and returns bonds.&#34;&#34;&#34;
     res = self._graph.get_edge_data(*indices)
     self._graph.remove_edge(*indices)
     return res</code></pre>
 </details>
 </dd>
-<dt id="atompack.topology.Topology.select_atom"><code class="name flex">
-<span>def <span class="ident">select_atom</span></span>(<span>self, index: int) ‑> <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a></span>
+<dt id="atompack.topology.Topology.select_atoms"><code class="name flex">
+<span>def <span class="ident">select_atoms</span></span>(<span>self, *indices: List[int]) ‑> List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a mutable reference to an atom.</p></div>
+<div class="desc"><p>Returns a reference to one or more atoms.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def select_atom(self, index: int) -&gt; Atom:
-    &#34;&#34;&#34;Returns a mutable reference to an atom.&#34;&#34;&#34;
-    return self._graph.get_node_data(index)</code></pre>
+<pre><code class="python">def select_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+    &#34;&#34;&#34;Returns a reference to one or more atoms.&#34;&#34;&#34;
+    return [self._graph.get_node_data(index) for index in indices]</code></pre>
 </details>
 </dd>
 <dt id="atompack.topology.Topology.select_bond"><code class="name flex">
@@ -413,11 +417,11 @@ def bonds(self) -&gt; List[Bond]:
 <li><code><a title="atompack.topology.Topology.atoms" href="#atompack.topology.Topology.atoms">atoms</a></code></li>
 <li><code><a title="atompack.topology.Topology.bonds" href="#atompack.topology.Topology.bonds">bonds</a></code></li>
 <li><code><a title="atompack.topology.Topology.from_json" href="#atompack.topology.Topology.from_json">from_json</a></code></li>
-<li><code><a title="atompack.topology.Topology.insert_atom" href="#atompack.topology.Topology.insert_atom">insert_atom</a></code></li>
+<li><code><a title="atompack.topology.Topology.insert_atoms" href="#atompack.topology.Topology.insert_atoms">insert_atoms</a></code></li>
 <li><code><a title="atompack.topology.Topology.insert_bond" href="#atompack.topology.Topology.insert_bond">insert_bond</a></code></li>
-<li><code><a title="atompack.topology.Topology.remove_atom" href="#atompack.topology.Topology.remove_atom">remove_atom</a></code></li>
+<li><code><a title="atompack.topology.Topology.remove_atoms" href="#atompack.topology.Topology.remove_atoms">remove_atoms</a></code></li>
 <li><code><a title="atompack.topology.Topology.remove_bond" href="#atompack.topology.Topology.remove_bond">remove_bond</a></code></li>
-<li><code><a title="atompack.topology.Topology.select_atom" href="#atompack.topology.Topology.select_atom">select_atom</a></code></li>
+<li><code><a title="atompack.topology.Topology.select_atoms" href="#atompack.topology.Topology.select_atoms">select_atoms</a></code></li>
 <li><code><a title="atompack.topology.Topology.select_bond" href="#atompack.topology.Topology.select_bond">select_bond</a></code></li>
 <li><code><a title="atompack.topology.Topology.to_json" href="#atompack.topology.Topology.to_json">to_json</a></code></li>
 </ul>

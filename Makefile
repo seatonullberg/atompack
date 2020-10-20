@@ -15,11 +15,9 @@ clean:
 
 document:
 	@pipenv run pdoc --html --force\
-		--template-dir ./docs\
+		--template-dir ./docs/config\
 		--output-dir ./docs\
 		./atompack
-	@cp -r ./docs/atompack/* ./docs
-	@rm -rf ./docs/atompack
 
 format:
 	@pipenv run isort ./atompack
