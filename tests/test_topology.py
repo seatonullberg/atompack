@@ -7,20 +7,20 @@ from atompack.topology import Topology
 
 def test_topology_remove_atom_removes_bonds():
     top = Topology()
-    top.insert_atom(Atom("X", np.zeros(3), test="test"))
-    top.insert_atom(Atom("X", np.zeros(3), test="test"))
+    top.insert_atoms(Atom("X", np.zeros(3), test="test"))
+    top.insert_atoms(Atom("X", np.zeros(3), test="test"))
     top.insert_bond(Bond((0, 1), test="test"))
     assert len(top.atoms) == 2
     assert len(top.bonds) == 1
-    top.remove_atom(0)
+    top.remove_atoms(0)
     assert len(top.atoms) == 1
     assert len(top.bonds) == 0
 
 
 def test_topology_to_from_json():
     top = Topology()
-    top.insert_atom(Atom("X", np.zeros(3), test="test"))
-    top.insert_atom(Atom("X", np.zeros(3), test="test"))
+    top.insert_atoms(Atom("X", np.zeros(3), test="test"))
+    top.insert_atoms(Atom("X", np.zeros(3), test="test"))
     top.insert_bond(Bond((0, 1), test="test"))
     json_data = top.to_json()
     new_top = Topology.from_json(json_data)

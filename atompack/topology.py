@@ -54,26 +54,28 @@ class Topology(object):
     #    Public Methods    #
     ########################
 
-    def insert_atom(self, atom: Atom) -> int:
-        """Inserts an atom and returns its index."""
-        return self._graph.add_node(atom)
+    def insert_atoms(self, *atoms: List[Atom]) -> List[int]:
+        """Inserts one or more atoms and returns their indices."""
+        return self._graph.add_nodes_from(atoms)
 
-    def remove_atom(self, index: int) -> Atom:
-        """Removes and returns an atom."""
-        res = self._graph.get_node_data(index)
-        self._graph.remove_node(index)
+    def remove_atoms(self, *indices: List[int]) -> List[Atom]:
+        """Removes and returns one or more atoms."""
+        res = [self._graph.get_node_data(index) for index in indices]
+        self._graph.remove_nodes_from(indices)
         return res
 
-    def select_atom(self, index: int) -> Atom:
-        """Returns a mutable reference to an atom."""
-        return self._graph.get_node_data(index)
+    def select_atoms(self, *indices: List[int]) -> List[Atom]:
+        """Returns a reference to one or more atoms."""
+        return [self._graph.get_node_data(index) for index in indices]
+
+    # TODO: update these upon new retworkx release.
 
     def insert_bond(self, bond: Bond) -> None:
         """Inserts a bond."""
         self._graph.add_edge(*bond.indices, edge=bond)
 
     def remove_bond(self, indices: Tuple[int, int]) -> Bond:
-        """Removes and returns a bond."""
+        """Removes and returns bonds."""
         res = self._graph.get_edge_data(*indices)
         self._graph.remove_edge(*indices)
         return res
