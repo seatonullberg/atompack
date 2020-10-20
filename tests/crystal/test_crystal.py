@@ -1,92 +1,9 @@
 import numpy as np
-import pytest
 
-from atompack.crystal import Basis, Crystal, LatticeParameters, MillerIndex, UnitCell
-from atompack.spacegroup import Spacegroup
-
-
-def test_basis_not_fractional():
-    specie = "Fe"
-    site = np.array([1.5, 0, 0])
-    with pytest.raises(ValueError):
-        _ = Basis([(specie, site)])
-    site = np.array([0, 0, -1.5])
-    with pytest.raises(ValueError):
-        _ = Basis([(specie, site)])
-
-
-def test_basis_apply_spacegroup_primitive_cubic():
-    # primitive basis of aluminum
-    basis = Basis.primitive("Al")
-    # FCC spacegroup from Hermann Mauguin symbol
-    spg = Spacegroup("F m -3 m")
-    new_basis = basis.apply_spacegroup(spg)
-    assert len(new_basis) == 4
-    target = [
-        ("Al", np.array([0.0, 0.0, 0.0])),
-        ("Al", np.array([0.0, 0.5, 0.5])),
-        ("Al", np.array([0.5, 0.0, 0.5])),
-        ("Al", np.array([0.5, 0.5, 0.0])),
-    ]
-    for i, (
-            _specie,
-            _site,
-    ) in enumerate(target):
-        assert new_basis[i][0] == _specie
-        assert np.allclose(new_basis[i][1], _site)
-
-
-def test_basis_apply_spacegroup_complex_monoclinic():
-    # complex basis of arbitrary species
-    basis = Basis([
-        ("X", np.array([0.0, 0.0, 0.0])),
-        ("Y", np.array([0.1, 0.2, 0.3])),
-    ])
-    # Monoclinic spacegroup from international number
-    spg = Spacegroup(3)
-    new_basis = basis.apply_spacegroup(spg)
-    assert len(new_basis) == 3
-    target = [
-        ("X", np.array([0.0, 0.0, 0.0])),
-        ("Y", np.array([0.1, 0.2, 0.3])),
-        ("Y", np.array([0.9, 0.2, 0.7])),
-    ]
-    for i, (_specie, _site) in enumerate(target):
-        assert new_basis[i][0] == _specie
-        assert np.allclose(new_basis[i][1], _site)
-
-
-def test_basis_to_from_json():
-    basis = Basis.primitive("X")
-    json_data = basis.to_json()
-    new_basis = Basis.from_json(json_data)
-    assert len(basis) == len(new_basis) == 1
-    assert new_basis[0][0] == basis[0][0]
-    assert np.array_equal(new_basis[0][1], basis[0][1])
-
-
-def test_lattice_parameters_to_from_json():
-    params = LatticeParameters.cubic(10)
-    json_data = params.to_json()
-    new_params = LatticeParameters.from_json(json_data)
-    assert new_params.a == params.a
-    assert new_params.alpha == params.alpha
-
-
-def test_miller_index_plane_intercepts():
-    cell = np.array([
-        [3, 2, 0],
-        [0, 4, 0],
-        [1, 1, 1],
-    ])
-    mi = MillerIndex((3,2,0))
-    res = mi.plane_intercepts(cell)
-    target = np.array([
-        [1.0, 0.7396, 0.0],
-        [0.0, 2.0, 0.0],
-        [np.inf, np.inf, np.inf]
-    ])
-    assert np.allclose(res, target)
+from atompack.crystal.components import Basis, LatticeParameters
+from atompack.crystal.crystal import Crystal, UnitCell
+from atompack.crystal.spatial import MillerIndex
+from atompack.symmetry import Spacegroup
 
 
 def test_unit_cell_cubic():
@@ -174,6 +91,23 @@ def test_crystal_supercell_cubic():
     crystal.reset()
     assert len(crystal.atoms) == 2
     assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors)
+
+
+# def test_crystal_cut_cubic():
+#     # primitive basis of iron
+#     basis = Basis.primitive("Fe")
+#     # cubic lattice parameters
+#     lattparams = LatticeParameters.cubic(2.85)
+#     # BCC spacegroup
+#     spg = Spacegroup("I m -3 m")
+#     # build the crystal
+#     unit_cell = UnitCell(basis, lattparams, spg)
+#     crystal = Crystal(unit_cell)
+#     # define a plane to cut along
+#     plane = MillerIndex((1, 1, 1))
+#     # cut along plane
+#     crystal.cut(plane).finish()
+#     assert len(crystal.atoms) == 2
 
 
 def test_crystal_to_from_json():
