@@ -79,18 +79,29 @@ def test_crystal_supercell_cubic():
     # build the crystal
     unit_cell = UnitCell(basis, lattparams, spg)
     crystal = Crystal(unit_cell)
+    target_vectors = np.array([
+        [2.85, 0.0, 0.0],
+        [0.0, 2.85, 0.0],
+        [0.0, 0.0, 2.85],
+    ])
     # generate supercell
-    crystal.supercell((1, 2, 3)).finish()
+    extent0 = (1, 2, 3)
+    crystal.supercell(extent0).finish()
     assert len(crystal.atoms) == 12
-    assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors * np.array([1, 2, 3]))
+    print(crystal.lattice_vectors.vectors)
+    print(target_vectors * np.array(extent0))
+    assert np.allclose(crystal.lattice_vectors.vectors, target_vectors * np.array(extent0), atol=1E-6)
     # generate another supercell
-    crystal.supercell((2, 2, 2)).finish()
+    extent1 = (2, 2, 2)
+    crystal.supercell(extent1).finish()
     assert len(crystal.atoms) == 96
-    assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors * np.array([2, 4, 6]))
+    assert np.allclose(crystal.lattice_vectors.vectors,
+                       target_vectors * np.array(extent0) * np.array(extent1),
+                       atol=1E-6)
     # reset the supercell
     crystal.reset()
     assert len(crystal.atoms) == 2
-    assert np.allclose(crystal.lattice_vectors, crystal.unit_cell.lattice_vectors)
+    assert np.allclose(crystal.lattice_vectors.vectors, target_vectors, atol=1E-6)
 
 
 def test_crystal_to_from_json():
@@ -102,11 +113,7 @@ def test_crystal_to_from_json():
     json_data = crystal.to_json()
     new_crystal = Crystal.from_json(json_data)
     assert np.array_equal(
-        new_crystal.lattice_vectors,
-        crystal.lattice_vectors,
+        new_crystal.lattice_vectors.vectors,
+        crystal.lattice_vectors.vectors,
     )
     assert len(new_crystal.atoms) == len(crystal.atoms) == 2
-    assert np.array_equal(
-        new_crystal.unit_cell.lattice_vectors,
-        crystal.unit_cell.lattice_vectors,
-    )

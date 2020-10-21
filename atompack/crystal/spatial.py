@@ -3,45 +3,7 @@ from typing import Tuple
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-
-class LatticeVectors(object):
-    """Representation of the vectors that define the size and shape of a crystalline system.
-    
-    Args:
-        vectors: Row-major matrix of lattice vectors.
-    """
-
-    def __init__(self, vectors: np.ndarray) -> None:
-        self.vectors = vectors
-
-    ########################
-    #    Public Methods    #
-    ########################
-
-    def contain(self, point: np.ndarray, tol: float = 1E-6) -> bool:
-        """Returns True if the point is within the bounding volume."""
-        bounds = np.linalg.norm(self.vectors, axis=0)
-        for i in range(3):
-            if point[i] > (bounds[i] + tol):
-                return False
-            if point[i] < -tol:
-                return False
-        return True
-
-    def wrap(self, point: np.ndarray, tol: float = 1E-6) -> np.ndarray:
-        """Wraps a point into the bounding volume. 
-        The `point` argument is mutated and returned.
-        """
-        bounds = np.linalg.norm(self.vectors, axis=0)
-        for i in range(3):
-            bound = bounds[i]
-            tmpval = point[i]
-            if tmpval > (bound + tol):
-                tmpval -= bound * (tmpval // bound)
-            if tmpval < -tol:
-                tmpval += bound * (1 + (-tmpval // bound))
-            point[i] = tmpval
-        return point
+from atompack.crystal.components import LatticeVectors
 
 
 class MillerIndex(object):

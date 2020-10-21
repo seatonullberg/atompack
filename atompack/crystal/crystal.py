@@ -6,8 +6,8 @@ import numpy as np
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.crystal.components import Basis, LatticeParameters
-from atompack.crystal.spatial import Orientation, Plane
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
+from atompack.crystal.spatial import MillerIndex, Orientation, Plane
 from atompack.symmetry import Spacegroup
 from atompack.topology import Topology
 
@@ -84,11 +84,6 @@ class UnitCell(Topology):
         return self._lattice_parameters
 
     @property
-    def lattice_vectors(self) -> np.ndarray:
-        """Returns the lattice vectors."""
-        return np.sqrt(np.abs(self.lattice_parameters.metric_tensor))
-
-    @property
     def spacegroup(self) -> Spacegroup:
         """Returns the spacegroup."""
         return self._spacegroup
@@ -113,8 +108,9 @@ class UnitCell(Topology):
     #########################
 
     def _build(self) -> None:
+        vectors = LatticeVectors.from_lattice_parameters(self.lattice_parameters).vectors
         for specie, site in self.basis.apply_spacegroup(self.spacegroup):
-            position = site * np.linalg.norm(self.lattice_vectors, axis=0)
+            position = site * np.linalg.norm(vectors, axis=0)
             self.insert_atoms(Atom(specie, position))
 
 
@@ -142,7 +138,7 @@ class Crystal(Topology):
         # build the crystal
         self._unit_cell = unit_cell
         if _build:
-            self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
             for atom in self._unit_cell.atoms:
                 self.insert_atoms(copy.deepcopy(atom))
             for bond in self._unit_cell.bonds:
@@ -159,7 +155,7 @@ class Crystal(Topology):
         data = json.loads(s)
         unit_cell = UnitCell.from_json(json.dumps(data["unit_cell"]))
         res = cls(unit_cell, _build=False)
-        res._lattice_vectors = np.array(data["lattice_vectors"])
+        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data["lattice_vectors"]))
         res._graph = topology._graph
         return res
 
@@ -269,7 +265,7 @@ class Crystal(Topology):
         """Undoes all transformations."""
         super().__init__()
         self._reset_attributes()
-        self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
+        self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
         for atom in self.unit_cell.atoms:
             self.insert_atoms(copy.deepcopy(atom))
         for bond in self.unit_cell.bonds:
@@ -280,7 +276,7 @@ class Crystal(Topology):
         topology_data = json.loads(super().to_json())
         return json.dumps({
             "unit_cell": json.loads(self.unit_cell.to_json()),
-            "lattice_vectors": self.lattice_vectors.tolist(),
+            "lattice_vectors": json.loads(self.lattice_vectors.to_json()),
             "atoms": topology_data["atoms"],
             "bonds": topology_data["bonds"],
         })
@@ -310,12 +306,12 @@ class Crystal(Topology):
                 for z in range(self._extent[2]):
                     if x == y == z == 0:
                         continue
-                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors)
+                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors.vectors)
                     for atom in existing_atoms:
                         _atom = copy.deepcopy(atom)
                         _atom.position += offset
                         self.insert_atoms(_atom)
-        self._lattice_vectors *= self._extent
+        self.lattice_vectors.vectors *= self._extent
 
     def _orient(self) -> None:
         if self._orientation is None:
