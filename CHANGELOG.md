@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* `spacegroup` module.
+* `symmetry` module.
 
 ### Changed
 
 * `atom.Atom` and `bond.Bond` now inherit from `MutableMapping`.
-* `crystal.Crystal` and `crystal.UnitCell` are now initialized by spacegroup.
+* `crystal.Crystal` initializes directly from a `crystal.UnitCell`.
 
 ### Removed
 

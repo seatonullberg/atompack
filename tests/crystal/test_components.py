@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from atompack.crystal.components import Basis, LatticeParameters
+from atompack.crystal.components import Basis, LatticeParameters, LatticeVectors
 from atompack.symmetry import Spacegroup
 
 
@@ -71,3 +71,68 @@ def test_lattice_parameters_to_from_json():
     new_params = LatticeParameters.from_json(json_data)
     assert new_params.a == params.a
     assert new_params.alpha == params.alpha
+
+
+def test_lattice_vectors_contain():
+    vectors = LatticeVectors(np.identity(3))
+    # edge point
+    point = np.array([0.0, 0.0, 0.0])
+    assert vectors.contain(point)
+    # surface point
+    point = np.array([0.0, 0.5, 0.0])
+    assert vectors.contain(point)
+    # interior point
+    point = np.array([0.5, 0.5, 0.5])
+    assert vectors.contain(point)
+    # exterior point (positive)
+    point = np.array([1.5, 1.5, 1.5])
+    assert not vectors.contain(point)
+    # exterior point (negative)
+    point = np.array([-0.5, -0.5, -0.5])
+    assert not vectors.contain(point)
+
+
+def test_lattice_vectors_wrap():
+    vectors = LatticeVectors(np.identity(3))
+    # edge point
+    point = np.array([0.0, 0.0, 0.0])
+    target = np.array([0.0, 0.0, 0.0])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+    # surface point
+    point = np.array([0.0, 0.5, 0.0])
+    target = np.array([0.0, 0.5, 0.0])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+    # interior point
+    point = np.array([0.5, 0.5, 0.5])
+    target = np.array([0.5, 0.5, 0.5])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+    # exterior point (near) (positive)
+    point = np.array([1.1, 1.1, 1.1])
+    target = np.array([0.1, 0.1, 0.1])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+    # exterior point (far) (positive)
+    point = np.array([5.9, 5.9, 5.9])
+    target = np.array([0.9, 0.9, 0.9])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+    # exterior point (near) (negative)
+    point = np.array([-0.1, -0.1, -0.1])
+    target = np.array([0.9, 0.9, 0.9])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+    # exterior point (far) (positive)
+    point = np.array([-5.9, -5.9, -5.9])
+    target = np.array([0.1, 0.1, 0.1])
+    res = vectors.wrap(point)
+    assert np.allclose(res, target)
+
+
+def test_lattice_vectors_to_from_json():
+    vectors = LatticeVectors(np.identity(3))
+    json_data = vectors.to_json()
+    new_vectors = LatticeVectors.from_json(json_data)
+    assert np.allclose(new_vectors.vectors, vectors.vectors)
