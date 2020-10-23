@@ -12,16 +12,30 @@ class MillerIndex(object):
     def __init__(self, hkl: Tuple[int, int, int]) -> None:
         self.hkl = hkl
 
+    ####################
+    #    Properties    #
+    ####################
+
     @property
     def reciprocal(self) -> np.ndarray:
         """Returns the reciprocal index."""
         _max = max(self.hkl)
         return np.array([index / _max if index > 0 else np.inf for index in self.hkl])
 
+    #########################
+    #    Special Methods    #
+    #########################
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, MillerIndex):
+            return NotImplemented
+        return self.hkl == other.hkl
+
 
 class Orientation(Rotation):
     """Representation of a crystallographic orientation.
-    This class inherits from `scipy.spatial.transform.Rotation`.
+    This class inherits from scipy's Rotation class for 
+    efficient conversion between possible representations.
     """
 
     ######################
@@ -29,22 +43,37 @@ class Orientation(Rotation):
     ######################
 
     @classmethod
-    def from_miller_indices(cls, hkl: MillerIndex, uvw: MillerIndex) -> 'Orientation':
+    def from_miller_indices(cls, plane: MillerIndex, direction: MillerIndex) -> 'Orientation':
         """Initialize from Miller Indices.
         
         Args:
-            hkl: Indices of the plane.
-            uvw: Indices of the direction.
+            plane: Indices of the plane.
+            direction: Indices of the direction.
         """
-        raise NotImplementedError
+        hkl = np.array(plane.hkl)
+        uvw = np.array(direction.hkl)
+        b_hat = uvw / np.linalg.norm(uvw)
+        n_hat = hkl / np.linalg.norm(hkl)
+        n_cross_b = np.cross(n_hat, b_hat)
+        t_hat = n_cross_b / np.linalg.norm(n_cross_b)
+        matrix = np.vstack((b_hat, t_hat))
+        matrix = np.vstack((matrix, n_hat))
+        return super().from_rotvec(matrix.T)
 
     ########################
     #    Public Methods    #
     ########################
 
-    def as_miller_indices(self) -> Tuple[MillerIndex, MillerIndex]:
+    def as_miller_indices(self, tol: float = 1E-6) -> Tuple[MillerIndex, MillerIndex]:
         """Represent as Miller Indices."""
-        raise NotImplementedError
+        matrix = self.as_rotvec()
+        hkl = matrix[:,2]
+        uvw = matrix[:,0]
+        min_nonzero = lambda arr: np.min(arr[np.abs(arr) > tol])
+        normalize = lambda arr: np.array([x / min_nonzero(arr) for x in arr])
+        hkl = tuple(np.round(normalize(hkl)).astype(int))
+        uvw = tuple(np.round(normalize(uvw)).astype(int))
+        return MillerIndex(hkl), MillerIndex(uvw)
 
 
 class Plane(object):

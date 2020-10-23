@@ -33,8 +33,6 @@ from typing import List, Tuple
 
 import numpy as np
 
-from atompack.atom import Atom
-from atompack.bond import Bond
 from atompack.constants import DEG90, DEG120
 from atompack.symmetry import Spacegroup
 
@@ -68,19 +66,19 @@ class Basis(MutableSequence):
     #    MutableSequence Implementation    #
     ########################################
 
-    def __getitem__(self, index: int) -&gt; Tuple[str, np.ndarray]:
+    def __getitem__(self, index):
         return self._basis[index]
 
-    def __setitem__(self, index: int, value: Tuple[str, np.ndarray]) -&gt; None:
+    def __setitem__(self, index, value):
         self._basis[index] = value
 
-    def __delitem__(self, index: int) -&gt; None:
+    def __delitem__(self, index):
         del self._basis[index]
 
-    def __len__(self) -&gt; int:
+    def __len__(self):
         return len(self._basis)
 
-    def insert(self, index: int, value: Tuple[str, np.ndarray]) -&gt; None:
+    def insert(self, index, value):
         self._basis.insert(index, value)
 
     ######################
@@ -124,6 +122,7 @@ class Basis(MutableSequence):
             for genpos in spacegroup.genpos:
                 # convert string expressions to arrays
                 genpos = &#34;[{}]&#34;.format(genpos)
+                # x, y, and z are created here to be used in the eval statement
                 x, y, z = site[0], site[1], site[2]
                 new_site = np.array(eval(genpos))
                 # wrap all values between 0-1
@@ -143,8 +142,8 @@ class Basis(MutableSequence):
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
         _basis = self._basis.copy()
-        _basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
-        return json.dumps(_basis)
+        json_basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
+        return json.dumps(json_basis)
 
 
 class LatticeParameters(object):
@@ -251,7 +250,66 @@ class LatticeParameters(object):
             &#34;alpha&#34;: self.alpha,
             &#34;beta&#34;: self.beta,
             &#34;gamma&#34;: self.gamma
-        })</code></pre>
+        })
+
+
+class LatticeVectors(object):
+    &#34;&#34;&#34;Representation of the vectors that define the size and shape of a crystalline system.
+    
+    Args:
+        vectors: Row-major matrix of lattice vectors.
+    &#34;&#34;&#34;
+
+    def __init__(self, vectors: np.ndarray) -&gt; None:
+        self.vectors = vectors
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_lattice_parameters(cls, lattice_parameters: LatticeParameters) -&gt; &#39;LatticeVectors&#39;:
+        return cls(np.sqrt(np.abs(lattice_parameters.metric_tensor)))
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;LatticeVectors&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        vectors = np.array(data[&#34;vectors&#34;])
+        return cls(vectors)
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def contain(self, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
+        &#34;&#34;&#34;Returns True if the point is within the bounding volume.&#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            if point[i] &gt; (bounds[i] + tol):
+                return False
+            if point[i] &lt; -tol:
+                return False
+        return True
+
+    def wrap(self, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
+        &#34;&#34;&#34;Wraps a point into the bounding volume. 
+        The `point` argument is mutated and returned.
+        &#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            bound = bounds[i]
+            tmpval = point[i]
+            if tmpval &gt; (bound + tol):
+                tmpval -= bound * (tmpval // bound)
+            if tmpval &lt; -tol:
+                tmpval += bound * (1 + (-tmpval // bound))
+            point[i] = tmpval
+        return point
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({&#34;vectors&#34;: self.vectors.tolist()})</code></pre>
 </details>
 </section>
 <section>
@@ -319,19 +377,19 @@ class LatticeParameters(object):
     #    MutableSequence Implementation    #
     ########################################
 
-    def __getitem__(self, index: int) -&gt; Tuple[str, np.ndarray]:
+    def __getitem__(self, index):
         return self._basis[index]
 
-    def __setitem__(self, index: int, value: Tuple[str, np.ndarray]) -&gt; None:
+    def __setitem__(self, index, value):
         self._basis[index] = value
 
-    def __delitem__(self, index: int) -&gt; None:
+    def __delitem__(self, index):
         del self._basis[index]
 
-    def __len__(self) -&gt; int:
+    def __len__(self):
         return len(self._basis)
 
-    def insert(self, index: int, value: Tuple[str, np.ndarray]) -&gt; None:
+    def insert(self, index, value):
         self._basis.insert(index, value)
 
     ######################
@@ -375,6 +433,7 @@ class LatticeParameters(object):
             for genpos in spacegroup.genpos:
                 # convert string expressions to arrays
                 genpos = &#34;[{}]&#34;.format(genpos)
+                # x, y, and z are created here to be used in the eval statement
                 x, y, z = site[0], site[1], site[2]
                 new_site = np.array(eval(genpos))
                 # wrap all values between 0-1
@@ -394,8 +453,8 @@ class LatticeParameters(object):
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
         _basis = self._basis.copy()
-        _basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
-        return json.dumps(_basis)</code></pre>
+        json_basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
+        return json.dumps(json_basis)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -475,6 +534,7 @@ symmetry operations to the atomic basis.</p></div>
         for genpos in spacegroup.genpos:
             # convert string expressions to arrays
             genpos = &#34;[{}]&#34;.format(genpos)
+            # x, y, and z are created here to be used in the eval statement
             x, y, z = site[0], site[1], site[2]
             new_site = np.array(eval(genpos))
             # wrap all values between 0-1
@@ -493,7 +553,7 @@ symmetry operations to the atomic basis.</p></div>
 </details>
 </dd>
 <dt id="atompack.crystal.components.Basis.insert"><code class="name flex">
-<span>def <span class="ident">insert</span></span>(<span>self, index: int, value: Tuple[str, numpy.ndarray]) ‑> NoneType</span>
+<span>def <span class="ident">insert</span></span>(<span>self, index, value)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>S.insert(index, value) &ndash; insert value before index</p></div>
@@ -501,7 +561,7 @@ symmetry operations to the atomic basis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def insert(self, index: int, value: Tuple[str, np.ndarray]) -&gt; None:
+<pre><code class="python">def insert(self, index, value):
     self._basis.insert(index, value)</code></pre>
 </details>
 </dd>
@@ -517,8 +577,8 @@ symmetry operations to the atomic basis.</p></div>
 <pre><code class="python">def to_json(self) -&gt; str:
     &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
     _basis = self._basis.copy()
-    _basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
-    return json.dumps(_basis)</code></pre>
+    json_basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
+    return json.dumps(json_basis)</code></pre>
 </details>
 </dd>
 </dl>
@@ -846,6 +906,177 @@ def metric_tensor(self) -&gt; np.ndarray:
 </dd>
 </dl>
 </dd>
+<dt id="atompack.crystal.components.LatticeVectors"><code class="flex name class">
+<span>class <span class="ident">LatticeVectors</span></span>
+<span>(</span><span>vectors: numpy.ndarray)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Representation of the vectors that define the size and shape of a crystalline system.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>vectors</code></strong></dt>
+<dd>Row-major matrix of lattice vectors.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LatticeVectors(object):
+    &#34;&#34;&#34;Representation of the vectors that define the size and shape of a crystalline system.
+    
+    Args:
+        vectors: Row-major matrix of lattice vectors.
+    &#34;&#34;&#34;
+
+    def __init__(self, vectors: np.ndarray) -&gt; None:
+        self.vectors = vectors
+
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_lattice_parameters(cls, lattice_parameters: LatticeParameters) -&gt; &#39;LatticeVectors&#39;:
+        return cls(np.sqrt(np.abs(lattice_parameters.metric_tensor)))
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;LatticeVectors&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        data = json.loads(s)
+        vectors = np.array(data[&#34;vectors&#34;])
+        return cls(vectors)
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def contain(self, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
+        &#34;&#34;&#34;Returns True if the point is within the bounding volume.&#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            if point[i] &gt; (bounds[i] + tol):
+                return False
+            if point[i] &lt; -tol:
+                return False
+        return True
+
+    def wrap(self, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
+        &#34;&#34;&#34;Wraps a point into the bounding volume. 
+        The `point` argument is mutated and returned.
+        &#34;&#34;&#34;
+        bounds = np.linalg.norm(self.vectors, axis=0)
+        for i in range(3):
+            bound = bounds[i]
+            tmpval = point[i]
+            if tmpval &gt; (bound + tol):
+                tmpval -= bound * (tmpval // bound)
+            if tmpval &lt; -tol:
+                tmpval += bound * (1 + (-tmpval // bound))
+            point[i] = tmpval
+        return point
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return json.dumps({&#34;vectors&#34;: self.vectors.tolist()})</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.crystal.components.LatticeVectors.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.crystal.components.LatticeVectors" href="#atompack.crystal.components.LatticeVectors">LatticeVectors</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;LatticeVectors&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    data = json.loads(s)
+    vectors = np.array(data[&#34;vectors&#34;])
+    return cls(vectors)</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.components.LatticeVectors.from_lattice_parameters"><code class="name flex">
+<span>def <span class="ident">from_lattice_parameters</span></span>(<span>lattice_parameters: <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a>) ‑> <a title="atompack.crystal.components.LatticeVectors" href="#atompack.crystal.components.LatticeVectors">LatticeVectors</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_lattice_parameters(cls, lattice_parameters: LatticeParameters) -&gt; &#39;LatticeVectors&#39;:
+    return cls(np.sqrt(np.abs(lattice_parameters.metric_tensor)))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.crystal.components.LatticeVectors.contain"><code class="name flex">
+<span>def <span class="ident">contain</span></span>(<span>self, point: numpy.ndarray, tol: float = 1e-06) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns True if the point is within the bounding volume.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contain(self, point: np.ndarray, tol: float = 1E-6) -&gt; bool:
+    &#34;&#34;&#34;Returns True if the point is within the bounding volume.&#34;&#34;&#34;
+    bounds = np.linalg.norm(self.vectors, axis=0)
+    for i in range(3):
+        if point[i] &gt; (bounds[i] + tol):
+            return False
+        if point[i] &lt; -tol:
+            return False
+    return True</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.components.LatticeVectors.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    return json.dumps({&#34;vectors&#34;: self.vectors.tolist()})</code></pre>
+</details>
+</dd>
+<dt id="atompack.crystal.components.LatticeVectors.wrap"><code class="name flex">
+<span>def <span class="ident">wrap</span></span>(<span>self, point: numpy.ndarray, tol: float = 1e-06) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wraps a point into the bounding volume.
+The <code>point</code> argument is mutated and returned.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrap(self, point: np.ndarray, tol: float = 1E-6) -&gt; np.ndarray:
+    &#34;&#34;&#34;Wraps a point into the bounding volume. 
+    The `point` argument is mutated and returned.
+    &#34;&#34;&#34;
+    bounds = np.linalg.norm(self.vectors, axis=0)
+    for i in range(3):
+        bound = bounds[i]
+        tmpval = point[i]
+        if tmpval &gt; (bound + tol):
+            tmpval -= bound * (tmpval // bound)
+        if tmpval &lt; -tol:
+            tmpval += bound * (1 + (-tmpval // bound))
+        point[i] = tmpval
+    return point</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -886,6 +1117,16 @@ def metric_tensor(self) -&gt; np.ndarray:
 <li><code><a title="atompack.crystal.components.LatticeParameters.to_json" href="#atompack.crystal.components.LatticeParameters.to_json">to_json</a></code></li>
 <li><code><a title="atompack.crystal.components.LatticeParameters.triclinic" href="#atompack.crystal.components.LatticeParameters.triclinic">triclinic</a></code></li>
 <li><code><a title="atompack.crystal.components.LatticeParameters.trigonal" href="#atompack.crystal.components.LatticeParameters.trigonal">trigonal</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="atompack.crystal.components.LatticeVectors" href="#atompack.crystal.components.LatticeVectors">LatticeVectors</a></code></h4>
+<ul class="">
+<li><code><a title="atompack.crystal.components.LatticeVectors.contain" href="#atompack.crystal.components.LatticeVectors.contain">contain</a></code></li>
+<li><code><a title="atompack.crystal.components.LatticeVectors.from_json" href="#atompack.crystal.components.LatticeVectors.from_json">from_json</a></code></li>
+<li><code><a title="atompack.crystal.components.LatticeVectors.from_lattice_parameters" href="#atompack.crystal.components.LatticeVectors.from_lattice_parameters">from_lattice_parameters</a></code></li>
+<li><code><a title="atompack.crystal.components.LatticeVectors.to_json" href="#atompack.crystal.components.LatticeVectors.to_json">to_json</a></code></li>
+<li><code><a title="atompack.crystal.components.LatticeVectors.wrap" href="#atompack.crystal.components.LatticeVectors.wrap">wrap</a></code></li>
 </ul>
 </li>
 </ul>

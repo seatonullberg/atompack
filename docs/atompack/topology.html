@@ -30,7 +30,6 @@
 <pre><code class="python">import json
 from typing import List, Tuple
 
-import numpy as np
 from retworkx import PyGraph
 
 from atompack.atom import Atom
@@ -83,17 +82,17 @@ class Topology(object):
     #    Public Methods    #
     ########################
 
-    def insert_atoms(self, *atoms: List[Atom]) -&gt; List[int]:
+    def insert_atoms(self, *atoms: Atom) -&gt; List[int]:
         &#34;&#34;&#34;Inserts one or more atoms and returns their indices.&#34;&#34;&#34;
         return self._graph.add_nodes_from(atoms)
 
-    def remove_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+    def remove_atoms(self, *indices: int) -&gt; List[Atom]:
         &#34;&#34;&#34;Removes and returns one or more atoms.&#34;&#34;&#34;
         res = [self._graph.get_node_data(index) for index in indices]
         self._graph.remove_nodes_from(indices)
         return res
 
-    def select_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+    def select_atoms(self, *indices: int) -&gt; List[Atom]:
         &#34;&#34;&#34;Returns a reference to one or more atoms.&#34;&#34;&#34;
         return [self._graph.get_node_data(index) for index in indices]
 
@@ -187,17 +186,17 @@ class Topology(object):
     #    Public Methods    #
     ########################
 
-    def insert_atoms(self, *atoms: List[Atom]) -&gt; List[int]:
+    def insert_atoms(self, *atoms: Atom) -&gt; List[int]:
         &#34;&#34;&#34;Inserts one or more atoms and returns their indices.&#34;&#34;&#34;
         return self._graph.add_nodes_from(atoms)
 
-    def remove_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+    def remove_atoms(self, *indices: int) -&gt; List[Atom]:
         &#34;&#34;&#34;Removes and returns one or more atoms.&#34;&#34;&#34;
         res = [self._graph.get_node_data(index) for index in indices]
         self._graph.remove_nodes_from(indices)
         return res
 
-    def select_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+    def select_atoms(self, *indices: int) -&gt; List[Atom]:
         &#34;&#34;&#34;Returns a reference to one or more atoms.&#34;&#34;&#34;
         return [self._graph.get_node_data(index) for index in indices]
 
@@ -289,7 +288,7 @@ def bonds(self) -&gt; List[Bond]:
 <h3>Methods</h3>
 <dl>
 <dt id="atompack.topology.Topology.insert_atoms"><code class="name flex">
-<span>def <span class="ident">insert_atoms</span></span>(<span>self, *atoms: List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]) ‑> List[int]</span>
+<span>def <span class="ident">insert_atoms</span></span>(<span>self, *atoms: <a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>) ‑> List[int]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Inserts one or more atoms and returns their indices.</p></div>
@@ -297,7 +296,7 @@ def bonds(self) -&gt; List[Bond]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def insert_atoms(self, *atoms: List[Atom]) -&gt; List[int]:
+<pre><code class="python">def insert_atoms(self, *atoms: Atom) -&gt; List[int]:
     &#34;&#34;&#34;Inserts one or more atoms and returns their indices.&#34;&#34;&#34;
     return self._graph.add_nodes_from(atoms)</code></pre>
 </details>
@@ -317,7 +316,7 @@ def bonds(self) -&gt; List[Bond]:
 </details>
 </dd>
 <dt id="atompack.topology.Topology.remove_atoms"><code class="name flex">
-<span>def <span class="ident">remove_atoms</span></span>(<span>self, *indices: List[int]) ‑> List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</span>
+<span>def <span class="ident">remove_atoms</span></span>(<span>self, *indices: int) ‑> List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Removes and returns one or more atoms.</p></div>
@@ -325,7 +324,7 @@ def bonds(self) -&gt; List[Bond]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def remove_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+<pre><code class="python">def remove_atoms(self, *indices: int) -&gt; List[Atom]:
     &#34;&#34;&#34;Removes and returns one or more atoms.&#34;&#34;&#34;
     res = [self._graph.get_node_data(index) for index in indices]
     self._graph.remove_nodes_from(indices)
@@ -349,7 +348,7 @@ def bonds(self) -&gt; List[Bond]:
 </details>
 </dd>
 <dt id="atompack.topology.Topology.select_atoms"><code class="name flex">
-<span>def <span class="ident">select_atoms</span></span>(<span>self, *indices: List[int]) ‑> List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</span>
+<span>def <span class="ident">select_atoms</span></span>(<span>self, *indices: int) ‑> List[<a title="atompack.atom.Atom" href="atom.html#atompack.atom.Atom">Atom</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns a reference to one or more atoms.</p></div>
@@ -357,7 +356,7 @@ def bonds(self) -&gt; List[Bond]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def select_atoms(self, *indices: List[int]) -&gt; List[Atom]:
+<pre><code class="python">def select_atoms(self, *indices: int) -&gt; List[Atom]:
     &#34;&#34;&#34;Returns a reference to one or more atoms.&#34;&#34;&#34;
     return [self._graph.get_node_data(index) for index in indices]</code></pre>
 </details>

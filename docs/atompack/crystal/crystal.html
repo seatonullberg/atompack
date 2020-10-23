@@ -29,14 +29,14 @@
 </summary>
 <pre><code class="python">import copy
 import json
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.crystal.components import Basis, LatticeParameters
-from atompack.crystal.spatial import Orientation, Plane
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
+from atompack.crystal.spatial import MillerIndex, Orientation, Plane
 from atompack.symmetry import Spacegroup
 from atompack.topology import Topology
 
@@ -113,11 +113,6 @@ class UnitCell(Topology):
         return self._lattice_parameters
 
     @property
-    def lattice_vectors(self) -&gt; np.ndarray:
-        &#34;&#34;&#34;Returns the lattice vectors.&#34;&#34;&#34;
-        return np.sqrt(np.abs(self.lattice_parameters.metric_tensor))
-
-    @property
     def spacegroup(self) -&gt; Spacegroup:
         &#34;&#34;&#34;Returns the spacegroup.&#34;&#34;&#34;
         return self._spacegroup
@@ -142,8 +137,9 @@ class UnitCell(Topology):
     #########################
 
     def _build(self) -&gt; None:
+        vectors = LatticeVectors.from_lattice_parameters(self.lattice_parameters).vectors
         for specie, site in self.basis.apply_spacegroup(self.spacegroup):
-            position = site * np.linalg.norm(self.lattice_vectors, axis=0)
+            position = site * np.linalg.norm(vectors, axis=0)
             self.insert_atoms(Atom(specie, position))
 
 
@@ -171,7 +167,7 @@ class Crystal(Topology):
         # build the crystal
         self._unit_cell = unit_cell
         if _build:
-            self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
             for atom in self._unit_cell.atoms:
                 self.insert_atoms(copy.deepcopy(atom))
             for bond in self._unit_cell.bonds:
@@ -188,7 +184,7 @@ class Crystal(Topology):
         data = json.loads(s)
         unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
         res = cls(unit_cell, _build=False)
-        res._lattice_vectors = np.array(data[&#34;lattice_vectors&#34;])
+        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data[&#34;lattice_vectors&#34;]))
         res._graph = topology._graph
         return res
 
@@ -278,6 +274,7 @@ class Crystal(Topology):
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._cut_plane = plane
         return self
 
@@ -297,7 +294,7 @@ class Crystal(Topology):
         &#34;&#34;&#34;Undoes all transformations.&#34;&#34;&#34;
         super().__init__()
         self._reset_attributes()
-        self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
+        self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
         for atom in self.unit_cell.atoms:
             self.insert_atoms(copy.deepcopy(atom))
         for bond in self.unit_cell.bonds:
@@ -308,7 +305,7 @@ class Crystal(Topology):
         topology_data = json.loads(super().to_json())
         return json.dumps({
             &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
-            &#34;lattice_vectors&#34;: self.lattice_vectors.tolist(),
+            &#34;lattice_vectors&#34;: json.loads(self.lattice_vectors.to_json()),
             &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
             &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
         })
@@ -332,19 +329,18 @@ class Crystal(Topology):
     def _supercell(self) -&gt; None:
         if self._extent is None:
             return
-
         existing_atoms = self.atoms.copy()
         for x in range(self._extent[0]):
             for y in range(self._extent[1]):
                 for z in range(self._extent[2]):
                     if x == y == z == 0:
                         continue
-                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors)
+                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors.vectors)
                     for atom in existing_atoms:
                         _atom = copy.deepcopy(atom)
                         _atom.position += offset
                         self.insert_atoms(_atom)
-        self._lattice_vectors *= self._extent
+        self.lattice_vectors.vectors *= self._extent
 
     def _orient(self) -&gt; None:
         if self._orientation is None:
@@ -356,23 +352,7 @@ class Crystal(Topology):
 
     def _cut(self) -&gt; None:
         if self._cut_plane is None:
-            return
-
-        removal_indices = []
-        intercepts = self._cut_plane.plane_intercepts(self.lattice_vectors)
-        print(intercepts)
-        print()
-        center = intercepts / 2
-        print(center)
-        print()
-        for i, atom in enumerate(self.atoms):
-            for j, intercept in enumerate(intercepts):
-                search_vector = atom.position - center
-                print(search_vector)
-                print()
-                if min(search_vector) &gt; 0:
-                    removal_indices.append(i)
-        self.remove_atoms(*removal_indices)</code></pre>
+            return</code></pre>
 </details>
 </section>
 <section>
@@ -423,7 +403,7 @@ class Crystal(Topology):
         # build the crystal
         self._unit_cell = unit_cell
         if _build:
-            self._lattice_vectors = self._unit_cell.lattice_vectors.copy()
+            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
             for atom in self._unit_cell.atoms:
                 self.insert_atoms(copy.deepcopy(atom))
             for bond in self._unit_cell.bonds:
@@ -440,7 +420,7 @@ class Crystal(Topology):
         data = json.loads(s)
         unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
         res = cls(unit_cell, _build=False)
-        res._lattice_vectors = np.array(data[&#34;lattice_vectors&#34;])
+        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data[&#34;lattice_vectors&#34;]))
         res._graph = topology._graph
         return res
 
@@ -530,6 +510,7 @@ class Crystal(Topology):
         Note:
             The transform is not applied until the `finish` method is called.
         &#34;&#34;&#34;
+        raise NotImplementedError
         self._cut_plane = plane
         return self
 
@@ -549,7 +530,7 @@ class Crystal(Topology):
         &#34;&#34;&#34;Undoes all transformations.&#34;&#34;&#34;
         super().__init__()
         self._reset_attributes()
-        self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
+        self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
         for atom in self.unit_cell.atoms:
             self.insert_atoms(copy.deepcopy(atom))
         for bond in self.unit_cell.bonds:
@@ -560,7 +541,7 @@ class Crystal(Topology):
         topology_data = json.loads(super().to_json())
         return json.dumps({
             &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
-            &#34;lattice_vectors&#34;: self.lattice_vectors.tolist(),
+            &#34;lattice_vectors&#34;: json.loads(self.lattice_vectors.to_json()),
             &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
             &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
         })
@@ -584,19 +565,18 @@ class Crystal(Topology):
     def _supercell(self) -&gt; None:
         if self._extent is None:
             return
-
         existing_atoms = self.atoms.copy()
         for x in range(self._extent[0]):
             for y in range(self._extent[1]):
                 for z in range(self._extent[2]):
                     if x == y == z == 0:
                         continue
-                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors)
+                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors.vectors)
                     for atom in existing_atoms:
                         _atom = copy.deepcopy(atom)
                         _atom.position += offset
                         self.insert_atoms(_atom)
-        self._lattice_vectors *= self._extent
+        self.lattice_vectors.vectors *= self._extent
 
     def _orient(self) -&gt; None:
         if self._orientation is None:
@@ -608,23 +588,7 @@ class Crystal(Topology):
 
     def _cut(self) -&gt; None:
         if self._cut_plane is None:
-            return
-
-        removal_indices = []
-        intercepts = self._cut_plane.plane_intercepts(self.lattice_vectors)
-        print(intercepts)
-        print()
-        center = intercepts / 2
-        print(center)
-        print()
-        for i, atom in enumerate(self.atoms):
-            for j, intercept in enumerate(intercepts):
-                search_vector = atom.position - center
-                print(search_vector)
-                print()
-                if min(search_vector) &gt; 0:
-                    removal_indices.append(i)
-        self.remove_atoms(*removal_indices)</code></pre>
+            return</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -688,6 +652,7 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     Note:
         The transform is not applied until the `finish` method is called.
     &#34;&#34;&#34;
+    raise NotImplementedError
     self._cut_plane = plane
     return self</code></pre>
 </details>
@@ -829,7 +794,7 @@ Setting <code>orthogonalize</code> to True may result in very large structures f
     &#34;&#34;&#34;Undoes all transformations.&#34;&#34;&#34;
     super().__init__()
     self._reset_attributes()
-    self._lattice_vectors = self.unit_cell.lattice_vectors.copy()
+    self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
     for atom in self.unit_cell.atoms:
         self.insert_atoms(copy.deepcopy(atom))
     for bond in self.unit_cell.bonds:
@@ -991,11 +956,6 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
         return self._lattice_parameters
 
     @property
-    def lattice_vectors(self) -&gt; np.ndarray:
-        &#34;&#34;&#34;Returns the lattice vectors.&#34;&#34;&#34;
-        return np.sqrt(np.abs(self.lattice_parameters.metric_tensor))
-
-    @property
     def spacegroup(self) -&gt; Spacegroup:
         &#34;&#34;&#34;Returns the spacegroup.&#34;&#34;&#34;
         return self._spacegroup
@@ -1020,8 +980,9 @@ Mutates the crystal and returns a reference to itself to enable method chaining.
     #########################
 
     def _build(self) -&gt; None:
+        vectors = LatticeVectors.from_lattice_parameters(self.lattice_parameters).vectors
         for specie, site in self.basis.apply_spacegroup(self.spacegroup):
-            position = site * np.linalg.norm(self.lattice_vectors, axis=0)
+            position = site * np.linalg.norm(vectors, axis=0)
             self.insert_atoms(Atom(specie, position))</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -1054,19 +1015,6 @@ def basis(self) -&gt; Basis:
 def lattice_parameters(self) -&gt; LatticeParameters:
     &#34;&#34;&#34;Returns the lattice parameters.&#34;&#34;&#34;
     return self._lattice_parameters</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.UnitCell.lattice_vectors"><code class="name">var <span class="ident">lattice_vectors</span> : numpy.ndarray</code></dt>
-<dd>
-<div class="desc"><p>Returns the lattice vectors.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def lattice_vectors(self) -&gt; np.ndarray:
-    &#34;&#34;&#34;Returns the lattice vectors.&#34;&#34;&#34;
-    return np.sqrt(np.abs(self.lattice_parameters.metric_tensor))</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.crystal.UnitCell.spacegroup"><code class="name">var <span class="ident">spacegroup</span> : <a title="atompack.symmetry.Spacegroup" href="../symmetry.html#atompack.symmetry.Spacegroup">Spacegroup</a></code></dt>
@@ -1136,7 +1084,6 @@ def spacegroup(self) -&gt; Spacegroup:
 <ul class="">
 <li><code><a title="atompack.crystal.crystal.UnitCell.basis" href="#atompack.crystal.crystal.UnitCell.basis">basis</a></code></li>
 <li><code><a title="atompack.crystal.crystal.UnitCell.lattice_parameters" href="#atompack.crystal.crystal.UnitCell.lattice_parameters">lattice_parameters</a></code></li>
-<li><code><a title="atompack.crystal.crystal.UnitCell.lattice_vectors" href="#atompack.crystal.crystal.UnitCell.lattice_vectors">lattice_vectors</a></code></li>
 <li><code><a title="atompack.crystal.crystal.UnitCell.spacegroup" href="#atompack.crystal.crystal.UnitCell.spacegroup">spacegroup</a></code></li>
 </ul>
 </li>
