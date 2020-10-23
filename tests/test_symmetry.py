@@ -2,6 +2,9 @@ import pytest
 
 from atompack.symmetry import Spacegroup
 
+##########################
+#    Spacegroup Tests    #
+##########################
 
 def test_spacegroup_init_valid():
     international_number = 1

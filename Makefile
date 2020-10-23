@@ -1,7 +1,7 @@
 MYPYPATH=./mypy
 
 bench:
-	@pipenv run pytest --benchmark-columns="min, median, max, stddev, rounds, iterations" -v ./benches 
+	@pipenv run pytest --benchmark-columns="min, median, max, stddev" -v ./benches 
 
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf

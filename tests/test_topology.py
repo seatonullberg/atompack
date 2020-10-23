@@ -8,6 +8,9 @@ from atompack.topology import Topology
 N_ATOMS = 10
 N_BONDS = 5
 
+#######################
+#    Test Fixtures    #
+#######################
 
 @pytest.fixture
 def topology():
@@ -16,22 +19,22 @@ def topology():
     The remaining atoms are not bonded.
     """
     atoms = [Atom("TEST", np.zeros(3)) for _ in range(N_ATOMS)]
-    bonds = [Bond((0, i+1)) for i in range(N_BONDS)]
+    bonds = [Bond((0, i + 1)) for i in range(N_BONDS)]
     res = Topology()
     res.insert_atoms(*atoms)
-    # TODO: fix this is later release of retworkx
+    # TODO: fix this in later release of retworkx
     for bond in bonds:
         res.insert_bond(bond)
     return res
 
+########################
+#    Topology Tests    #
+########################
 
 # TODO: is this test really necessary / helpful ?
 def test_topology_insert_atoms(topology):
     # insert multiple atoms simultaneously
-    indices = topology.insert_atoms(
-        Atom("X", np.zeros(3)), 
-        Atom("Y", np.zeros(3))
-    )
+    indices = topology.insert_atoms(Atom("X", np.zeros(3)), Atom("Y", np.zeros(3)))
     assert len(topology.atoms) == N_ATOMS + len(indices)
     # insert just one atom
     indices += topology.insert_atoms(Atom("Z", np.zeros(3)))
@@ -73,7 +76,7 @@ def test_topology_select_atoms_mutability(topology):
         atom["test_value"] = test_value
     # select the atoms again
     atoms = topology.select_atoms(*range(N_ATOMS))
-    # check eahc atom
+    # check each atom
     for atom in atoms:
         assert atom["test_value"] == test_value
 

@@ -5,6 +5,9 @@ from atompack.crystal.crystal import Crystal, UnitCell
 from atompack.crystal.spatial import MillerIndex
 from atompack.symmetry import Spacegroup
 
+########################
+#    UnitCell Tests    #
+########################
 
 def test_unit_cell_cubic():
     # primitive basis of iron
@@ -20,9 +23,9 @@ def test_unit_cell_cubic():
         ("Fe", np.array([0.0, 0.0, 0.0])),
         ("Fe", np.array([1.425, 1.425, 1.425])),
     ]
-    for i, (_specie, _site) in enumerate(target):
-        assert unit_cell.atoms[i].specie == _specie
-        assert np.allclose(unit_cell.atoms[i].position, _site)
+    for i, (specie, site) in enumerate(target):
+        assert unit_cell.atoms[i].specie == specie
+        assert np.allclose(unit_cell.atoms[i].position, site)
 
 
 def test_unit_cell_hexagonal():
@@ -39,9 +42,9 @@ def test_unit_cell_hexagonal():
         ("X", np.array([0.0, 0.0, 0.0])),
         ("X", np.array([0.0, 0.0, 1.25])),
     ]
-    for i, (_specie, _site) in enumerate(target):
-        assert unit_cell.atoms[i].specie == _specie
-        assert np.allclose(unit_cell.atoms[i].position, _site)
+    for i, (specie, site) in enumerate(target):
+        assert unit_cell.atoms[i].specie == specie
+        assert np.allclose(unit_cell.atoms[i].position, site)
 
 
 def test_unit_cell_to_from_json():
@@ -50,24 +53,27 @@ def test_unit_cell_to_from_json():
     spg = Spacegroup("F m -3 m")
     unit_cell = UnitCell(basis, params, spg)
     json_data = unit_cell.to_json()
-    new_unit_cell = UnitCell.from_json(json_data)
+    res = UnitCell.from_json(json_data)
     # test basis
-    assert new_unit_cell.basis[0][0] == unit_cell.basis[0][0]
-    assert np.array_equal(new_unit_cell.basis[0][1], unit_cell.basis[0][1])
+    assert res.basis[0][0] == unit_cell.basis[0][0]
+    assert np.array_equal(res.basis[0][1], unit_cell.basis[0][1])
     # test lattice parameters
-    assert new_unit_cell.lattice_parameters.a == unit_cell.lattice_parameters.a
-    assert new_unit_cell.lattice_parameters.alpha == unit_cell.lattice_parameters.alpha
+    assert res.lattice_parameters.a == unit_cell.lattice_parameters.a
+    assert res.lattice_parameters.alpha == unit_cell.lattice_parameters.alpha
     # test spacegroup
-    assert new_unit_cell.spacegroup == unit_cell.spacegroup
+    assert res.spacegroup == unit_cell.spacegroup
     # test atoms/bonds
-    assert len(new_unit_cell.atoms) == len(unit_cell.atoms) == 4
-    assert len(new_unit_cell.bonds) == len(unit_cell.bonds) == 0
+    assert len(res.atoms) == len(unit_cell.atoms) == 4
+    assert len(res.bonds) == len(unit_cell.bonds) == 0
     assert np.array_equal(
-        new_unit_cell.atoms[0].position,
+        res.atoms[0].position,
         unit_cell.atoms[0].position,
     )
-    assert new_unit_cell.atoms[0].specie == unit_cell.atoms[0].specie
+    assert res.atoms[0].specie == unit_cell.atoms[0].specie
 
+#######################
+#    Crystal Tests    #
+#######################
 
 def test_crystal_supercell_cubic():
     # primitive basis of iron
@@ -88,8 +94,6 @@ def test_crystal_supercell_cubic():
     extent0 = (1, 2, 3)
     crystal.supercell(extent0).finish()
     assert len(crystal.atoms) == 12
-    print(crystal.lattice_vectors.vectors)
-    print(target_vectors * np.array(extent0))
     assert np.allclose(crystal.lattice_vectors.vectors, target_vectors * np.array(extent0), atol=1E-6)
     # generate another supercell
     extent1 = (2, 2, 2)
@@ -111,9 +115,9 @@ def test_crystal_to_from_json():
     unit_cell = UnitCell(basis, lattparams, spg)
     crystal = Crystal(unit_cell)
     json_data = crystal.to_json()
-    new_crystal = Crystal.from_json(json_data)
+    res = Crystal.from_json(json_data)
     assert np.array_equal(
-        new_crystal.lattice_vectors.vectors,
+        res.lattice_vectors.vectors,
         crystal.lattice_vectors.vectors,
     )
-    assert len(new_crystal.atoms) == len(crystal.atoms) == 2
+    assert len(res.atoms) == len(crystal.atoms) == 2
