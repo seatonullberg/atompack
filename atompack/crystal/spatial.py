@@ -12,15 +12,37 @@ class MillerIndex(object):
     def __init__(self, hkl: Tuple[int, int, int]) -> None:
         self.hkl = hkl
 
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_intercepts(cls, intercepts: np.ndarray) -> 'MillerIndex':
+        res = 1 / intercepts
+        if np.any(res[res % 1 != 0]):
+            res *= max(np.abs(res))
+        res = res.astype(int)
+        return cls(tuple(res))
+
     ####################
     #    Properties    #
     ####################
 
     @property
-    def reciprocal(self) -> np.ndarray:
-        """Returns the reciprocal index."""
-        _max = max(self.hkl)
-        return np.array([index / _max if index > 0 else np.inf for index in self.hkl])
+    def intercepts(self) -> np.ndarray:
+        """Returns the intercepts in lattice units."""
+        hkl = np.array(self.hkl)
+        _min = np.min(np.abs(hkl[hkl != 0]))
+        _max = np.max(np.abs(hkl[hkl != 0]))
+        res = []
+        for x in hkl:
+            if x == 0:
+                res.append(np.inf)
+            elif np.abs(x) == _min == _max:
+                res.append(1 / x)
+            else:
+                res.append(_min / x)
+        return np.array(res)
 
     #########################
     #    Special Methods    #
@@ -67,8 +89,8 @@ class Orientation(Rotation):
     def as_miller_indices(self, tol: float = 1E-6) -> Tuple[MillerIndex, MillerIndex]:
         """Represent as Miller Indices."""
         matrix = self.as_rotvec()
-        hkl = matrix[:,2]
-        uvw = matrix[:,0]
+        hkl = matrix[:, 2]
+        uvw = matrix[:, 0]
         min_nonzero = lambda arr: np.min(arr[np.abs(arr) > tol])
         normalize = lambda arr: np.array([x / min_nonzero(arr) for x in arr])
         hkl = tuple(np.round(normalize(hkl)).astype(int))
