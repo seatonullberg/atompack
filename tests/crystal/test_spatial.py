@@ -28,8 +28,8 @@ def test_miller_index_from_intercepts(test_input, expectation):
     (MillerIndex((-4, -3, -2)), np.array([-1 / 2, -2 / 3, -1])),
     (MillerIndex((1, 0, 0)), np.array([1, np.inf, np.inf])),
     (MillerIndex((-1, 0, 0)), np.array([-1, np.inf, np.inf])),
-    (MillerIndex((2, 0, 0)), np.array([1/2, np.inf, np.inf])),
-    (MillerIndex((-2, 0, 0)), np.array([-1/2, np.inf, np.inf])),
+    (MillerIndex((2, 0, 0)), np.array([1 / 2, np.inf, np.inf])),
+    (MillerIndex((-2, 0, 0)), np.array([-1 / 2, np.inf, np.inf])),
     (MillerIndex((1, 1, 1)), np.array([1, 1, 1])),
     (MillerIndex((-1, -1, -1)), np.array([-1, -1, -1])),
 ])

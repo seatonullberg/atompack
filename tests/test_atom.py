@@ -6,6 +6,7 @@ from atompack.atom import Atom
 #    Atom Tests    #
 ####################
 
+
 def test_atom_to_from_json():
     specie = "X"
     position = np.zeros(3)

@@ -9,6 +9,7 @@ from atompack.symmetry import Spacegroup
 #    UnitCell Tests    #
 ########################
 
+
 def test_unit_cell_cubic():
     # primitive basis of iron
     basis = Basis.primitive("Fe")
@@ -71,9 +72,11 @@ def test_unit_cell_to_from_json():
     )
     assert res.atoms[0].specie == unit_cell.atoms[0].specie
 
+
 #######################
 #    Crystal Tests    #
 #######################
+
 
 def test_crystal_supercell_cubic():
     # primitive basis of iron

@@ -12,6 +12,7 @@ N_BONDS = 5
 #    Test Fixtures    #
 #######################
 
+
 @pytest.fixture
 def topology():
     """Returns a pre-populated Topology of `N_ATOMS` and `N_BONDS`.
@@ -27,9 +28,11 @@ def topology():
         res.insert_bond(bond)
     return res
 
+
 ########################
 #    Topology Tests    #
 ########################
+
 
 # TODO: is this test really necessary / helpful ?
 def test_topology_insert_atoms(topology):
