@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from atompack.crystal.spatial import MillerIndex, Orientation
+from atompack.crystal.spatial import MillerIndex, Orientation, Plane
 
 ###########################
 #    MillerIndex Tests    #
@@ -38,7 +38,7 @@ def test_miller_index_intercepts(test_input, expectation):
     assert np.allclose(res, expectation)
 
 
-def test_miller_indices_equality():
+def test_miller_index_equality():
     hkl = (1, 2, 3)
     uvw = (3, 2, 1)
     # valid equality
@@ -61,3 +61,26 @@ def test_orientation_miller_indices():
     res_plane, res_direction = orientation.as_miller_indices()
     assert res_plane == plane
     assert res_direction == direction
+
+
+#####################
+#    Plane Tests    #
+#####################
+
+
+@pytest.mark.parametrize("test_input,expectation", [
+    (MillerIndex((4, 3, 2)), np.array([[1 / 2, 0, 0], [0, 2 / 3, 0], [0, 0, 1]])),
+    (MillerIndex((1, 0, 0)), np.array([[1, 0, 0], [1, 1, 0], [1, 0, 1]])),
+])
+def test_plane_from_miller_index(test_input, expectation):
+    res = Plane.from_miller_index(test_input)
+    assert np.allclose(res.coplanar_points, expectation)
+
+
+def test_plane_coefficients():
+    plane = Plane(np.array([
+        [1, 2, 3],
+        [4, 6, 9],
+        [12, 11, 9],
+    ]))
+    assert np.allclose(plane.coefficients, np.array([30, -48, 17, -15]))
