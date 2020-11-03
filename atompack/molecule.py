@@ -1,3 +1,5 @@
+"""A simple abstraction for covalently bonded chemical compounds."""
+
 from atompack.topology import Topology
 
 

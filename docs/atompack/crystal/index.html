@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.1" />
 <title>atompack.crystal API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Abstractions for generating and modifying atomic structures with long range order." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,13 +23,17 @@
 <h1 class="title">Module <code>atompack.crystal</code></h1>
 </header>
 <section id="section-intro">
+<p>Abstractions for generating and modifying atomic structures with long range order.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from atompack.crystal.components import Basis, LatticeParameters
+<pre><code class="python">&#34;&#34;&#34;Abstractions for generating and modifying atomic structures with long range order.&#34;&#34;&#34;
+
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
 from atompack.crystal.crystal import Crystal, UnitCell
-from atompack.crystal.spatial import MillerIndex, Orientation, Plane</code></pre>
+from atompack.crystal.spatial import MillerIndex, Orientation, Plane
+from atompack.crystal.transform import Transform</code></pre>
 </details>
 </section>
 <section>
@@ -37,15 +41,20 @@ from atompack.crystal.spatial import MillerIndex, Orientation, Plane</code></pre
 <dl>
 <dt><code class="name"><a title="atompack.crystal.components" href="components.html">atompack.crystal.components</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The data types required to represent a crystal.</p></div>
 </dd>
 <dt><code class="name"><a title="atompack.crystal.crystal" href="crystal.html">atompack.crystal.crystal</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them.</p></div>
 </dd>
 <dt><code class="name"><a title="atompack.crystal.spatial" href="spatial.html">atompack.crystal.spatial</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Data types that represent spatial features or transformations.</p></div>
+</dd>
+<dt><code class="name"><a title="atompack.crystal.transform" href="transform.html">atompack.crystal.transform</a></code></dt>
+<dd>
+<div class="desc"><p>Abstraction for a collection of transformations that can be applied together on any crystal.</p></div>
 </dd>
 </dl>
 </section>
@@ -72,6 +81,7 @@ from atompack.crystal.spatial import MillerIndex, Orientation, Plane</code></pre
 <li><code><a title="atompack.crystal.components" href="components.html">atompack.crystal.components</a></code></li>
 <li><code><a title="atompack.crystal.crystal" href="crystal.html">atompack.crystal.crystal</a></code></li>
 <li><code><a title="atompack.crystal.spatial" href="spatial.html">atompack.crystal.spatial</a></code></li>
+<li><code><a title="atompack.crystal.transform" href="transform.html">atompack.crystal.transform</a></code></li>
 </ul>
 </li>
 </ul>

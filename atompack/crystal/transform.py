@@ -1,3 +1,5 @@
+"""Abstraction for a collection of transformations that can be applied together on any crystal."""
+
 import copy
 from typing import Optional, Tuple
 

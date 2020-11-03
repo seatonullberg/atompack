@@ -1,3 +1,6 @@
+"""Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them."""
+
 import copy
 import json
 

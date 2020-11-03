@@ -1,3 +1,5 @@
+"""Common constants used throughout the package."""
+
 import numpy as np
 
 DEG90 = np.pi / 2

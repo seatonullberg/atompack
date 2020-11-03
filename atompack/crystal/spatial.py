@@ -1,3 +1,5 @@
+"""Data types that represent spatial features or transformations."""
+
 from typing import Tuple
 
 import numpy as np

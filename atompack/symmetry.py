@@ -1,3 +1,5 @@
+"""An abstraction for crystallographic spacegroups."""
+
 import json
 from typing import List, Union
 

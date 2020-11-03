@@ -1,3 +1,5 @@
+"""A dict-like abstraction for individual atoms."""
+
 import json
 from collections.abc import MutableMapping
 

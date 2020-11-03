@@ -1,3 +1,5 @@
+"""A dict-like abstraction for a bond between atoms."""
+
 import json
 from collections.abc import MutableMapping
 from typing import Tuple

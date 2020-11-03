@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.1" />
 <title>atompack.crystal.crystal API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,20 +24,23 @@
 <h1 class="title">Module <code>atompack.crystal.crystal</code></h1>
 </header>
 <section id="section-intro">
+<p>Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import copy
+<pre><code class="python">&#34;&#34;&#34;Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them.&#34;&#34;&#34;
+
+import copy
 import json
-from typing import Optional, Tuple
 
 import numpy as np
 
 from atompack.atom import Atom
 from atompack.bond import Bond
 from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
-from atompack.crystal.spatial import MillerIndex, Orientation, Plane
 from atompack.symmetry import Spacegroup
 from atompack.topology import Topology
 
@@ -157,13 +161,6 @@ class Crystal(Topology):
     ) -&gt; None:
         # initialize superclass
         super().__init__()
-        # initialize private attributes
-        self._cut_plane: Optional[Plane] = None
-        self._extent: Optional[Tuple[int, int, int]] = None
-        self._orientation: Optional[Orientation] = None
-        self._orthogonalize: Optional[bool] = None
-        self._projection_plane: Optional[Plane] = None
-        self._transformation_matrix: Optional[np.ndarray] = None
         # build the crystal
         self._unit_cell = unit_cell
         if _build:
@@ -206,100 +203,6 @@ class Crystal(Topology):
     #    Public Methods    #
     ########################
 
-    def general_transform(self, transformation: np.ndarray) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Applies a general transformation matrix to the crystal.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            transformation: Transformation matrix.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._transformation_matrix = transformation
-        return self
-
-    def supercell(self, extent: Tuple[int, int, int]) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Creates a supercell by duplicating the crystal in 3 dimensions.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            extent: Number of repeat units in each direction.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        self._extent = extent
-        return self
-
-    def orient(self, orientation: Orientation) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Changes the crystal&#39;s orientation.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            orientation: Crystallographic orientation.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._orientation = orientation
-        return self
-
-    def project(self, plane: Plane, orthogonalize: bool = False) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Projects the crystal onto a plane.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            plane: Projection plane.
-            orthogonalize: Determines whether or not the projection is represented as an orthogonal lattice.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-            Setting `orthogonalize` to True may result in very large structures for acute projections.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._projection_plane = plane
-        self._orthogonalize = orthogonalize
-        return self
-
-    def cut(self, plane: Plane) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Cuts the crystal along a plane.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            plane: Crystallographic plane to cut along.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._cut_plane = plane
-        return self
-
-    def finish(self) -&gt; None:
-        &#34;&#34;&#34;Applies all active transformations to the crystal.&#34;&#34;&#34;
-        # call underlying implementations
-        # TODO: determine best order
-        self._project()
-        self._general_transform()
-        self._orient()
-        self._supercell()
-        self._cut()
-        # reset attributes
-        self._reset_attributes()
-
-    def reset(self) -&gt; None:
-        &#34;&#34;&#34;Undoes all transformations.&#34;&#34;&#34;
-        super().__init__()
-        self._reset_attributes()
-        self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
-        for atom in self.unit_cell.atoms:
-            self.insert_atoms(copy.deepcopy(atom))
-        for bond in self.unit_cell.bonds:
-            self.insert_bond(copy.deepcopy(bond))
-
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
         topology_data = json.loads(super().to_json())
@@ -308,51 +211,7 @@ class Crystal(Topology):
             &#34;lattice_vectors&#34;: json.loads(self.lattice_vectors.to_json()),
             &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
             &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
-        })
-
-    #########################
-    #    Private Methods    #
-    #########################
-
-    def _reset_attributes(self) -&gt; None:
-        self._cut_plane = None
-        self._extent = None
-        self._orientation = None
-        self._orthogonalize = None
-        self._projection_plane = None
-        self._transformation_matrix = None
-
-    def _general_transform(self) -&gt; None:
-        if self._transformation_matrix is None:
-            return
-
-    def _supercell(self) -&gt; None:
-        if self._extent is None:
-            return
-        existing_atoms = self.atoms.copy()
-        for x in range(self._extent[0]):
-            for y in range(self._extent[1]):
-                for z in range(self._extent[2]):
-                    if x == y == z == 0:
-                        continue
-                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors.vectors)
-                    for atom in existing_atoms:
-                        _atom = copy.deepcopy(atom)
-                        _atom.position += offset
-                        self.insert_atoms(_atom)
-        self.lattice_vectors.vectors *= self._extent
-
-    def _orient(self) -&gt; None:
-        if self._orientation is None:
-            return
-
-    def _project(self) -&gt; None:
-        if self._projection_plane is None:
-            return
-
-    def _cut(self) -&gt; None:
-        if self._cut_plane is None:
-            return</code></pre>
+        })</code></pre>
 </details>
 </section>
 <section>
@@ -393,13 +252,6 @@ class Crystal(Topology):
     ) -&gt; None:
         # initialize superclass
         super().__init__()
-        # initialize private attributes
-        self._cut_plane: Optional[Plane] = None
-        self._extent: Optional[Tuple[int, int, int]] = None
-        self._orientation: Optional[Orientation] = None
-        self._orthogonalize: Optional[bool] = None
-        self._projection_plane: Optional[Plane] = None
-        self._transformation_matrix: Optional[np.ndarray] = None
         # build the crystal
         self._unit_cell = unit_cell
         if _build:
@@ -442,100 +294,6 @@ class Crystal(Topology):
     #    Public Methods    #
     ########################
 
-    def general_transform(self, transformation: np.ndarray) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Applies a general transformation matrix to the crystal.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            transformation: Transformation matrix.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._transformation_matrix = transformation
-        return self
-
-    def supercell(self, extent: Tuple[int, int, int]) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Creates a supercell by duplicating the crystal in 3 dimensions.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            extent: Number of repeat units in each direction.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        self._extent = extent
-        return self
-
-    def orient(self, orientation: Orientation) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Changes the crystal&#39;s orientation.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            orientation: Crystallographic orientation.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._orientation = orientation
-        return self
-
-    def project(self, plane: Plane, orthogonalize: bool = False) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Projects the crystal onto a plane.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            plane: Projection plane.
-            orthogonalize: Determines whether or not the projection is represented as an orthogonal lattice.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-            Setting `orthogonalize` to True may result in very large structures for acute projections.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._projection_plane = plane
-        self._orthogonalize = orthogonalize
-        return self
-
-    def cut(self, plane: Plane) -&gt; &#39;Crystal&#39;:
-        &#34;&#34;&#34;Cuts the crystal along a plane.
-        Mutates the crystal and returns a reference to itself to enable method chaining.
-
-        Args:
-            plane: Crystallographic plane to cut along.
-
-        Note:
-            The transform is not applied until the `finish` method is called.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-        self._cut_plane = plane
-        return self
-
-    def finish(self) -&gt; None:
-        &#34;&#34;&#34;Applies all active transformations to the crystal.&#34;&#34;&#34;
-        # call underlying implementations
-        # TODO: determine best order
-        self._project()
-        self._general_transform()
-        self._orient()
-        self._supercell()
-        self._cut()
-        # reset attributes
-        self._reset_attributes()
-
-    def reset(self) -&gt; None:
-        &#34;&#34;&#34;Undoes all transformations.&#34;&#34;&#34;
-        super().__init__()
-        self._reset_attributes()
-        self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
-        for atom in self.unit_cell.atoms:
-            self.insert_atoms(copy.deepcopy(atom))
-        for bond in self.unit_cell.bonds:
-            self.insert_bond(copy.deepcopy(bond))
-
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
         topology_data = json.loads(super().to_json())
@@ -544,51 +302,7 @@ class Crystal(Topology):
             &#34;lattice_vectors&#34;: json.loads(self.lattice_vectors.to_json()),
             &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
             &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
-        })
-
-    #########################
-    #    Private Methods    #
-    #########################
-
-    def _reset_attributes(self) -&gt; None:
-        self._cut_plane = None
-        self._extent = None
-        self._orientation = None
-        self._orthogonalize = None
-        self._projection_plane = None
-        self._transformation_matrix = None
-
-    def _general_transform(self) -&gt; None:
-        if self._transformation_matrix is None:
-            return
-
-    def _supercell(self) -&gt; None:
-        if self._extent is None:
-            return
-        existing_atoms = self.atoms.copy()
-        for x in range(self._extent[0]):
-            for y in range(self._extent[1]):
-                for z in range(self._extent[2]):
-                    if x == y == z == 0:
-                        continue
-                    offset = np.matmul(np.array([x, y, z]), self.lattice_vectors.vectors)
-                    for atom in existing_atoms:
-                        _atom = copy.deepcopy(atom)
-                        _atom.position += offset
-                        self.insert_atoms(_atom)
-        self.lattice_vectors.vectors *= self._extent
-
-    def _orient(self) -&gt; None:
-        if self._orientation is None:
-            return
-
-    def _project(self) -&gt; None:
-        if self._projection_plane is None:
-            return
-
-    def _cut(self) -&gt; None:
-        if self._cut_plane is None:
-            return</code></pre>
+        })</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -620,216 +334,6 @@ def lattice_vectors(self):
 def unit_cell(self):
     &#34;&#34;&#34;Returns the unit cell.&#34;&#34;&#34;
     return self._unit_cell</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="atompack.crystal.crystal.Crystal.cut"><code class="name flex">
-<span>def <span class="ident">cut</span></span>(<span>self, plane: <a title="atompack.crystal.spatial.Plane" href="spatial.html#atompack.crystal.spatial.Plane">Plane</a>) ‑> <a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Cuts the crystal along a plane.
-Mutates the crystal and returns a reference to itself to enable method chaining.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>plane</code></strong></dt>
-<dd>Crystallographic plane to cut along.</dd>
-</dl>
-<h2 id="note">Note</h2>
-<p>The transform is not applied until the <code>finish</code> method is called.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cut(self, plane: Plane) -&gt; &#39;Crystal&#39;:
-    &#34;&#34;&#34;Cuts the crystal along a plane.
-    Mutates the crystal and returns a reference to itself to enable method chaining.
-
-    Args:
-        plane: Crystallographic plane to cut along.
-
-    Note:
-        The transform is not applied until the `finish` method is called.
-    &#34;&#34;&#34;
-    raise NotImplementedError
-    self._cut_plane = plane
-    return self</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.Crystal.finish"><code class="name flex">
-<span>def <span class="ident">finish</span></span>(<span>self) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Applies all active transformations to the crystal.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def finish(self) -&gt; None:
-    &#34;&#34;&#34;Applies all active transformations to the crystal.&#34;&#34;&#34;
-    # call underlying implementations
-    # TODO: determine best order
-    self._project()
-    self._general_transform()
-    self._orient()
-    self._supercell()
-    self._cut()
-    # reset attributes
-    self._reset_attributes()</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.Crystal.general_transform"><code class="name flex">
-<span>def <span class="ident">general_transform</span></span>(<span>self, transformation: numpy.ndarray) ‑> <a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Applies a general transformation matrix to the crystal.
-Mutates the crystal and returns a reference to itself to enable method chaining.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>transformation</code></strong></dt>
-<dd>Transformation matrix.</dd>
-</dl>
-<h2 id="note">Note</h2>
-<p>The transform is not applied until the <code>finish</code> method is called.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def general_transform(self, transformation: np.ndarray) -&gt; &#39;Crystal&#39;:
-    &#34;&#34;&#34;Applies a general transformation matrix to the crystal.
-    Mutates the crystal and returns a reference to itself to enable method chaining.
-
-    Args:
-        transformation: Transformation matrix.
-
-    Note:
-        The transform is not applied until the `finish` method is called.
-    &#34;&#34;&#34;
-    raise NotImplementedError
-    self._transformation_matrix = transformation
-    return self</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.Crystal.orient"><code class="name flex">
-<span>def <span class="ident">orient</span></span>(<span>self, orientation: <a title="atompack.crystal.spatial.Orientation" href="spatial.html#atompack.crystal.spatial.Orientation">Orientation</a>) ‑> <a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Changes the crystal's orientation.
-Mutates the crystal and returns a reference to itself to enable method chaining.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>orientation</code></strong></dt>
-<dd>Crystallographic orientation.</dd>
-</dl>
-<h2 id="note">Note</h2>
-<p>The transform is not applied until the <code>finish</code> method is called.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def orient(self, orientation: Orientation) -&gt; &#39;Crystal&#39;:
-    &#34;&#34;&#34;Changes the crystal&#39;s orientation.
-    Mutates the crystal and returns a reference to itself to enable method chaining.
-
-    Args:
-        orientation: Crystallographic orientation.
-
-    Note:
-        The transform is not applied until the `finish` method is called.
-    &#34;&#34;&#34;
-    raise NotImplementedError
-    self._orientation = orientation
-    return self</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.Crystal.project"><code class="name flex">
-<span>def <span class="ident">project</span></span>(<span>self, plane: <a title="atompack.crystal.spatial.Plane" href="spatial.html#atompack.crystal.spatial.Plane">Plane</a>, orthogonalize: bool = False) ‑> <a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Projects the crystal onto a plane.
-Mutates the crystal and returns a reference to itself to enable method chaining.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>plane</code></strong></dt>
-<dd>Projection plane.</dd>
-<dt><strong><code>orthogonalize</code></strong></dt>
-<dd>Determines whether or not the projection is represented as an orthogonal lattice.</dd>
-</dl>
-<h2 id="note">Note</h2>
-<p>The transform is not applied until the <code>finish</code> method is called.
-Setting <code>orthogonalize</code> to True may result in very large structures for acute projections.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def project(self, plane: Plane, orthogonalize: bool = False) -&gt; &#39;Crystal&#39;:
-    &#34;&#34;&#34;Projects the crystal onto a plane.
-    Mutates the crystal and returns a reference to itself to enable method chaining.
-
-    Args:
-        plane: Projection plane.
-        orthogonalize: Determines whether or not the projection is represented as an orthogonal lattice.
-
-    Note:
-        The transform is not applied until the `finish` method is called.
-        Setting `orthogonalize` to True may result in very large structures for acute projections.
-    &#34;&#34;&#34;
-    raise NotImplementedError
-    self._projection_plane = plane
-    self._orthogonalize = orthogonalize
-    return self</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.Crystal.reset"><code class="name flex">
-<span>def <span class="ident">reset</span></span>(<span>self) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Undoes all transformations.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def reset(self) -&gt; None:
-    &#34;&#34;&#34;Undoes all transformations.&#34;&#34;&#34;
-    super().__init__()
-    self._reset_attributes()
-    self._lattice_vectors = LatticeVectors.from_lattice_parameters(self.unit_cell.lattice_parameters)
-    for atom in self.unit_cell.atoms:
-        self.insert_atoms(copy.deepcopy(atom))
-    for bond in self.unit_cell.bonds:
-        self.insert_bond(copy.deepcopy(bond))</code></pre>
-</details>
-</dd>
-<dt id="atompack.crystal.crystal.Crystal.supercell"><code class="name flex">
-<span>def <span class="ident">supercell</span></span>(<span>self, extent: Tuple[int, int, int]) ‑> <a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Creates a supercell by duplicating the crystal in 3 dimensions.
-Mutates the crystal and returns a reference to itself to enable method chaining.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>extent</code></strong></dt>
-<dd>Number of repeat units in each direction.</dd>
-</dl>
-<h2 id="note">Note</h2>
-<p>The transform is not applied until the <code>finish</code> method is called.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def supercell(self, extent: Tuple[int, int, int]) -&gt; &#39;Crystal&#39;:
-    &#34;&#34;&#34;Creates a supercell by duplicating the crystal in 3 dimensions.
-    Mutates the crystal and returns a reference to itself to enable method chaining.
-
-    Args:
-        extent: Number of repeat units in each direction.
-
-    Note:
-        The transform is not applied until the `finish` method is called.
-    &#34;&#34;&#34;
-    self._extent = extent
-    return self</code></pre>
 </details>
 </dd>
 </dl>
@@ -1067,15 +571,8 @@ def spacegroup(self) -&gt; Spacegroup:
 <ul>
 <li>
 <h4><code><a title="atompack.crystal.crystal.Crystal" href="#atompack.crystal.crystal.Crystal">Crystal</a></code></h4>
-<ul class="two-column">
-<li><code><a title="atompack.crystal.crystal.Crystal.cut" href="#atompack.crystal.crystal.Crystal.cut">cut</a></code></li>
-<li><code><a title="atompack.crystal.crystal.Crystal.finish" href="#atompack.crystal.crystal.Crystal.finish">finish</a></code></li>
-<li><code><a title="atompack.crystal.crystal.Crystal.general_transform" href="#atompack.crystal.crystal.Crystal.general_transform">general_transform</a></code></li>
+<ul class="">
 <li><code><a title="atompack.crystal.crystal.Crystal.lattice_vectors" href="#atompack.crystal.crystal.Crystal.lattice_vectors">lattice_vectors</a></code></li>
-<li><code><a title="atompack.crystal.crystal.Crystal.orient" href="#atompack.crystal.crystal.Crystal.orient">orient</a></code></li>
-<li><code><a title="atompack.crystal.crystal.Crystal.project" href="#atompack.crystal.crystal.Crystal.project">project</a></code></li>
-<li><code><a title="atompack.crystal.crystal.Crystal.reset" href="#atompack.crystal.crystal.Crystal.reset">reset</a></code></li>
-<li><code><a title="atompack.crystal.crystal.Crystal.supercell" href="#atompack.crystal.crystal.Crystal.supercell">supercell</a></code></li>
 <li><code><a title="atompack.crystal.crystal.Crystal.unit_cell" href="#atompack.crystal.crystal.Crystal.unit_cell">unit_cell</a></code></li>
 </ul>
 </li>

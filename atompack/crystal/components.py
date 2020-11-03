@@ -1,3 +1,5 @@
+"""The data types required to represent a crystal."""
+
 import json
 from collections.abc import MutableSequence
 from typing import List, Tuple
