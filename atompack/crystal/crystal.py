@@ -1,144 +1,182 @@
+"""Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them."""
+
 import copy
-from typing import Any, Dict, List, Optional, Tuple
+import json
 
 import numpy as np
-from scipy.spatial.transform import Rotation
 
 from atompack.atom import Atom
-from atompack.crystal.unit_cell import UnitCell
-from atompack.crystal.util import enforce_bounds
+from atompack.bond import Bond
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
+from atompack.symmetry import Spacegroup
 from atompack.topology import Topology
 
 
-class Crystal(Topology):
-    """Representation of a generic crystal."""
+class UnitCell(Topology):
+    """Minimal representation of a crystalline structure.
+    
+    Args:
+        basis: Atomic basis.
+        lattice_parameters: Lattice parameters object.
+        spacegroup: Spacegroup object.
 
-    def __init__(self,
-                 unit_cell: UnitCell,
-                 scale: Optional[Tuple[int, int, int]] = None,
-                 orientation: Optional[np.ndarray] = None,
-                 rotation: Optional[np.ndarray] = None,
-                 tol: float = 1.0e-6) -> None:
-        self._unit_cell = unit_cell
-        if scale is None:
-            scale = (1, 1, 1)
-        self._scale = scale
-        if orientation is None:
-            orientation = np.identity(3)
-        self._orientation = orientation
-        if rotation is None:
-            rotation = np.identity(3)
-        self._rotation = rotation
-        self._tol = tol
-        atoms, self._lattice_vectors = self._build()
+    Example:
+        >>> # primitive basis of iron
+        >>> basis = Basis.primitive("Fe")
+        >>> 
+        >>> # cubic lattice parameters
+        >>> lattparams = LatticeParameters.cubic(2.85)
+        >>> 
+        >>> # BCC spacegroup
+        >>> spg = Spacegroup("I m -3 m")
+        >>> 
+        >>> # build the unit cell
+        >>> unit_cell = UnitCell(basis, lattparams, spg)
+        >>> assert len(unit_cell.atoms) == 2
+    """
+
+    def __init__(
+        self,
+        basis: Basis,
+        lattice_parameters: LatticeParameters,
+        spacegroup: Spacegroup,
+        _build: bool = True,
+    ) -> None:
+        # initialize superclass
         super().__init__()
-        for atom in atoms:
-            self.insert(atom)
+        # set attributes
+        self._basis = basis
+        self._lattice_parameters = lattice_parameters
+        self._spacegroup = spacegroup
+        # build the unit cell
+        if _build:
+            self._build()
 
-    @property
-    def unit_cell(self) -> UnitCell:
-        """Returns a copy of the crystal's unit cell."""
-        return copy.deepcopy(self._unit_cell)
+    ######################
+    #    Constructors    #
+    ######################
 
-    @property
-    def scale(self) -> Tuple[int, int, int]:
-        """Returns a copy of the crystal's 3D scale factor."""
-        return copy.deepcopy(self._scale)
-
-    @property
-    def orientation(self) -> np.ndarray:
-        """Returns a copy of the crystal's orientation matrix."""
-        return copy.deepcopy(self._orientation)
-
-    @property
-    def rotation(self) -> np.ndarray:
-        """Returns a copy of the crystal's rotation matrix."""
-        return copy.deepcopy(self._rotation)
-
-    @property
-    def lattice_vectors(self) -> np.ndarray:
-        """Returns a copy of the crystal's lattice vectors."""
-        return copy.deepcopy(self._lattice_vectors)
-
-    # override defautlt implementation
-    def as_dict(self) -> Dict[str, Any]:
-        res = super().as_dict()
-        res["unit_cell"] = self.unit_cell.as_dict()
+    @classmethod
+    def from_json(cls, s: str) -> 'UnitCell':
+        """Initializes from a JSON string."""
+        topology = Topology.from_json(s)
+        data = json.loads(s)
+        basis = Basis.from_json(json.dumps(data["basis"]))
+        params = LatticeParameters.from_json(json.dumps(data["lattice_parameters"]))
+        spg = Spacegroup(int(data["spacegroup"]))
+        # initialize unit cell without placing atoms
+        res = cls(basis, params, spg, _build=False)
+        res._graph = topology._graph
         return res
 
-    def _build(self) -> Tuple[List[Atom], np.ndarray]:
-        # transforms are applied in the following order:
-        # - orientation
-        # - rotation
-        # - scale
+    ####################
+    #    Properties    #
+    ####################
 
-        # calculate the magnitude of the lattice vectors
-        lattice_vector_mags = np.linalg.norm(self._unit_cell.lattice_vectors, axis=0)
+    @property
+    def basis(self) -> Basis:
+        """Returns the basis."""
+        return self._basis
 
-        # calculate the unit vector of each lattice vector
-        lattice_unit_vectors = self._unit_cell.lattice_vectors / lattice_vector_mags
+    @property
+    def lattice_parameters(self) -> LatticeParameters:
+        """Returns the lattice parameters."""
+        return self._lattice_parameters
 
-        # calculate the rotation matrix between the unoriented and oriented lattice vectors
-        rotation = Rotation.align_vectors(lattice_unit_vectors, self._orientation)[0]
+    @property
+    def spacegroup(self) -> Spacegroup:
+        """Returns the spacegroup."""
+        return self._spacegroup
 
-        # align the lattice vectors with the orientation
-        oriented_lattice_vectors = np.matmul(self._orientation, self._unit_cell.lattice_vectors)
+    ########################
+    #    Public Methods    #
+    ########################
 
-        # use QR decomposition to calculate an orthogonal representation
-        # TODO: this should be optional
-        _, r = np.linalg.qr(oriented_lattice_vectors.T)
-        oriented_lattice_vectors = np.abs(r)  # removed multiplication by scale
+    def to_json(self) -> str:
+        """Returns the JSON serialized representation."""
+        topology_data = json.loads(super().to_json())
+        return json.dumps({
+            "basis": json.loads(self.basis.to_json()),
+            "lattice_parameters": json.loads(self.lattice_parameters.to_json()),
+            "spacegroup": self.spacegroup.international_number,
+            "atoms": topology_data["atoms"],
+            "bonds": topology_data["bonds"],
+        })
 
-        # calculate the magnitude of the oriented lattice vectors
-        oriented_lattice_vector_mags = np.linalg.norm(oriented_lattice_vectors, axis=0)
+    #########################
+    #    Private Methods    #
+    #########################
 
-        # determine smallest orthogonal size
-        min_ortho_size = np.ceil(oriented_lattice_vector_mags / lattice_vector_mags)
-        min_ortho_size = min_ortho_size.astype(int)
+    def _build(self) -> None:
+        vectors = LatticeVectors.from_lattice_parameters(self.lattice_parameters).vectors
+        for specie, site in self.basis.apply_spacegroup(self.spacegroup):
+            position = site * np.linalg.norm(vectors, axis=0)
+            self.insert_atoms(Atom(specie, position))
 
-        # place the atoms
-        atoms: List[Atom] = []
-        for xsize in range(min_ortho_size[0]):
-            for ysize in range(min_ortho_size[1]):
-                for zsize in range(min_ortho_size[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), self._unit_cell.lattice_vectors)
-                    for atom in self._unit_cell.atoms:
 
-                        # calculate the cartesian position
-                        position = atom.position + offset
-                        position = rotation.apply(position)
+class Crystal(Topology):
+    """Atomic structure with long range order.
+    
+    Args:
+        unit_cell: Minimal representation of a crystalline structure.
+    """
 
-                        # transform the position into the lattice
-                        enforce_bounds(oriented_lattice_vector_mags, position, self._tol)
+    def __init__(
+        self,
+        unit_cell: UnitCell,
+        _build: bool = True,
+    ) -> None:
+        # initialize superclass
+        super().__init__()
+        # build the crystal
+        self._unit_cell = unit_cell
+        if _build:
+            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
+            for atom in self._unit_cell.atoms:
+                self.insert_atoms(copy.deepcopy(atom))
+            for bond in self._unit_cell.bonds:
+                self.insert_bond(copy.deepcopy(bond))
 
-                        # accept the atom if the position is not yet occupied
-                        positions = np.array([atom.position for atom in atoms])
-                        is_occupied = False
-                        for _position in positions:
-                            if np.linalg.norm(position - _position) < self._tol:
-                                is_occupied = True
-                                break
-                        if not is_occupied:
-                            atom = copy.deepcopy(atom)
-                            atom._position = position
-                            atoms.append(atom)
+    ######################
+    #    Constructors    #
+    ######################
 
-        # TODO: apply a rotation matrix
+    @classmethod
+    def from_json(cls, s: str) -> 'Crystal':
+        """Initializes from a JSON string."""
+        topology = Topology.from_json(s)
+        data = json.loads(s)
+        unit_cell = UnitCell.from_json(json.dumps(data["unit_cell"]))
+        res = cls(unit_cell, _build=False)
+        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data["lattice_vectors"]))
+        res._graph = topology._graph
+        return res
 
-        # tile the crystal in all directions
-        current_atoms = copy.deepcopy(atoms)
-        for xsize in range(self._scale[0]):
-            for ysize in range(self._scale[1]):
-                for zsize in range(self._scale[2]):
-                    offset = np.matmul(np.array([xsize, ysize, zsize]), oriented_lattice_vectors)
-                    if np.linalg.norm(offset) < self._tol:
-                        continue
-                    for atom in current_atoms:
-                        atom = copy.deepcopy(atom)
-                        atom._position += offset
-                        atoms.append(atom)
+    ####################
+    #    Properties    #
+    ####################
 
-        # multiply the oriented lattice vectors by the scale
-        scaled_oriented_lattice_vectors = oriented_lattice_vectors * np.array(self._scale)
+    @property
+    def lattice_vectors(self):
+        """Returns the lattice vectors."""
+        return self._lattice_vectors
 
-        return atoms, scaled_oriented_lattice_vectors
+    @property
+    def unit_cell(self):
+        """Returns the unit cell."""
+        return self._unit_cell
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -> str:
+        """Returns the JSON serialized representation."""
+        topology_data = json.loads(super().to_json())
+        return json.dumps({
+            "unit_cell": json.loads(self.unit_cell.to_json()),
+            "lattice_vectors": json.loads(self.lattice_vectors.to_json()),
+            "atoms": topology_data["atoms"],
+            "bonds": topology_data["bonds"],
+        })

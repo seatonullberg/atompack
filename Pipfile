@@ -4,18 +4,18 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-pdoc3 = "*"
 isort = "*"
-yapf = "*"
 mypy = "*"
+pdoc3 = "*"
 pyflakes = "*"
+pytest = "*"
 pytest-benchmark = "*"
+yapf = "*"
 
 [packages]
 numpy = "*"
 scipy = "*"
-python-igraph = "*"
+retworkx = "*"
 
 [requires]
 python_version = "3.8"

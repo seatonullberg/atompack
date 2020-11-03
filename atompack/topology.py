@@ -1,108 +1,93 @@
-"""
-Module `topology` provides the fundamental abstraction which is used internally to represent any atomic structure.
-In the context of this package, a topology is an undirected graph of atoms (nodes) which may be connected by 0 or more bonds (edges).
-Each atom has a guaranteed position and optional metadata provided by the end user. Bonds are just optional metadata.
-"""
-from typing import Any, Dict, List, Optional, Tuple
+"""The internal abstraction for a network of optionally bonded atoms."""
 
-import numpy as np
-from igraph import Graph
+import json
+from typing import List, Tuple
+
+from retworkx import PyGraph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.util import AsDict
 
 
-class Topology(AsDict):
-    """An undirected graph of atoms."""
+class Topology(object):
+    """Internal abstraction for a collection of atoms and bonds.
+    
+    Note:
+        End users should not construct Topology objects directly.
+    """
 
     def __init__(self) -> None:
-        self._graph = Graph()
+        self._graph = PyGraph()
 
-    def insert(self, atom: Atom) -> int:
-        """Inserts an atom into the topology and returns its index."""
-        self._graph.add_vertices(1)
-        self._graph.vs[-1]["atom"] = atom
-        return len(self._graph.vs) - 1
+    ######################
+    #    Constructors    #
+    ######################
 
-    def connect(self, a: int, b: int, bond: Optional[Bond] = None) -> None:
-        """Creates an edge between indices `a` and `b`.
-        
-        Note:
-            Any atoms which `bond` has a reference to are overwritten with references to the atoms at indices `a` and `b`.
-        """
-        if bond is None:
-            bond = Bond()
-        self._graph.add_edges([(a, b)])
-        self._graph.es[-1]["bond"] = bond
-
-    def disconnect(self, a: int, b: int) -> None:
-        """Destroys the edge between indices `a` and `b`."""
-        eid = self._graph.get_eid(a, b)
-        self._graph.delete_edges(eid)
-
-    def nearest(self, position: np.ndarray) -> int:
-        """Returns the index of the atom located nearest to `position`."""
-        index = 0
-        distance = np.inf
-        for vertex in self._graph.vs:
-            d = np.linalg.norm(position - vertex["atom"].position)
-            if d < distance:
-                index = vertex.index
-                distance = d
-        return index
-
-    def translate(self, translation: np.ndarray) -> None:
-        """Translates all atoms in the topology.
-        
-        Args:
-            translation: The translation to apply.
-                If `translation` is a 1x3 vector that vector will be applied to each atom.
-                If `translation` is a Nx3 matrix each row will be mapped to each atom.  
-        """
-        shape = translation.shape
-        n_atoms = len(self._graph.vs)
-        if shape == (3,):
-            for vertex in self._graph.vs:
-                vertex["atom"]._position += translation
-        elif shape == (n_atoms, 3):
-            for i, vertex in enumerate(self._graph.vs):
-                vertex["atom"]._position += translation[i]
-        else:
-            raise ValueError
-
-    def merge(self, other: 'Topology') -> List[int]:
-        """Combines two topologies and returns the indices of the merged atoms.
-        
-        Args:
-            other: The topology to merge in.
-        """
-        return [self.insert(vertex["atom"]) for vertex in other._graph.vs]
-
-    def remove(self, index: int) -> None:
-        """Removes an atom from the topology by index.
-        
-        Note:
-            This operation invalidates existing indices.
-            Indices are always continuous: deleting a point 
-            will cause all points added chronologically 
-            afterwards to be renumbered.
-        """
-        self._graph.delete_vertices(index)
-
-    # override default implementation
-    def as_dict(self) -> Dict[str, Any]:
-        res = super().as_dict()
-        res["atoms"] = [atom.as_dict() for atom in self.atoms]
-        res["bonds"] = [(bond[0], bond[1], bond[2].as_dict()) for bond in self.bonds]
+    @classmethod
+    def from_json(cls, s: str) -> 'Topology':
+        """Initializes from a JSON string."""
+        data = json.loads(s)
+        res = cls()
+        # process atoms
+        for atom in data["atoms"]:
+            res._graph.add_node(Atom.from_json(json.dumps(atom)))
+        # process bonds
+        for bond in data["bonds"]:
+            bond = Bond.from_json(json.dumps(bond))
+            res._graph.add_edge(*bond.indices, edge=bond)
         return res
+
+    ####################
+    #    Properties    #
+    ####################
 
     @property
     def atoms(self) -> List[Atom]:
         """Returns a list of all atoms in the topology."""
-        return [vertex["atom"] for vertex in self._graph.vs]
+        return self._graph.nodes()
 
     @property
-    def bonds(self) -> List[Tuple[int, int, Bond]]:
-        """Returns a list of tuples of bond edge ids and bond objects."""
-        return [(edge.source, edge.target, edge["bond"]) for edge in self._graph.es]
+    def bonds(self) -> List[Bond]:
+        """Returns a list of all bonds in the topology."""
+        return self._graph.edges()
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def insert_atoms(self, *atoms: Atom) -> List[int]:
+        """Inserts one or more atoms and returns their indices."""
+        return self._graph.add_nodes_from(atoms)
+
+    def remove_atoms(self, *indices: int) -> List[Atom]:
+        """Removes and returns one or more atoms."""
+        res = [self._graph.get_node_data(index) for index in indices]
+        self._graph.remove_nodes_from(indices)
+        return res
+
+    def select_atoms(self, *indices: int) -> List[Atom]:
+        """Returns a reference to one or more atoms."""
+        return [self._graph.get_node_data(index) for index in indices]
+
+    # TODO: update these upon new retworkx release.
+
+    def insert_bond(self, bond: Bond) -> None:
+        """Inserts a bond."""
+        self._graph.add_edge(*bond.indices, edge=bond)
+
+    def remove_bond(self, indices: Tuple[int, int]) -> Bond:
+        """Removes and returns bonds."""
+        res = self._graph.get_edge_data(*indices)
+        self._graph.remove_edge(*indices)
+        return res
+
+    def select_bond(self, indices: Tuple[int, int]) -> Bond:
+        """Returns a mutable reference to a bond."""
+        return self._graph.get_edge_data(*indices)
+
+    def to_json(self) -> str:
+        """Returns the JSON serialized representation."""
+        return json.dumps({
+            "atoms": [json.loads(atom.to_json()) for atom in self.atoms],
+            "bonds": [json.loads(bond.to_json()) for bond in self.bonds],
+        })

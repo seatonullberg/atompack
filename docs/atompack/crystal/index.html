@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.0" />
-<title>atompack.bond API documentation</title>
-<meta name="description" content="" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>atompack.crystal API documentation</title>
+<meta name="description" content="Abstractions for generating and modifying atomic structures with long range order." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,66 +20,49 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>atompack.bond</code></h1>
+<h1 class="title">Module <code>atompack.crystal</code></h1>
 </header>
 <section id="section-intro">
+<p>Abstractions for generating and modifying atomic structures with long range order.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from atompack.util import AsDict
+<pre><code class="python">&#34;&#34;&#34;Abstractions for generating and modifying atomic structures with long range order.&#34;&#34;&#34;
 
-
-class Bond(AsDict):
-    &#34;&#34;&#34;Container to store metadata about a bond between atoms.
-    
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-    &#34;&#34;&#34;
-
-    def __init__(self, **kwargs) -&gt; None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
+from atompack.crystal.crystal import Crystal, UnitCell
+from atompack.crystal.spatial import MillerIndex, Orientation, Plane
+from atompack.crystal.transform import Transform</code></pre>
 </details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="atompack.bond.Bond"><code class="flex name class">
-<span>class <span class="ident">Bond</span></span>
-<span>(</span><span>**kwargs)</span>
-</code></dt>
+<dt><code class="name"><a title="atompack.crystal.components" href="components.html">atompack.crystal.components</a></code></dt>
 <dd>
-<div class="desc"><p>Container to store metadata about a bond between atoms.</p>
-<h2 id="notes">Notes</h2>
-<p>Any <code>kwargs</code> passed to <code>__init__()</code> are dynamically set as instance variables.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Bond(AsDict):
-    &#34;&#34;&#34;Container to store metadata about a bond between atoms.
-    
-    Notes:
-        Any `kwargs` passed to `__init__()` are dynamically set as instance variables.
-    &#34;&#34;&#34;
-
-    def __init__(self, **kwargs) -&gt; None:
-        for k, v in kwargs.items():
-            setattr(self, k, v)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="atompack.util.AsDict" href="util.html#atompack.util.AsDict">AsDict</a></li>
-</ul>
+<div class="desc"><p>The data types required to represent a crystal.</p></div>
+</dd>
+<dt><code class="name"><a title="atompack.crystal.crystal" href="crystal.html">atompack.crystal.crystal</a></code></dt>
+<dd>
+<div class="desc"><p>Abstractions for unit cells and crystals.
+Unit cells act as templates to create crystals with arbitrary transformations applied to them.</p></div>
+</dd>
+<dt><code class="name"><a title="atompack.crystal.spatial" href="spatial.html">atompack.crystal.spatial</a></code></dt>
+<dd>
+<div class="desc"><p>Data types that represent spatial features or transformations.</p></div>
+</dd>
+<dt><code class="name"><a title="atompack.crystal.transform" href="transform.html">atompack.crystal.transform</a></code></dt>
+<dd>
+<div class="desc"><p>Abstraction for a collection of transformations that can be applied together on any crystal.</p></div>
 </dd>
 </dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -90,21 +73,22 @@ class Bond(AsDict):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="atompack" href="index.html">atompack</a></code></li>
+<li><code><a title="atompack" href="../index.html">atompack</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li>
-<h4><code><a title="atompack.bond.Bond" href="#atompack.bond.Bond">Bond</a></code></h4>
-</li>
+<li><code><a title="atompack.crystal.components" href="components.html">atompack.crystal.components</a></code></li>
+<li><code><a title="atompack.crystal.crystal" href="crystal.html">atompack.crystal.crystal</a></code></li>
+<li><code><a title="atompack.crystal.spatial" href="spatial.html">atompack.crystal.spatial</a></code></li>
+<li><code><a title="atompack.crystal.transform" href="transform.html">atompack.crystal.transform</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
 </footer>
 </body>
 </html>

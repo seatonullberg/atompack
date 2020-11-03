@@ -1,7 +1,7 @@
 MYPYPATH=./mypy
 
 bench:
-	@pipenv run pytest --benchmark-columns="min, median, max, stddev, rounds, iterations" -v ./benches 
+	@pipenv run pytest --benchmark-columns="min, median, max, stddev" -v ./benches 
 
 clean:
 	@find . | grep -E "(.benchmarks)" | xargs rm -rf
@@ -15,14 +15,12 @@ clean:
 
 document:
 	@pipenv run pdoc --html --force\
-		--template-dir ./docs\
+		--template-dir ./docs/config\
 		--output-dir ./docs\
 		./atompack
-	@cp -r ./docs/atompack/* ./docs
-	@rm -rf ./docs/atompack
 
 format:
-	@pipenv run isort ./atompack
+	@pipenv run isort ./atompack ./benches ./tests
 	@pipenv run yapf -rip --style='{based_on_style: google, column_limit: 120}' ./
 
 lint:
