@@ -36,6 +36,14 @@ class Transform(object):
         self._supercell(crystal)
         return crystal
 
+    def reset(self) -> None:
+        """Resets all transform settings."""
+        self._cut_plane = None
+        self._supercell_size = None
+        self._orientation = None
+        self._orthogonalize = None
+        self._projection_plane = None
+
     def cut(self, plane: Plane) -> 'Transform':
         """Cuts a crystal along a plane.
 
@@ -83,17 +91,20 @@ class Transform(object):
 
     # TODO
     def _cut(self, crystal: Crystal) -> None:
-        if self._cut_plane is None:
+        plane = self._cut_plane
+        if plane is None:
             return
 
     # TODO
     def _orient(self, crystal: Crystal) -> None:
-        if self._orientation is None:
+        orientation = self._orientation
+        if orientation is None:
             return
 
     # TODO
     def _project(self, crystal: Crystal) -> None:
-        if self._projection_plane is None:
+        plane = self._projection_plane
+        if plane is None:
             return
 
     def _supercell(self, crystal: Crystal) -> None:
