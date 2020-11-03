@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from atompack.crystal.components import Basis, LatticeParameters, LatticeVectors
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
 from atompack.symmetry import Spacegroup
 
 #####################

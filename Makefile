@@ -20,7 +20,7 @@ document:
 		./atompack
 
 format:
-	@pipenv run isort ./atompack
+	@pipenv run isort ./atompack ./benches ./tests
 	@pipenv run yapf -rip --style='{based_on_style: google, column_limit: 120}' ./
 
 lint:

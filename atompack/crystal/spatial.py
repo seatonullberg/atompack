@@ -3,8 +3,6 @@ from typing import Tuple
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from atompack.crystal.components import LatticeVectors
-
 
 class MillerIndex(object):
     """Representation of a Miller index for describing crystallographic planes and directions."""
@@ -22,7 +20,7 @@ class MillerIndex(object):
         if np.any(res[res % 1 != 0]):
             res *= max(np.abs(res))
         res = res.astype(int)
-        return cls(tuple(res))
+        return cls((res[0], res[1], res[2]))
 
     ####################
     #    Properties    #

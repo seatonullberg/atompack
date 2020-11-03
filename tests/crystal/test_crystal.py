@@ -78,39 +78,6 @@ def test_unit_cell_to_from_json():
 #######################
 
 
-def test_crystal_supercell_cubic():
-    # primitive basis of iron
-    basis = Basis.primitive("Fe")
-    # cubic lattice parameters
-    lattparams = LatticeParameters.cubic(2.85)
-    # BCC spacegroup
-    spg = Spacegroup("I m -3 m")
-    # build the crystal
-    unit_cell = UnitCell(basis, lattparams, spg)
-    crystal = Crystal(unit_cell)
-    target_vectors = np.array([
-        [2.85, 0.0, 0.0],
-        [0.0, 2.85, 0.0],
-        [0.0, 0.0, 2.85],
-    ])
-    # generate supercell
-    extent0 = (1, 2, 3)
-    crystal.supercell(extent0).finish()
-    assert len(crystal.atoms) == 12
-    assert np.allclose(crystal.lattice_vectors.vectors, target_vectors * np.array(extent0), atol=1E-6)
-    # generate another supercell
-    extent1 = (2, 2, 2)
-    crystal.supercell(extent1).finish()
-    assert len(crystal.atoms) == 96
-    assert np.allclose(crystal.lattice_vectors.vectors,
-                       target_vectors * np.array(extent0) * np.array(extent1),
-                       atol=1E-6)
-    # reset the supercell
-    crystal.reset()
-    assert len(crystal.atoms) == 2
-    assert np.allclose(crystal.lattice_vectors.vectors, target_vectors, atol=1E-6)
-
-
 def test_crystal_to_from_json():
     basis = Basis.primitive("Fe")
     lattparams = LatticeParameters.cubic(2.85)
