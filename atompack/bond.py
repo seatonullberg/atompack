@@ -1,8 +1,9 @@
 """A dict-like abstraction for a bond between atoms."""
 
-import json
 from collections.abc import MutableMapping
 from typing import Tuple
+
+import orjson
 
 
 class Bond(MutableMapping):
@@ -26,12 +27,21 @@ class Bond(MutableMapping):
     @classmethod
     def from_json(cls, s: str) -> 'Bond':
         """Initializes from a JSON string."""
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
         # process indices
         indices = data.pop("indices")
         if indices is None:
             raise ValueError("`indices` is a required attribute")
-        indices = tuple(indices)
+        indices = (indices[0], indices[1])
+
+        # return instance
         return cls(indices, **data)
 
     #######################################
@@ -69,5 +79,5 @@ class Bond(MutableMapping):
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
         _attrs = self._attrs.copy()
-        _attrs["indices"] = list(self.indices)
-        return json.dumps(_attrs)
+        _attrs["type"] = type(self).__name__
+        return orjson.dumps(_attrs, option=orjson.OPT_SERIALIZE_NUMPY)

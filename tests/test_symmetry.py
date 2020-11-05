@@ -30,6 +30,16 @@ def test_spacegroup_init_invalid():
         _ = Spacegroup([])
 
 
+def test_spacegroup_to_from_json():
+    spg = Spacegroup(1)
+    json_data = spg.to_json()
+    new_spg = Spacegroup.from_json(json_data)
+    assert new_spg.bravais_lattice == spg.bravais_lattice
+    assert new_spg.international_number == spg.international_number
+    assert new_spg.hermann_mauguin == spg.hermann_mauguin
+    assert new_spg.genpos == spg.genpos
+
+
 def test_spacegroup_equality():
     international_number = 1
     hermann_mauguin = "P 1"

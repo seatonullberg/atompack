@@ -2,13 +2,15 @@
 Unit cells act as templates to create crystals with arbitrary transformations applied to them."""
 
 import copy
-import json
+from typing import Optional
 
 import numpy as np
+import orjson
+from retworkx import PyGraph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
+from atompack.crystal.components import Basis, LatticeParameters, LatticeVectors
 from atompack.symmetry import Spacegroup
 from atompack.topology import Topology
 
@@ -41,17 +43,21 @@ class UnitCell(Topology):
         basis: Basis,
         lattice_parameters: LatticeParameters,
         spacegroup: Spacegroup,
-        _build: bool = True,
+        _graph: Optional[PyGraph] = None,
     ) -> None:
         # initialize superclass
         super().__init__()
+
         # set attributes
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
-        # build the unit cell
-        if _build:
+
+        # check for prebuilt graph
+        if _graph is None:
             self._build()
+        else:
+            self._graph = _graph
 
     ######################
     #    Constructors    #
@@ -60,15 +66,28 @@ class UnitCell(Topology):
     @classmethod
     def from_json(cls, s: str) -> 'UnitCell':
         """Initializes from a JSON string."""
-        topology = Topology.from_json(s)
-        data = json.loads(s)
-        basis = Basis.from_json(json.dumps(data["basis"]))
-        params = LatticeParameters.from_json(json.dumps(data["lattice_parameters"]))
-        spg = Spacegroup(int(data["spacegroup"]))
-        # initialize unit cell without placing atoms
-        res = cls(basis, params, spg, _build=False)
-        res._graph = topology._graph
-        return res
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # process topology
+        topology = Topology.from_json(orjson.dumps(data["topology"]))
+
+        # process basis
+        basis = Basis.from_json(orjson.dumps(data["basis"]))
+
+        # process lattice parameters
+        lattice_parameters = LatticeParameters.from_json(orjson.dumps(data["lattice_parameters"]))
+
+        # process spacegroup
+        spacegroup = Spacegroup.from_json(orjson.dumps(data["spacegroup"]))
+
+        # return instance
+        return cls(basis, lattice_parameters, spacegroup, _graph=topology._graph)
 
     ####################
     #    Properties    #
@@ -95,14 +114,15 @@ class UnitCell(Topology):
 
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
-        topology_data = json.loads(super().to_json())
-        return json.dumps({
-            "basis": json.loads(self.basis.to_json()),
-            "lattice_parameters": json.loads(self.lattice_parameters.to_json()),
-            "spacegroup": self.spacegroup.international_number,
-            "atoms": topology_data["atoms"],
-            "bonds": topology_data["bonds"],
-        })
+        return orjson.dumps(
+            {
+                "type": type(self).__name__,
+                "topology": orjson.loads(Topology(self._graph).to_json()),
+                "basis": orjson.loads(self.basis.to_json()),
+                "lattice_parameters": orjson.loads(self.lattice_parameters.to_json()),
+                "spacegroup": orjson.loads(self.spacegroup.to_json()),
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)
 
     #########################
     #    Private Methods    #
@@ -125,18 +145,24 @@ class Crystal(Topology):
     def __init__(
         self,
         unit_cell: UnitCell,
-        _build: bool = True,
+        _lattice_vectors: Optional[np.ndarray] = None,
+        _graph: Optional[PyGraph] = None,
     ) -> None:
         # initialize superclass
         super().__init__()
-        # build the crystal
+
+        # set attributes
         self._unit_cell = unit_cell
-        if _build:
-            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
-            for atom in self._unit_cell.atoms:
-                self.insert_atoms(copy.deepcopy(atom))
-            for bond in self._unit_cell.bonds:
-                self.insert_bond(copy.deepcopy(bond))
+
+        # check for prebuilt lattice vectors
+        if _lattice_vectors is None:
+            _lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
+        self._lattice_vectors = _lattice_vectors
+
+        # check for prebuilt graph
+        if _graph is None:
+            _graph = self._unit_cell._graph
+        self._graph = _graph
 
     ######################
     #    Constructors    #
@@ -145,13 +171,25 @@ class Crystal(Topology):
     @classmethod
     def from_json(cls, s: str) -> 'Crystal':
         """Initializes from a JSON string."""
-        topology = Topology.from_json(s)
-        data = json.loads(s)
-        unit_cell = UnitCell.from_json(json.dumps(data["unit_cell"]))
-        res = cls(unit_cell, _build=False)
-        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data["lattice_vectors"]))
-        res._graph = topology._graph
-        return res
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # process topology
+        topology = Topology.from_json(orjson.dumps(data["topology"]))
+
+        # process unit cell
+        unit_cell = UnitCell.from_json(orjson.dumps(data["unit_cell"]))
+
+        # process lattice vectors
+        lattice_vectors = LatticeVectors.from_json(orjson.dumps(data["lattice_vectors"]))
+
+        # return instance
+        return cls(unit_cell, lattice_vectors, topology._graph)
 
     ####################
     #    Properties    #
@@ -173,10 +211,11 @@ class Crystal(Topology):
 
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
-        topology_data = json.loads(super().to_json())
-        return json.dumps({
-            "unit_cell": json.loads(self.unit_cell.to_json()),
-            "lattice_vectors": json.loads(self.lattice_vectors.to_json()),
-            "atoms": topology_data["atoms"],
-            "bonds": topology_data["bonds"],
-        })
+        return orjson.dumps(
+            {
+                "type": type(self).__name__,
+                "topology": orjson.loads(Topology(self._graph).to_json()),
+                "unit_cell": orjson.loads(self.unit_cell.to_json()),
+                "lattice_vectors": orjson.loads(self.lattice_vectors.to_json()),
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)

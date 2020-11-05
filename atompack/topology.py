@@ -1,8 +1,8 @@
 """The internal abstraction for a network of optionally bonded atoms."""
 
-import json
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
+import orjson
 from retworkx import PyGraph
 
 from atompack.atom import Atom
@@ -16,8 +16,10 @@ class Topology(object):
         End users should not construct Topology objects directly.
     """
 
-    def __init__(self) -> None:
-        self._graph = PyGraph()
+    def __init__(self, graph: Optional[PyGraph] = None) -> None:
+        if graph is None:
+            graph = PyGraph()
+        self._graph = graph
 
     ######################
     #    Constructors    #
@@ -26,16 +28,28 @@ class Topology(object):
     @classmethod
     def from_json(cls, s: str) -> 'Topology':
         """Initializes from a JSON string."""
-        data = json.loads(s)
-        res = cls()
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # initialize an empty graph
+        graph = PyGraph()
+
         # process atoms
         for atom in data["atoms"]:
-            res._graph.add_node(Atom.from_json(json.dumps(atom)))
+            graph.add_node(Atom.from_json(orjson.dumps(atom)))
+
         # process bonds
         for bond in data["bonds"]:
-            bond = Bond.from_json(json.dumps(bond))
-            res._graph.add_edge(*bond.indices, edge=bond)
-        return res
+            bond = Bond.from_json(orjson.dumps(bond))
+            graph.add_edge(bond.indices[0], bond.indices[1], edge=bond)
+
+        # return instance
+        return cls(graph)
 
     ####################
     #    Properties    #
@@ -87,7 +101,10 @@ class Topology(object):
 
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
-        return json.dumps({
-            "atoms": [json.loads(atom.to_json()) for atom in self.atoms],
-            "bonds": [json.loads(bond.to_json()) for bond in self.bonds],
-        })
+        return orjson.dumps(
+            {
+                "type": type(self).__name__,
+                "atoms": [orjson.loads(atom.to_json()) for atom in self.atoms],
+                "bonds": [orjson.loads(bond.to_json()) for bond in self.bonds],
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)

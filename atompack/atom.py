@@ -1,9 +1,9 @@
 """A dict-like abstraction for individual atoms."""
 
-import json
 from collections.abc import MutableMapping
 
 import numpy as np
+import orjson
 
 
 class Atom(MutableMapping):
@@ -29,16 +29,26 @@ class Atom(MutableMapping):
     @classmethod
     def from_json(cls, s: str) -> 'Atom':
         """Initializes from a JSON string."""
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
         # process specie
         specie = data.pop("specie")
         if specie is None:
             raise ValueError("`specie` is a required attribute")
+
         # process position
         position = data.pop("position")
         if position is None:
             raise ValueError("`position` is a required attribute")
         position = np.array(position)
+
+        # return instance
         return cls(specie, position, **data)
 
     #######################################
@@ -89,5 +99,5 @@ class Atom(MutableMapping):
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
         _attrs = self._attrs.copy()
-        _attrs["position"] = self.position.tolist()
-        return json.dumps(_attrs)
+        _attrs["type"] = type(self).__name__
+        return orjson.dumps(_attrs, option=orjson.OPT_SERIALIZE_NUMPY)
