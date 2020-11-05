@@ -1,10 +1,10 @@
 """The data types required to represent a crystal."""
 
-import json
 from collections.abc import MutableSequence
 from typing import List, Tuple
 
 import numpy as np
+import orjson
 
 from atompack.constants import DEG90, DEG120
 from atompack.symmetry import Spacegroup
@@ -66,12 +66,22 @@ class Basis(MutableSequence):
     @classmethod
     def from_json(cls, s) -> 'Basis':
         """Initializes from a JSON string."""
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data["type"]
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # initialize basis pairs
         basis = []
-        for entry in data:
-            specie = entry["specie"]
-            site = np.array(entry["site"])
+        for pair in data["basis"]:
+            specie = pair["specie"]
+            site = np.array(pair["site"])
             basis.append((specie, site))
+
+        # return instance
         return cls(basis)
 
     ########################
@@ -114,9 +124,15 @@ class Basis(MutableSequence):
 
     def to_json(self) -> str:
         """Returns a JSON serialized representation."""
-        _basis = self._basis.copy()
-        json_basis = [{"specie": specie, "site": site.tolist()} for specie, site in _basis]
-        return json.dumps(json_basis)
+        return orjson.dumps(
+            {
+                "type": type(self).__name__,
+                "basis": [{
+                    "specie": specie,
+                    "site": site
+                } for specie, site in self._basis],
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)
 
 
 class LatticeParameters(object):
@@ -195,8 +211,15 @@ class LatticeParameters(object):
     @classmethod
     def from_json(cls, s: str) -> 'LatticeParameters':
         """Initializes from a JSON string."""
-        data = json.loads(s)
-        data = {k: float(v) for k, v in data.items()}
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # return instance
         return cls(**data)
 
     ####################
@@ -216,7 +239,8 @@ class LatticeParameters(object):
 
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
-        return json.dumps({
+        return orjson.dumps({
+            "type": type(self).__name__,
             "a": self.a,
             "b": self.b,
             "c": self.c,
@@ -247,8 +271,18 @@ class LatticeVectors(object):
     @classmethod
     def from_json(cls, s: str) -> 'LatticeVectors':
         """Initializes from a JSON string."""
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # process vectors
         vectors = np.array(data["vectors"])
+
+        # return instance
         return cls(vectors)
 
     ########################
@@ -282,4 +316,10 @@ class LatticeVectors(object):
 
     def to_json(self) -> str:
         """Returns the JSON serialized representation."""
-        return json.dumps({"vectors": self.vectors.tolist()})
+        return orjson.dumps(
+            {
+                "type": type(self).__name__,
+                "vectors": self.vectors,
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY,
+        )

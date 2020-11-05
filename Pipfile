@@ -16,6 +16,7 @@ yapf = "*"
 numpy = "*"
 scipy = "*"
 retworkx = "*"
+orjson = "*"
 
 [requires]
 python_version = "3.8"

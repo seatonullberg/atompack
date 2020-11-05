@@ -1,8 +1,8 @@
 """An abstraction for crystallographic spacegroups."""
 
-import json
 from typing import List, Union
 
+import orjson
 import pkg_resources
 
 SPACEGROUPS = None
@@ -11,7 +11,7 @@ SPACEGROUPS = None
 def _load_spacegroups():
     global SPACEGROUPS
     if SPACEGROUPS is None:
-        SPACEGROUPS = json.load(pkg_resources.resource_stream(__name__, "data/spacegroups.json"))
+        SPACEGROUPS = orjson.loads(pkg_resources.resource_string(__name__, "data/spacegroups.json"))
     return SPACEGROUPS
 
 
@@ -44,6 +44,24 @@ class Spacegroup(object):
         self._hermann_mauguin = group["hermann_mauguin"]
         self._genpos = group["genpos"]
 
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -> 'Spacegroup':
+        """Initializes from a JSON string."""
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop("type")
+        if _type != cls.__name__:
+            raise TypeError(f"cannot deserialize from type `{_type}`")
+
+        # return instance
+        return cls(data["international_number"])
+
     ####################
     #    Properties    #
     ####################
@@ -67,6 +85,20 @@ class Spacegroup(object):
     def genpos(self) -> List[str]:
         """Returns the general position expressions."""
         return self._genpos
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -> str:
+        """Returns the JSON serialized representation."""
+        return orjson.dumps({
+            "type": type(self).__name__,
+            "bravais_lattice": self.bravais_lattice,
+            "international_number": self.international_number,
+            "hermann_mauguin": self.hermann_mauguin,
+            "genpos": self.genpos,
+        })
 
     #########################
     #    Special Methods    #
