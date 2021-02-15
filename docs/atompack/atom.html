@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>atompack.atom API documentation</title>
 <meta name="description" content="A dict-like abstraction for individual atoms." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -30,10 +30,10 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;A dict-like abstraction for individual atoms.&#34;&#34;&#34;
 
-import json
 from collections.abc import MutableMapping
 
 import numpy as np
+import orjson
 
 
 class Atom(MutableMapping):
@@ -59,16 +59,26 @@ class Atom(MutableMapping):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
         # process specie
         specie = data.pop(&#34;specie&#34;)
         if specie is None:
             raise ValueError(&#34;`specie` is a required attribute&#34;)
+
         # process position
         position = data.pop(&#34;position&#34;)
         if position is None:
             raise ValueError(&#34;`position` is a required attribute&#34;)
         position = np.array(position)
+
+        # return instance
         return cls(specie, position, **data)
 
     #######################################
@@ -119,8 +129,8 @@ class Atom(MutableMapping):
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
         _attrs = self._attrs.copy()
-        _attrs[&#34;position&#34;] = self.position.tolist()
-        return json.dumps(_attrs)</code></pre>
+        _attrs[&#34;type&#34;] = type(self).__name__
+        return orjson.dumps(_attrs, option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 </section>
 <section>
@@ -174,16 +184,26 @@ class Atom(MutableMapping):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
         # process specie
         specie = data.pop(&#34;specie&#34;)
         if specie is None:
             raise ValueError(&#34;`specie` is a required attribute&#34;)
+
         # process position
         position = data.pop(&#34;position&#34;)
         if position is None:
             raise ValueError(&#34;`position` is a required attribute&#34;)
         position = np.array(position)
+
+        # return instance
         return cls(specie, position, **data)
 
     #######################################
@@ -234,8 +254,8 @@ class Atom(MutableMapping):
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
         _attrs = self._attrs.copy()
-        _attrs[&#34;position&#34;] = self.position.tolist()
-        return json.dumps(_attrs)</code></pre>
+        _attrs[&#34;type&#34;] = type(self).__name__
+        return orjson.dumps(_attrs, option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -260,16 +280,26 @@ class Atom(MutableMapping):
 <pre><code class="python">@classmethod
 def from_json(cls, s: str) -&gt; &#39;Atom&#39;:
     &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-    data = json.loads(s)
+    # load dict from JSON string
+    data = orjson.loads(s)
+
+    # validate type
+    _type = data.pop(&#34;type&#34;)
+    if _type != cls.__name__:
+        raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
     # process specie
     specie = data.pop(&#34;specie&#34;)
     if specie is None:
         raise ValueError(&#34;`specie` is a required attribute&#34;)
+
     # process position
     position = data.pop(&#34;position&#34;)
     if position is None:
         raise ValueError(&#34;`position` is a required attribute&#34;)
     position = np.array(position)
+
+    # return instance
     return cls(specie, position, **data)</code></pre>
 </details>
 </dd>
@@ -317,8 +347,8 @@ def specie(self) -&gt; str:
 <pre><code class="python">def to_json(self) -&gt; str:
     &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
     _attrs = self._attrs.copy()
-    _attrs[&#34;position&#34;] = self.position.tolist()
-    return json.dumps(_attrs)</code></pre>
+    _attrs[&#34;type&#34;] = type(self).__name__
+    return orjson.dumps(_attrs, option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 </dd>
 </dl>
@@ -354,7 +384,7 @@ def specie(self) -&gt; str:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

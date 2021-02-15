@@ -11,6 +11,7 @@ pyflakes = "*"
 pytest = "*"
 pytest-benchmark = "*"
 yapf = "*"
+twine = "*"
 
 [packages]
 numpy = "*"

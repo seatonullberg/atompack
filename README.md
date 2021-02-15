@@ -45,8 +45,10 @@ $ pip install -e . [dev]
 The project's [Makefile](Makefile) adds a few targets to help out with common development tasks.
 
 * `make bench` - Run the benchmark suite.
+* `make build` - Generate distribution files in `./dist`.
 * `make clean` - Remove auto-generated files.
 * `make document` - Build the documentation in `./docs`.
 * `make format` - Enforce preferred code style.
 * `make lint` - Run static analysis checks.
+* `make publish` - Upload distribution files to PyPI.
 * `make test` - Run the unit test suite.

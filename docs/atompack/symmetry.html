@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>atompack.symmetry API documentation</title>
 <meta name="description" content="An abstraction for crystallographic spacegroups." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -30,9 +30,9 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;An abstraction for crystallographic spacegroups.&#34;&#34;&#34;
 
-import json
 from typing import List, Union
 
+import orjson
 import pkg_resources
 
 SPACEGROUPS = None
@@ -41,7 +41,7 @@ SPACEGROUPS = None
 def _load_spacegroups():
     global SPACEGROUPS
     if SPACEGROUPS is None:
-        SPACEGROUPS = json.load(pkg_resources.resource_stream(__name__, &#34;data/spacegroups.json&#34;))
+        SPACEGROUPS = orjson.loads(pkg_resources.resource_string(__name__, &#34;data/spacegroups.json&#34;))
     return SPACEGROUPS
 
 
@@ -74,6 +74,24 @@ class Spacegroup(object):
         self._hermann_mauguin = group[&#34;hermann_mauguin&#34;]
         self._genpos = group[&#34;genpos&#34;]
 
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Spacegroup&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # return instance
+        return cls(data[&#34;international_number&#34;])
+
     ####################
     #    Properties    #
     ####################
@@ -97,6 +115,20 @@ class Spacegroup(object):
     def genpos(self) -&gt; List[str]:
         &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
         return self._genpos
+
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return orjson.dumps({
+            &#34;type&#34;: type(self).__name__,
+            &#34;bravais_lattice&#34;: self.bravais_lattice,
+            &#34;international_number&#34;: self.international_number,
+            &#34;hermann_mauguin&#34;: self.hermann_mauguin,
+            &#34;genpos&#34;: self.genpos,
+        })
 
     #########################
     #    Special Methods    #
@@ -161,6 +193,24 @@ class Spacegroup(object):
         self._hermann_mauguin = group[&#34;hermann_mauguin&#34;]
         self._genpos = group[&#34;genpos&#34;]
 
+    ######################
+    #    Constructors    #
+    ######################
+
+    @classmethod
+    def from_json(cls, s: str) -&gt; &#39;Spacegroup&#39;:
+        &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # return instance
+        return cls(data[&#34;international_number&#34;])
+
     ####################
     #    Properties    #
     ####################
@@ -185,6 +235,20 @@ class Spacegroup(object):
         &#34;&#34;&#34;Returns the general position expressions.&#34;&#34;&#34;
         return self._genpos
 
+    ########################
+    #    Public Methods    #
+    ########################
+
+    def to_json(self) -&gt; str:
+        &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+        return orjson.dumps({
+            &#34;type&#34;: type(self).__name__,
+            &#34;bravais_lattice&#34;: self.bravais_lattice,
+            &#34;international_number&#34;: self.international_number,
+            &#34;hermann_mauguin&#34;: self.hermann_mauguin,
+            &#34;genpos&#34;: self.genpos,
+        })
+
     #########################
     #    Special Methods    #
     #########################
@@ -194,6 +258,33 @@ class Spacegroup(object):
             return NotImplemented
         return self.international_number == other.international_number</code></pre>
 </details>
+<h3>Static methods</h3>
+<dl>
+<dt id="atompack.symmetry.Spacegroup.from_json"><code class="name flex">
+<span>def <span class="ident">from_json</span></span>(<span>s: str) ‑> <a title="atompack.symmetry.Spacegroup" href="#atompack.symmetry.Spacegroup">Spacegroup</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes from a JSON string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_json(cls, s: str) -&gt; &#39;Spacegroup&#39;:
+    &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
+    # load dict from JSON string
+    data = orjson.loads(s)
+
+    # validate type
+    _type = data.pop(&#34;type&#34;)
+    if _type != cls.__name__:
+        raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+    # return instance
+    return cls(data[&#34;international_number&#34;])</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Instance variables</h3>
 <dl>
 <dt id="atompack.symmetry.Spacegroup.bravais_lattice"><code class="name">var <span class="ident">bravais_lattice</span> : str</code></dt>
@@ -249,6 +340,29 @@ def international_number(self) -&gt; int:
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="atompack.symmetry.Spacegroup.to_json"><code class="name flex">
+<span>def <span class="ident">to_json</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the JSON serialized representation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_json(self) -&gt; str:
+    &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
+    return orjson.dumps({
+        &#34;type&#34;: type(self).__name__,
+        &#34;bravais_lattice&#34;: self.bravais_lattice,
+        &#34;international_number&#34;: self.international_number,
+        &#34;hermann_mauguin&#34;: self.hermann_mauguin,
+        &#34;genpos&#34;: self.genpos,
+    })</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -270,9 +384,11 @@ def international_number(self) -&gt; int:
 <h4><code><a title="atompack.symmetry.Spacegroup" href="#atompack.symmetry.Spacegroup">Spacegroup</a></code></h4>
 <ul class="">
 <li><code><a title="atompack.symmetry.Spacegroup.bravais_lattice" href="#atompack.symmetry.Spacegroup.bravais_lattice">bravais_lattice</a></code></li>
+<li><code><a title="atompack.symmetry.Spacegroup.from_json" href="#atompack.symmetry.Spacegroup.from_json">from_json</a></code></li>
 <li><code><a title="atompack.symmetry.Spacegroup.genpos" href="#atompack.symmetry.Spacegroup.genpos">genpos</a></code></li>
 <li><code><a title="atompack.symmetry.Spacegroup.hermann_mauguin" href="#atompack.symmetry.Spacegroup.hermann_mauguin">hermann_mauguin</a></code></li>
 <li><code><a title="atompack.symmetry.Spacegroup.international_number" href="#atompack.symmetry.Spacegroup.international_number">international_number</a></code></li>
+<li><code><a title="atompack.symmetry.Spacegroup.to_json" href="#atompack.symmetry.Spacegroup.to_json">to_json</a></code></li>
 </ul>
 </li>
 </ul>
@@ -281,7 +397,7 @@ def international_number(self) -&gt; int:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

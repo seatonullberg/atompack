@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>atompack.crystal.crystal API documentation</title>
 <meta name="description" content="Abstractions for unit cells and crystals.
 Unit cells act as templates to create crystals with arbitrary transformations applied to them." />
@@ -34,9 +34,11 @@ Unit cells act as templates to create crystals with arbitrary transformations ap
 Unit cells act as templates to create crystals with arbitrary transformations applied to them.&#34;&#34;&#34;
 
 import copy
-import json
+from typing import Optional
 
 import numpy as np
+import orjson
+from retworkx import PyGraph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
@@ -73,17 +75,21 @@ class UnitCell(Topology):
         basis: Basis,
         lattice_parameters: LatticeParameters,
         spacegroup: Spacegroup,
-        _build: bool = True,
+        _graph: Optional[PyGraph] = None,
     ) -&gt; None:
         # initialize superclass
         super().__init__()
+
         # set attributes
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
-        # build the unit cell
-        if _build:
+
+        # check for prebuilt graph
+        if _graph is None:
             self._build()
+        else:
+            self._graph = _graph
 
     ######################
     #    Constructors    #
@@ -92,15 +98,28 @@ class UnitCell(Topology):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        topology = Topology.from_json(s)
-        data = json.loads(s)
-        basis = Basis.from_json(json.dumps(data[&#34;basis&#34;]))
-        params = LatticeParameters.from_json(json.dumps(data[&#34;lattice_parameters&#34;]))
-        spg = Spacegroup(int(data[&#34;spacegroup&#34;]))
-        # initialize unit cell without placing atoms
-        res = cls(basis, params, spg, _build=False)
-        res._graph = topology._graph
-        return res
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # process topology
+        topology = Topology.from_json(orjson.dumps(data[&#34;topology&#34;]))
+
+        # process basis
+        basis = Basis.from_json(orjson.dumps(data[&#34;basis&#34;]))
+
+        # process lattice parameters
+        lattice_parameters = LatticeParameters.from_json(orjson.dumps(data[&#34;lattice_parameters&#34;]))
+
+        # process spacegroup
+        spacegroup = Spacegroup.from_json(orjson.dumps(data[&#34;spacegroup&#34;]))
+
+        # return instance
+        return cls(basis, lattice_parameters, spacegroup, _graph=topology._graph)
 
     ####################
     #    Properties    #
@@ -127,14 +146,15 @@ class UnitCell(Topology):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        topology_data = json.loads(super().to_json())
-        return json.dumps({
-            &#34;basis&#34;: json.loads(self.basis.to_json()),
-            &#34;lattice_parameters&#34;: json.loads(self.lattice_parameters.to_json()),
-            &#34;spacegroup&#34;: self.spacegroup.international_number,
-            &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
-            &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
-        })
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;topology&#34;: orjson.loads(Topology(self._graph).to_json()),
+                &#34;basis&#34;: orjson.loads(self.basis.to_json()),
+                &#34;lattice_parameters&#34;: orjson.loads(self.lattice_parameters.to_json()),
+                &#34;spacegroup&#34;: orjson.loads(self.spacegroup.to_json()),
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)
 
     #########################
     #    Private Methods    #
@@ -157,18 +177,24 @@ class Crystal(Topology):
     def __init__(
         self,
         unit_cell: UnitCell,
-        _build: bool = True,
+        _lattice_vectors: Optional[np.ndarray] = None,
+        _graph: Optional[PyGraph] = None,
     ) -&gt; None:
         # initialize superclass
         super().__init__()
-        # build the crystal
+
+        # set attributes
         self._unit_cell = unit_cell
-        if _build:
-            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
-            for atom in self._unit_cell.atoms:
-                self.insert_atoms(copy.deepcopy(atom))
-            for bond in self._unit_cell.bonds:
-                self.insert_bond(copy.deepcopy(bond))
+
+        # check for prebuilt lattice vectors
+        if _lattice_vectors is None:
+            _lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
+        self._lattice_vectors = _lattice_vectors
+
+        # check for prebuilt graph
+        if _graph is None:
+            _graph = self._unit_cell._graph
+        self._graph = _graph
 
     ######################
     #    Constructors    #
@@ -177,13 +203,25 @@ class Crystal(Topology):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;Crystal&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        topology = Topology.from_json(s)
-        data = json.loads(s)
-        unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
-        res = cls(unit_cell, _build=False)
-        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data[&#34;lattice_vectors&#34;]))
-        res._graph = topology._graph
-        return res
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # process topology
+        topology = Topology.from_json(orjson.dumps(data[&#34;topology&#34;]))
+
+        # process unit cell
+        unit_cell = UnitCell.from_json(orjson.dumps(data[&#34;unit_cell&#34;]))
+
+        # process lattice vectors
+        lattice_vectors = LatticeVectors.from_json(orjson.dumps(data[&#34;lattice_vectors&#34;]))
+
+        # return instance
+        return cls(unit_cell, lattice_vectors, topology._graph)
 
     ####################
     #    Properties    #
@@ -205,13 +243,14 @@ class Crystal(Topology):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        topology_data = json.loads(super().to_json())
-        return json.dumps({
-            &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
-            &#34;lattice_vectors&#34;: json.loads(self.lattice_vectors.to_json()),
-            &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
-            &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
-        })</code></pre>
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;topology&#34;: orjson.loads(Topology(self._graph).to_json()),
+                &#34;unit_cell&#34;: orjson.loads(self.unit_cell.to_json()),
+                &#34;lattice_vectors&#34;: orjson.loads(self.lattice_vectors.to_json()),
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 </section>
 <section>
@@ -248,18 +287,24 @@ class Crystal(Topology):
     def __init__(
         self,
         unit_cell: UnitCell,
-        _build: bool = True,
+        _lattice_vectors: Optional[np.ndarray] = None,
+        _graph: Optional[PyGraph] = None,
     ) -&gt; None:
         # initialize superclass
         super().__init__()
-        # build the crystal
+
+        # set attributes
         self._unit_cell = unit_cell
-        if _build:
-            self._lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
-            for atom in self._unit_cell.atoms:
-                self.insert_atoms(copy.deepcopy(atom))
-            for bond in self._unit_cell.bonds:
-                self.insert_bond(copy.deepcopy(bond))
+
+        # check for prebuilt lattice vectors
+        if _lattice_vectors is None:
+            _lattice_vectors = LatticeVectors.from_lattice_parameters(self._unit_cell.lattice_parameters)
+        self._lattice_vectors = _lattice_vectors
+
+        # check for prebuilt graph
+        if _graph is None:
+            _graph = self._unit_cell._graph
+        self._graph = _graph
 
     ######################
     #    Constructors    #
@@ -268,13 +313,25 @@ class Crystal(Topology):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;Crystal&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        topology = Topology.from_json(s)
-        data = json.loads(s)
-        unit_cell = UnitCell.from_json(json.dumps(data[&#34;unit_cell&#34;]))
-        res = cls(unit_cell, _build=False)
-        res._lattice_vectors = LatticeVectors.from_json(json.dumps(data[&#34;lattice_vectors&#34;]))
-        res._graph = topology._graph
-        return res
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # process topology
+        topology = Topology.from_json(orjson.dumps(data[&#34;topology&#34;]))
+
+        # process unit cell
+        unit_cell = UnitCell.from_json(orjson.dumps(data[&#34;unit_cell&#34;]))
+
+        # process lattice vectors
+        lattice_vectors = LatticeVectors.from_json(orjson.dumps(data[&#34;lattice_vectors&#34;]))
+
+        # return instance
+        return cls(unit_cell, lattice_vectors, topology._graph)
 
     ####################
     #    Properties    #
@@ -296,13 +353,14 @@ class Crystal(Topology):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        topology_data = json.loads(super().to_json())
-        return json.dumps({
-            &#34;unit_cell&#34;: json.loads(self.unit_cell.to_json()),
-            &#34;lattice_vectors&#34;: json.loads(self.lattice_vectors.to_json()),
-            &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
-            &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
-        })</code></pre>
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;topology&#34;: orjson.loads(Topology(self._graph).to_json()),
+                &#34;unit_cell&#34;: orjson.loads(self.unit_cell.to_json()),
+                &#34;lattice_vectors&#34;: orjson.loads(self.lattice_vectors.to_json()),
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -416,17 +474,21 @@ def unit_cell(self):
         basis: Basis,
         lattice_parameters: LatticeParameters,
         spacegroup: Spacegroup,
-        _build: bool = True,
+        _graph: Optional[PyGraph] = None,
     ) -&gt; None:
         # initialize superclass
         super().__init__()
+
         # set attributes
         self._basis = basis
         self._lattice_parameters = lattice_parameters
         self._spacegroup = spacegroup
-        # build the unit cell
-        if _build:
+
+        # check for prebuilt graph
+        if _graph is None:
             self._build()
+        else:
+            self._graph = _graph
 
     ######################
     #    Constructors    #
@@ -435,15 +497,28 @@ def unit_cell(self):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;UnitCell&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        topology = Topology.from_json(s)
-        data = json.loads(s)
-        basis = Basis.from_json(json.dumps(data[&#34;basis&#34;]))
-        params = LatticeParameters.from_json(json.dumps(data[&#34;lattice_parameters&#34;]))
-        spg = Spacegroup(int(data[&#34;spacegroup&#34;]))
-        # initialize unit cell without placing atoms
-        res = cls(basis, params, spg, _build=False)
-        res._graph = topology._graph
-        return res
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # process topology
+        topology = Topology.from_json(orjson.dumps(data[&#34;topology&#34;]))
+
+        # process basis
+        basis = Basis.from_json(orjson.dumps(data[&#34;basis&#34;]))
+
+        # process lattice parameters
+        lattice_parameters = LatticeParameters.from_json(orjson.dumps(data[&#34;lattice_parameters&#34;]))
+
+        # process spacegroup
+        spacegroup = Spacegroup.from_json(orjson.dumps(data[&#34;spacegroup&#34;]))
+
+        # return instance
+        return cls(basis, lattice_parameters, spacegroup, _graph=topology._graph)
 
     ####################
     #    Properties    #
@@ -470,14 +545,15 @@ def unit_cell(self):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        topology_data = json.loads(super().to_json())
-        return json.dumps({
-            &#34;basis&#34;: json.loads(self.basis.to_json()),
-            &#34;lattice_parameters&#34;: json.loads(self.lattice_parameters.to_json()),
-            &#34;spacegroup&#34;: self.spacegroup.international_number,
-            &#34;atoms&#34;: topology_data[&#34;atoms&#34;],
-            &#34;bonds&#34;: topology_data[&#34;bonds&#34;],
-        })
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;topology&#34;: orjson.loads(Topology(self._graph).to_json()),
+                &#34;basis&#34;: orjson.loads(self.basis.to_json()),
+                &#34;lattice_parameters&#34;: orjson.loads(self.lattice_parameters.to_json()),
+                &#34;spacegroup&#34;: orjson.loads(self.spacegroup.to_json()),
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)
 
     #########################
     #    Private Methods    #
@@ -590,7 +666,7 @@ def spacegroup(self) -&gt; Spacegroup:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

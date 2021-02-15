@@ -4,7 +4,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(name="atompack",
-      version="0.4.2",
+      version="0.4.3",
       description="A flexible Python library for atomic structure generation.",
       long_description=long_description,
       long_description_content_type="text/markdown",

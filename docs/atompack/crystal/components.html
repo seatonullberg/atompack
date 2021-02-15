@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>atompack.crystal.components API documentation</title>
 <meta name="description" content="The data types required to represent a crystal." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -30,11 +30,11 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;The data types required to represent a crystal.&#34;&#34;&#34;
 
-import json
 from collections.abc import MutableSequence
 from typing import List, Tuple
 
 import numpy as np
+import orjson
 
 from atompack.constants import DEG90, DEG120
 from atompack.symmetry import Spacegroup
@@ -96,12 +96,22 @@ class Basis(MutableSequence):
     @classmethod
     def from_json(cls, s) -&gt; &#39;Basis&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data[&#34;type&#34;]
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # initialize basis pairs
         basis = []
-        for entry in data:
-            specie = entry[&#34;specie&#34;]
-            site = np.array(entry[&#34;site&#34;])
+        for pair in data[&#34;basis&#34;]:
+            specie = pair[&#34;specie&#34;]
+            site = np.array(pair[&#34;site&#34;])
             basis.append((specie, site))
+
+        # return instance
         return cls(basis)
 
     ########################
@@ -144,9 +154,15 @@ class Basis(MutableSequence):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
-        _basis = self._basis.copy()
-        json_basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
-        return json.dumps(json_basis)
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;basis&#34;: [{
+                    &#34;specie&#34;: specie,
+                    &#34;site&#34;: site
+                } for specie, site in self._basis],
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)
 
 
 class LatticeParameters(object):
@@ -182,51 +198,63 @@ class LatticeParameters(object):
     #    Constructors    #
     ######################
 
+    # NOTE: Each of the crystallographic constructors takes `kwargs` as an
+    #   argument so that dicts containing more keys than are required by
+    #   the constructor can be passed in directly without unused keys
+    #   throwing an error.
+
     @classmethod
-    def triclinic(cls, a, b, c, alpha, beta, gamma) -&gt; &#39;LatticeParameters&#39;:
+    def triclinic(cls, a, b, c, alpha, beta, gamma, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with triclinic constraints.&#34;&#34;&#34;
         return cls(a, b, c, alpha, beta, gamma)
 
     @classmethod
-    def monoclinic(cls, a, b, c, beta) -&gt; &#39;LatticeParameters&#39;:
+    def monoclinic(cls, a, b, c, beta, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with monoclinic constraints.&#34;&#34;&#34;
         return cls(a, b, c, DEG90, beta, DEG90)
 
     @classmethod
-    def orthorhombic(cls, a, b, c) -&gt; &#39;LatticeParameters&#39;:
+    def orthorhombic(cls, a, b, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with orthorhombic constraints.&#34;&#34;&#34;
         return cls(a, b, c, DEG90, DEG90, DEG90)
 
     @classmethod
-    def tetragonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+    def tetragonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with tetragonal constraints.&#34;&#34;&#34;
         return cls(a, a, c, DEG90, DEG90, DEG90)
 
     @classmethod
-    def trigonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+    def trigonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with trigonal constraints.&#34;&#34;&#34;
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
-    def rhombohedral(cls, a, alpha) -&gt; &#39;LatticeParameters&#39;:
+    def rhombohedral(cls, a, alpha, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with rhombohedral constraints.&#34;&#34;&#34;
         return cls(a, a, a, alpha, alpha, alpha)
 
     @classmethod
-    def hexagonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+    def hexagonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with hexagonal constraints.&#34;&#34;&#34;
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
-    def cubic(cls, a) -&gt; &#39;LatticeParameters&#39;:
+    def cubic(cls, a, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with cubic constraints.&#34;&#34;&#34;
         return cls(a, a, a, DEG90, DEG90, DEG90)
 
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
-        data = {k: float(v) for k, v in data.items()}
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # return instance
         return cls(**data)
 
     ####################
@@ -246,7 +274,8 @@ class LatticeParameters(object):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        return json.dumps({
+        return orjson.dumps({
+            &#34;type&#34;: type(self).__name__,
             &#34;a&#34;: self.a,
             &#34;b&#34;: self.b,
             &#34;c&#34;: self.c,
@@ -277,8 +306,18 @@ class LatticeVectors(object):
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;LatticeVectors&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # process vectors
         vectors = np.array(data[&#34;vectors&#34;])
+
+        # return instance
         return cls(vectors)
 
     ########################
@@ -312,7 +351,13 @@ class LatticeVectors(object):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        return json.dumps({&#34;vectors&#34;: self.vectors.tolist()})</code></pre>
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;vectors&#34;: self.vectors,
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY,
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -407,12 +452,22 @@ class LatticeVectors(object):
     @classmethod
     def from_json(cls, s) -&gt; &#39;Basis&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data[&#34;type&#34;]
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # initialize basis pairs
         basis = []
-        for entry in data:
-            specie = entry[&#34;specie&#34;]
-            site = np.array(entry[&#34;site&#34;])
+        for pair in data[&#34;basis&#34;]:
+            specie = pair[&#34;specie&#34;]
+            site = np.array(pair[&#34;site&#34;])
             basis.append((specie, site))
+
+        # return instance
         return cls(basis)
 
     ########################
@@ -455,9 +510,15 @@ class LatticeVectors(object):
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
-        _basis = self._basis.copy()
-        json_basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
-        return json.dumps(json_basis)</code></pre>
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;basis&#34;: [{
+                    &#34;specie&#34;: specie,
+                    &#34;site&#34;: site
+                } for specie, site in self._basis],
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -483,12 +544,22 @@ class LatticeVectors(object):
 <pre><code class="python">@classmethod
 def from_json(cls, s) -&gt; &#39;Basis&#39;:
     &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-    data = json.loads(s)
+    # load dict from JSON string
+    data = orjson.loads(s)
+
+    # validate type
+    _type = data[&#34;type&#34;]
+    if _type != cls.__name__:
+        raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+    # initialize basis pairs
     basis = []
-    for entry in data:
-        specie = entry[&#34;specie&#34;]
-        site = np.array(entry[&#34;site&#34;])
+    for pair in data[&#34;basis&#34;]:
+        specie = pair[&#34;specie&#34;]
+        site = np.array(pair[&#34;site&#34;])
         basis.append((specie, site))
+
+    # return instance
     return cls(basis)</code></pre>
 </details>
 </dd>
@@ -579,9 +650,15 @@ symmetry operations to the atomic basis.</p></div>
 </summary>
 <pre><code class="python">def to_json(self) -&gt; str:
     &#34;&#34;&#34;Returns a JSON serialized representation.&#34;&#34;&#34;
-    _basis = self._basis.copy()
-    json_basis = [{&#34;specie&#34;: specie, &#34;site&#34;: site.tolist()} for specie, site in _basis]
-    return json.dumps(json_basis)</code></pre>
+    return orjson.dumps(
+        {
+            &#34;type&#34;: type(self).__name__,
+            &#34;basis&#34;: [{
+                &#34;specie&#34;: specie,
+                &#34;site&#34;: site
+            } for specie, site in self._basis],
+        },
+        option=orjson.OPT_SERIALIZE_NUMPY)</code></pre>
 </details>
 </dd>
 </dl>
@@ -653,51 +730,63 @@ symmetry operations to the atomic basis.</p></div>
     #    Constructors    #
     ######################
 
+    # NOTE: Each of the crystallographic constructors takes `kwargs` as an
+    #   argument so that dicts containing more keys than are required by
+    #   the constructor can be passed in directly without unused keys
+    #   throwing an error.
+
     @classmethod
-    def triclinic(cls, a, b, c, alpha, beta, gamma) -&gt; &#39;LatticeParameters&#39;:
+    def triclinic(cls, a, b, c, alpha, beta, gamma, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with triclinic constraints.&#34;&#34;&#34;
         return cls(a, b, c, alpha, beta, gamma)
 
     @classmethod
-    def monoclinic(cls, a, b, c, beta) -&gt; &#39;LatticeParameters&#39;:
+    def monoclinic(cls, a, b, c, beta, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with monoclinic constraints.&#34;&#34;&#34;
         return cls(a, b, c, DEG90, beta, DEG90)
 
     @classmethod
-    def orthorhombic(cls, a, b, c) -&gt; &#39;LatticeParameters&#39;:
+    def orthorhombic(cls, a, b, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with orthorhombic constraints.&#34;&#34;&#34;
         return cls(a, b, c, DEG90, DEG90, DEG90)
 
     @classmethod
-    def tetragonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+    def tetragonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with tetragonal constraints.&#34;&#34;&#34;
         return cls(a, a, c, DEG90, DEG90, DEG90)
 
     @classmethod
-    def trigonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+    def trigonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with trigonal constraints.&#34;&#34;&#34;
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
-    def rhombohedral(cls, a, alpha) -&gt; &#39;LatticeParameters&#39;:
+    def rhombohedral(cls, a, alpha, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with rhombohedral constraints.&#34;&#34;&#34;
         return cls(a, a, a, alpha, alpha, alpha)
 
     @classmethod
-    def hexagonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+    def hexagonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with hexagonal constraints.&#34;&#34;&#34;
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
-    def cubic(cls, a) -&gt; &#39;LatticeParameters&#39;:
+    def cubic(cls, a, **kwargs) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes with cubic constraints.&#34;&#34;&#34;
         return cls(a, a, a, DEG90, DEG90, DEG90)
 
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
-        data = {k: float(v) for k, v in data.items()}
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # return instance
         return cls(**data)
 
     ####################
@@ -717,7 +806,8 @@ symmetry operations to the atomic basis.</p></div>
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        return json.dumps({
+        return orjson.dumps({
+            &#34;type&#34;: type(self).__name__,
             &#34;a&#34;: self.a,
             &#34;b&#34;: self.b,
             &#34;c&#34;: self.c,
@@ -729,7 +819,7 @@ symmetry operations to the atomic basis.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="atompack.crystal.components.LatticeParameters.cubic"><code class="name flex">
-<span>def <span class="ident">cubic</span></span>(<span>a) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">cubic</span></span>(<span>a, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with cubic constraints.</p></div>
@@ -738,7 +828,7 @@ symmetry operations to the atomic basis.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def cubic(cls, a) -&gt; &#39;LatticeParameters&#39;:
+def cubic(cls, a, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with cubic constraints.&#34;&#34;&#34;
     return cls(a, a, a, DEG90, DEG90, DEG90)</code></pre>
 </details>
@@ -755,13 +845,20 @@ def cubic(cls, a) -&gt; &#39;LatticeParameters&#39;:
 <pre><code class="python">@classmethod
 def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-    data = json.loads(s)
-    data = {k: float(v) for k, v in data.items()}
+    # load dict from JSON string
+    data = orjson.loads(s)
+
+    # validate type
+    _type = data.pop(&#34;type&#34;)
+    if _type != cls.__name__:
+        raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+    # return instance
     return cls(**data)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.hexagonal"><code class="name flex">
-<span>def <span class="ident">hexagonal</span></span>(<span>a, c) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">hexagonal</span></span>(<span>a, c, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with hexagonal constraints.</p></div>
@@ -770,13 +867,13 @@ def from_json(cls, s: str) -&gt; &#39;LatticeParameters&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def hexagonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+def hexagonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with hexagonal constraints.&#34;&#34;&#34;
     return cls(a, a, c, DEG90, DEG90, DEG120)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.monoclinic"><code class="name flex">
-<span>def <span class="ident">monoclinic</span></span>(<span>a, b, c, beta) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">monoclinic</span></span>(<span>a, b, c, beta, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with monoclinic constraints.</p></div>
@@ -785,13 +882,13 @@ def hexagonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def monoclinic(cls, a, b, c, beta) -&gt; &#39;LatticeParameters&#39;:
+def monoclinic(cls, a, b, c, beta, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with monoclinic constraints.&#34;&#34;&#34;
     return cls(a, b, c, DEG90, beta, DEG90)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.orthorhombic"><code class="name flex">
-<span>def <span class="ident">orthorhombic</span></span>(<span>a, b, c) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">orthorhombic</span></span>(<span>a, b, c, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with orthorhombic constraints.</p></div>
@@ -800,13 +897,13 @@ def monoclinic(cls, a, b, c, beta) -&gt; &#39;LatticeParameters&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def orthorhombic(cls, a, b, c) -&gt; &#39;LatticeParameters&#39;:
+def orthorhombic(cls, a, b, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with orthorhombic constraints.&#34;&#34;&#34;
     return cls(a, b, c, DEG90, DEG90, DEG90)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.rhombohedral"><code class="name flex">
-<span>def <span class="ident">rhombohedral</span></span>(<span>a, alpha) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">rhombohedral</span></span>(<span>a, alpha, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with rhombohedral constraints.</p></div>
@@ -815,13 +912,13 @@ def orthorhombic(cls, a, b, c) -&gt; &#39;LatticeParameters&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def rhombohedral(cls, a, alpha) -&gt; &#39;LatticeParameters&#39;:
+def rhombohedral(cls, a, alpha, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with rhombohedral constraints.&#34;&#34;&#34;
     return cls(a, a, a, alpha, alpha, alpha)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.tetragonal"><code class="name flex">
-<span>def <span class="ident">tetragonal</span></span>(<span>a, c) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">tetragonal</span></span>(<span>a, c, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with tetragonal constraints.</p></div>
@@ -830,13 +927,13 @@ def rhombohedral(cls, a, alpha) -&gt; &#39;LatticeParameters&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def tetragonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+def tetragonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with tetragonal constraints.&#34;&#34;&#34;
     return cls(a, a, c, DEG90, DEG90, DEG90)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.triclinic"><code class="name flex">
-<span>def <span class="ident">triclinic</span></span>(<span>a, b, c, alpha, beta, gamma) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">triclinic</span></span>(<span>a, b, c, alpha, beta, gamma, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with triclinic constraints.</p></div>
@@ -845,13 +942,13 @@ def tetragonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def triclinic(cls, a, b, c, alpha, beta, gamma) -&gt; &#39;LatticeParameters&#39;:
+def triclinic(cls, a, b, c, alpha, beta, gamma, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with triclinic constraints.&#34;&#34;&#34;
     return cls(a, b, c, alpha, beta, gamma)</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeParameters.trigonal"><code class="name flex">
-<span>def <span class="ident">trigonal</span></span>(<span>a, c) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
+<span>def <span class="ident">trigonal</span></span>(<span>a, c, **kwargs) ‑> <a title="atompack.crystal.components.LatticeParameters" href="#atompack.crystal.components.LatticeParameters">LatticeParameters</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initializes with trigonal constraints.</p></div>
@@ -860,7 +957,7 @@ def triclinic(cls, a, b, c, alpha, beta, gamma) -&gt; &#39;LatticeParameters&#39
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def trigonal(cls, a, c) -&gt; &#39;LatticeParameters&#39;:
+def trigonal(cls, a, c, **kwargs) -&gt; &#39;LatticeParameters&#39;:
     &#34;&#34;&#34;Initializes with trigonal constraints.&#34;&#34;&#34;
     return cls(a, a, c, DEG90, DEG90, DEG120)</code></pre>
 </details>
@@ -897,7 +994,8 @@ def metric_tensor(self) -&gt; np.ndarray:
 </summary>
 <pre><code class="python">def to_json(self) -&gt; str:
     &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-    return json.dumps({
+    return orjson.dumps({
+        &#34;type&#34;: type(self).__name__,
         &#34;a&#34;: self.a,
         &#34;b&#34;: self.b,
         &#34;c&#34;: self.c,
@@ -945,8 +1043,18 @@ def metric_tensor(self) -&gt; np.ndarray:
     @classmethod
     def from_json(cls, s: str) -&gt; &#39;LatticeVectors&#39;:
         &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-        data = json.loads(s)
+        # load dict from JSON string
+        data = orjson.loads(s)
+
+        # validate type
+        _type = data.pop(&#34;type&#34;)
+        if _type != cls.__name__:
+            raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+        # process vectors
         vectors = np.array(data[&#34;vectors&#34;])
+
+        # return instance
         return cls(vectors)
 
     ########################
@@ -980,7 +1088,13 @@ def metric_tensor(self) -&gt; np.ndarray:
 
     def to_json(self) -&gt; str:
         &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-        return json.dumps({&#34;vectors&#34;: self.vectors.tolist()})</code></pre>
+        return orjson.dumps(
+            {
+                &#34;type&#34;: type(self).__name__,
+                &#34;vectors&#34;: self.vectors,
+            },
+            option=orjson.OPT_SERIALIZE_NUMPY,
+        )</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -996,8 +1110,18 @@ def metric_tensor(self) -&gt; np.ndarray:
 <pre><code class="python">@classmethod
 def from_json(cls, s: str) -&gt; &#39;LatticeVectors&#39;:
     &#34;&#34;&#34;Initializes from a JSON string.&#34;&#34;&#34;
-    data = json.loads(s)
+    # load dict from JSON string
+    data = orjson.loads(s)
+
+    # validate type
+    _type = data.pop(&#34;type&#34;)
+    if _type != cls.__name__:
+        raise TypeError(f&#34;cannot deserialize from type `{_type}`&#34;)
+
+    # process vectors
     vectors = np.array(data[&#34;vectors&#34;])
+
+    # return instance
     return cls(vectors)</code></pre>
 </details>
 </dd>
@@ -1049,7 +1173,13 @@ def from_lattice_parameters(cls, lattice_parameters: LatticeParameters) -&gt; &#
 </summary>
 <pre><code class="python">def to_json(self) -&gt; str:
     &#34;&#34;&#34;Returns the JSON serialized representation.&#34;&#34;&#34;
-    return json.dumps({&#34;vectors&#34;: self.vectors.tolist()})</code></pre>
+    return orjson.dumps(
+        {
+            &#34;type&#34;: type(self).__name__,
+            &#34;vectors&#34;: self.vectors,
+        },
+        option=orjson.OPT_SERIALIZE_NUMPY,
+    )</code></pre>
 </details>
 </dd>
 <dt id="atompack.crystal.components.LatticeVectors.wrap"><code class="name flex">
@@ -1138,7 +1268,7 @@ The <code>point</code> argument is mutated and returned.</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>
