@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * Replace standard `json` library with `orjson` dependency.
+* `LatticeParameters` constructors now accept `kwargs`.
 
 
 ## [0.4.2] - 2020-11-04

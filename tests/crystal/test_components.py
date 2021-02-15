@@ -81,6 +81,13 @@ def test_lattice_parameters_to_from_json():
     assert res.alpha == params.alpha
 
 
+def test_lattice_parameters_unused_kwargs():
+    kwargs = {"a": 5.0, "b": 0.0, "alpha": 0.0}
+    params = LatticeParameters.cubic(**kwargs)
+    assert params.a == params.b == params.c == 5.0
+    assert params.alpha == params.beta == params.gamma == np.pi / 2
+
+
 ##############################
 #    LatticeVectors Tests    #
 ##############################

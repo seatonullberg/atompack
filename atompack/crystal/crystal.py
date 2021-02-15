@@ -10,7 +10,7 @@ from retworkx import PyGraph
 
 from atompack.atom import Atom
 from atompack.bond import Bond
-from atompack.crystal.components import Basis, LatticeParameters, LatticeVectors
+from atompack.crystal.components import (Basis, LatticeParameters, LatticeVectors)
 from atompack.symmetry import Spacegroup
 from atompack.topology import Topology
 

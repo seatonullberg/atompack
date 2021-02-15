@@ -168,43 +168,48 @@ class LatticeParameters(object):
     #    Constructors    #
     ######################
 
+    # NOTE: Each of the crystallographic constructors takes `kwargs` as an
+    #   argument so that dicts containing more keys than are required by
+    #   the constructor can be passed in directly without unused keys
+    #   throwing an error.
+
     @classmethod
-    def triclinic(cls, a, b, c, alpha, beta, gamma) -> 'LatticeParameters':
+    def triclinic(cls, a, b, c, alpha, beta, gamma, **kwargs) -> 'LatticeParameters':
         """Initializes with triclinic constraints."""
         return cls(a, b, c, alpha, beta, gamma)
 
     @classmethod
-    def monoclinic(cls, a, b, c, beta) -> 'LatticeParameters':
+    def monoclinic(cls, a, b, c, beta, **kwargs) -> 'LatticeParameters':
         """Initializes with monoclinic constraints."""
         return cls(a, b, c, DEG90, beta, DEG90)
 
     @classmethod
-    def orthorhombic(cls, a, b, c) -> 'LatticeParameters':
+    def orthorhombic(cls, a, b, c, **kwargs) -> 'LatticeParameters':
         """Initializes with orthorhombic constraints."""
         return cls(a, b, c, DEG90, DEG90, DEG90)
 
     @classmethod
-    def tetragonal(cls, a, c) -> 'LatticeParameters':
+    def tetragonal(cls, a, c, **kwargs) -> 'LatticeParameters':
         """Initializes with tetragonal constraints."""
         return cls(a, a, c, DEG90, DEG90, DEG90)
 
     @classmethod
-    def trigonal(cls, a, c) -> 'LatticeParameters':
+    def trigonal(cls, a, c, **kwargs) -> 'LatticeParameters':
         """Initializes with trigonal constraints."""
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
-    def rhombohedral(cls, a, alpha) -> 'LatticeParameters':
+    def rhombohedral(cls, a, alpha, **kwargs) -> 'LatticeParameters':
         """Initializes with rhombohedral constraints."""
         return cls(a, a, a, alpha, alpha, alpha)
 
     @classmethod
-    def hexagonal(cls, a, c) -> 'LatticeParameters':
+    def hexagonal(cls, a, c, **kwargs) -> 'LatticeParameters':
         """Initializes with hexagonal constraints."""
         return cls(a, a, c, DEG90, DEG90, DEG120)
 
     @classmethod
-    def cubic(cls, a) -> 'LatticeParameters':
+    def cubic(cls, a, **kwargs) -> 'LatticeParameters':
         """Initializes with cubic constraints."""
         return cls(a, a, a, DEG90, DEG90, DEG90)
 
