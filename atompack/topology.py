@@ -71,7 +71,7 @@ class Topology(object):
 
     def insert_atoms(self, *atoms: Atom) -> List[int]:
         """Inserts one or more atoms and returns their indices."""
-        return self._graph.add_nodes_from(atoms)
+        return list(self._graph.add_nodes_from(atoms))
 
     def remove_atoms(self, *indices: int) -> List[Atom]:
         """Removes and returns one or more atoms."""
